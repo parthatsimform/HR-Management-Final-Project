@@ -32,7 +32,7 @@ import { shallowRef, ref } from 'vue'
 import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
 
-const profileTab = shallowRef(TimeLine)
+const profileTab = shallowRef(About)
 const isActive = ref('About')
 
 console.log(profileTab.value)
