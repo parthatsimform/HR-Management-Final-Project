@@ -12,8 +12,11 @@
                 </div>
             </div>
             <div class="profile-desc d-flex justify-content-center mt-5">
-                <div class="profile-about pt-2 text-center" @click="changeTab('About')">About</div>
-                <div class="profile-timeline pt-2 text-center" @click="changeTab('TimeLine')">Timeline</div>
+                <div class="profile-about pt-2 text-center" :class="isActive == 'About' ? 'isActive' : ''"
+                    @click="changeTab('About')">About
+                </div>
+                <div class="profile-timeline pt-2 text-center" :class="isActive == 'TimeLine' ? 'isActive' : ''"
+                    @click="changeTab('TimeLine')">Timeline</div>
             </div>
             <div class="profile-content">
                 <transition name="tab-change" mode="out-in">
@@ -25,14 +28,17 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef } from 'vue'
+import { shallowRef, ref } from 'vue'
 import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
 
 const profileTab = shallowRef(TimeLine)
+const isActive = ref('About')
 
+console.log(profileTab.value)
 function changeTab(tabName: string) {
     tabName === 'About' ? profileTab.value = About : profileTab.value = TimeLine
+    tabName === 'About' ? isActive.value = "About" : isActive.value = "TimeLine"
 }
 </script>
 
@@ -44,9 +50,10 @@ function changeTab(tabName: string) {
 }
 
 .profile-wrapper {
-    box-shadow: 5px 10px 18px #888888;
+    box-shadow: 5px 10px 18px rgb(136, 136, 136, 0.5);
     width: 700px;
     height: 800px;
+    border-radius: 20px;
 }
 
 .profile-image {
@@ -70,11 +77,13 @@ function changeTab(tabName: string) {
 }
 
 .profile-about {
-    width: 250px;
+    width: 300px;
     height: 40px;
     background-color: #0d6efd;
     color: white;
     cursor: pointer;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 .profile-about:hover,
@@ -83,11 +92,13 @@ function changeTab(tabName: string) {
 }
 
 .profile-timeline {
-    width: 250px;
+    width: 300px;
     background-color: #0d6efd;
     border-left: 2px solid rgb(255, 255, 255);
     color: white;
     cursor: pointer;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .tab-change-enter-from {
@@ -106,5 +117,9 @@ function changeTab(tabName: string) {
 
 .tab-change-leave-active {
     transition: all 0.3s ease-in;
+}
+
+.isActive {
+    background-color: #0b5ed7;
 }
 </style>
