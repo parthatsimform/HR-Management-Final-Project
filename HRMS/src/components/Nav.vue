@@ -71,6 +71,7 @@
 
 .nav-item:hover a {
     color: #0d6efd !important;
+    background-color: #ffffff;
 }
 
 .dropdown-toggle::after {
