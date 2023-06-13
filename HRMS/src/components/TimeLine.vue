@@ -5,6 +5,7 @@
             <div class="timeline-card d-flex justify-content-center align-items-center">{{ item.message }}</div>
             <div class="timeline-hr mx-auto"></div>
         </div>
+        <div class="timeline-end"></div>
    </div>
   </div>
 </template>
@@ -25,6 +26,10 @@
     border: 3px solid #0d6efd;
     height: 25px;
     width: 1px;;
+}
+.timeline-end{
+    border: 10px solid  #0d6efd;
+    border-radius: 50%;
 }
 
 </style>
