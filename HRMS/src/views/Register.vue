@@ -5,7 +5,7 @@
                 <img class="h-100 w-100" src="../assets/Signup.svg" alt="">
             </div>
             <div class="form-container w-50 d-flex align-items-center justify-content-center p-4">
-                <form class="registration-form">
+                <form class="registration-form" @submit.prevent="registerUser">
                     <h1 Register class="text-center fw-bold">Register</h1>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com"
@@ -50,8 +50,7 @@
                         <label for="floatingInput">Joining Date</label>
                     </div>
                     <div class="d-flex justify-content-center">
-                        <button class="btn btn-primary w-50 py-2 fw-bold" type="submit"
-                            @click.prevent="registerUser">Register</button>
+                        <button class="btn btn-primary w-50 py-2 fw-bold" type="submit">Register</button>
                     </div>
                 </form>
             </div>
@@ -62,7 +61,11 @@
 <script setup lang="ts">
 import type Employee from "@/types/employee";
 import { useEmployeeStore } from "../stores/employees"
-import firebase from "@/firebase"
+import { app, db, auth } from "../firebase"
+import { collection, addDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import router from "@/router";
+
 
 const employee = useEmployeeStore()
 const registerUser = async () => {
@@ -74,16 +77,23 @@ const registerUser = async () => {
         mobile: employee.emp.mobile,
         dob: employee.emp.dob,
         joiningDate: employee.emp.joiningDate,
-        isAdmin: employee.emp.isAdmin
+        isAdmin: false
     }
 
-    let credential = null;
-    // try {
-    //     credential = await firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password)
-    // } catch (err) {
-    //     console.log(err);
-    // }
-    console.log(credential);
+    let user;
+    try {
+        user = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
+        if (user) {
+            const empRef = await addDoc(collection(db, "employees"), newUser)
+            if (empRef) {
+                router.push("/")
+            } else {
+                alert("Error creating user")
+            }
+        }
+    } catch (err) {
+        console.log(err);
+    }
 }
 </script>
 
