@@ -8,13 +8,13 @@
                             FrontEnd
                         </div>
                         <div class="common-department-content">
-                            <div class="users-list" v-for="i in 3">
-                                <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center"
-                                    draggable="true">
+                            <div class="users-list" v-for="employee in empData">
+                                <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
+                                    v-if="employee.department === 'frontend'">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
                                         JD</div>
-                                    <div class="emp-name">John Doe</div>
+                                    <div class="emp-name">{{ employee.fullName }}</div>
                                     <p class="emp-dept">FrontEnd</p>
                                 </div>
                             </div>
@@ -25,14 +25,14 @@
                             BackEnd
                         </div>
                         <div class="common-department-content">
-                            <div class="users-list" v-for="i in 10">
-                                <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center"
-                                    draggable="true">
+                            <div class="users-list" v-for="employee in empData">
+                                <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
+                                    v-if="employee.department === 'backend'">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
                                         JD</div>
-                                    <div class="emp-name">John Doe</div>
-                                    <p class="emp-dept">FrontEnd</p>
+                                    <div class="emp-name">{{ employee.fullName }}</div>
+                                    <p class="emp-dept">Backend</p>
                                 </div>
                             </div>
                         </div>
@@ -42,14 +42,14 @@
                             UI/UX
                         </div>
                         <div class="common-department-content">
-                            <div class="users-list" v-for="i in 6">
-                                <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center"
-                                    draggable="true">
+                            <div class="users-list" v-for="employee in empData">
+                                <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
+                                    v-if="employee.department === 'uiux'">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
                                         JD</div>
-                                    <div class="emp-name">John Doe</div>
-                                    <p class="emp-dept">FrontEnd</p>
+                                    <div class="emp-name">{{ employee.fullName }}</div>
+                                    <p class="emp-dept">UI/UX</p>
                                 </div>
                             </div>
                         </div>
@@ -59,14 +59,14 @@
                             Devops
                         </div>
                         <div class="common-department-content">
-                            <div class="users-list" v-for="i in 2">
-                                <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center"
-                                    draggable="true">
+                            <div class="users-list" v-for="employee in empData">
+                                <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
+                                    v-if="employee.department === 'devops'">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
                                         JD</div>
-                                    <div class="emp-name">John Doe</div>
-                                    <p class="emp-dept">FrontEnd</p>
+                                    <div class="emp-name">{{ employee.fullName }}</div>
+                                    <p class="emp-dept">DevOps</p>
                                 </div>
                             </div>
                         </div>
@@ -76,6 +76,31 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
+import { reactive, ref } from 'vue'
+let userData: object[] = []
+const firestore = db;
+const fetchData = async () => {
+    try {
+        const querySnapshot = await getDocs(collection(firestore, "employees"));
+        querySnapshot.forEach((doc: { data: () => object; }) => {
+            userData.push(doc.data())
+        });
+        return userData
+    } catch (error) {
+        console.error("Error getting documents: ", error);
+    }
+};
+
+const empData = ref([])
+empData.value = await fetchData();
+console.log(empData)
+</script >
+
+
 
 <style scoped>
 .department {
