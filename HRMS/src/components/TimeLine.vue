@@ -10,6 +10,11 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import { ref } from 'vue'
+const items = ref([{ message: 'Foo' }, { message: 'Bar' }, { message: 'Foo' }, { message: 'Bar' }])
+</script>
+
 <style>
 .timeline-wrapper {
   max-width: 600px;
@@ -37,7 +42,3 @@
 }
 </style>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-const items = ref([{ message: 'Foo' }, { message: 'Bar' }, { message: 'Foo' }, { message: 'Bar' }])
-</script>
