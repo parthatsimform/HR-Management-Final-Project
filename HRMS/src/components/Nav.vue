@@ -104,6 +104,7 @@
     text-decoration: none;
     text-align: center;
     padding: 5px 5px;
+    cursor: pointer;
 }
 
 .profile-item:hover,
