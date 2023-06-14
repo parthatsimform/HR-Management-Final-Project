@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg fixed-top border-bottom">
         <div class="container-fluid h-100">
-            <router-link class="navbar-brand fw-bolder" :to='{name:"Home"}'>HRMS</router-link>
+            <router-link class="navbar-brand fw-bolder" :to='{name:"Home"}' exact-active-class="no-active">HRMS</router-link>
             <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -55,6 +55,7 @@
 <style scoped>
 .navbar{
     background-color: #f7faff !important;
+    font-weight: 500;
 }
 .container-fluid{
     width: 90%;
@@ -73,10 +74,20 @@
     margin-top: 0px;
     background-color: #f7faff !important;
 }
-
+.nav-item{
+    margin-right: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.nav-item:first-child{
+    margin-left: 20px;
+}
+.nav-item:last-child{
+    margin-right: 0px;
+}
 .nav-item:hover a {
     color: #0d6efd !important;
-    background-color: #ffffff;
+    background-color: #edf2ff;
 }
 
 .dropdown-toggle::after {
@@ -101,7 +112,7 @@
 }
 .active-nav-link {
     color: #0d6efd !important;
-    background-color: #ffffff;
+    background-color: #edf2ff;
 }
 
 
