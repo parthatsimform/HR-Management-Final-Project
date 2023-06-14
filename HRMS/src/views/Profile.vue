@@ -63,6 +63,7 @@ querySnapshot.forEach((doc) => {
     width: 700px;
     height: 800px;
     border-radius: 20px;
+    overflow: hidden;
 }
 
 .profile-image {

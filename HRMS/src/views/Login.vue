@@ -45,7 +45,6 @@ const userLogin = async (e: Event): Promise<void> => {
     const target = e.target as HTMLFormElement
     const email = target.email.value;
     const password = target.password.value;
-
     try {
         const user = await signInWithEmailAndPassword(auth, email, password)
         router.push("/")

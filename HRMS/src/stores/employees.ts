@@ -10,7 +10,7 @@ export const useEmployeeStore = defineStore("employee", {
 		emp_data : []
 	}),
 	actions:{
-		async getEmpData(){
+		async getEmpData():Promise<void>{
 			onSnapshot(collection(db,'employees'),(querySnapshot: { data: () => object; }[])=>{
 				this.emp_data= []
 				querySnapshot.forEach((doc: { data: () => object; })=>{

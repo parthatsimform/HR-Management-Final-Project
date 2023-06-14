@@ -13,4 +13,6 @@ export default interface Employee {
 	dob: Date;
 	joiningDate: Date;
 	isAdmin?: false;
+	leaveBallance : number;
+	uid : string;
 }

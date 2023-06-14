@@ -61,13 +61,10 @@
 <script setup lang="ts">
 import type Employee from "@/types/employee";
 import { useEmployeeStore } from "../stores/employees"
-import { app, db, auth } from "../includes/firebase"
-import { collection, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import router from "@/router";
-
+import { useUserStore } from '../stores/userStore'
 
 const employee = useEmployeeStore()
+const userStore = useUserStore()
 const registerUser = async () => {
     const newUser: Employee = {
         fullName: employee.emp.fullName,
@@ -77,23 +74,12 @@ const registerUser = async () => {
         mobile: employee.emp.mobile,
         dob: employee.emp.dob,
         joiningDate: employee.emp.joiningDate,
-        isAdmin: false
+        isAdmin: false,
+        leaveBallance: 10,
+        uid: ""
     }
 
-    let user;
-    try {
-        user = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
-        if (user) {
-            const empRef = await addDoc(collection(db, "employees"), newUser)
-            if (empRef) {
-                router.push("/")
-            } else {
-                alert("Error creating user")
-            }
-        }
-    } catch (err) {
-        console.log(err);
-    }
+    await userStore.registerUser(newUser)
 }
 </script>
 
