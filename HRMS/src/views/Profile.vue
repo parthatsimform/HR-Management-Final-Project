@@ -1,13 +1,14 @@
 <template>
     <div class="profile">
+
         <div class="profile-wrapper mx-auto">
             <div class="profile-name-image d-flex mt-4 ms-4">
                 <div class="profile-image mx-3 mt-4 d-flex align-items-center justify-content-center">
                     <h1 class="fs-1 ">JD</h1>
                 </div>
                 <div class="profile-name pt-4 px-5 mt-4">
-                    <h2 class="fs-1">John Doe</h2>
-                    <h6 class="mt-3 mb-3">FrontEnd</h6>
+                    <h2 class="fs-1">{{ employeeStore.emp_details.fullName }}</h2>
+                    <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
                     <p>TRAINEE</p>
                 </div>
             </div>
@@ -28,12 +29,16 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef, ref } from 'vue'
+import { shallowRef, ref, onBeforeMount } from 'vue'
 import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../includes/firebase";
-
+import { useRoute } from 'vue-router'
+import { useEmployeeStore } from '../stores/employees'
+const employeeStore = useEmployeeStore();
+const route = useRoute()
+onBeforeMount(async () => {
+    employeeStore.getEmpDetails(route.params.id)
+})
 const profileTab = shallowRef(About)
 const isActive = ref<string>('About')
 
@@ -42,12 +47,7 @@ function changeTab(tabName: string): void {
     tabName === 'About' ? isActive.value = "About" : isActive.value = "TimeLine"
 }
 
-const q = query(collection(db, "cities"), where("capital", "==", true));
-const querySnapshot = await getDocs(q);
-querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, " => ", doc.data());
-});
+
 
 </script>
 
@@ -122,7 +122,7 @@ querySnapshot.forEach((doc) => {
 
 .tab-change-leave-to {
     opacity: 0;
-    transform: translatex(-100px);
+    transform: translatex(-80px);
 }
 
 .tab-change-leave-active {

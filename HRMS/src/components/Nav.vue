@@ -1,7 +1,8 @@
 <template>
     <nav class="navbar navbar-expand-lg fixed-top border-bottom">
         <div class="container-fluid h-100">
-            <router-link class="navbar-brand fw-bolder" :to='{name:"Home"}' exact-active-class="no-active">HRMS</router-link>
+            <router-link class="navbar-brand fw-bolder" :to='{ name: "Home" }'
+                exact-active-class="no-active">HRMS</router-link>
             <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -9,24 +10,25 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 h-100">
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" :to='{name:"Home"}'>Home</router-link>
+                        <router-link class="nav-link" :to='{ name: "Home" }'>Home</router-link>
                     </li>
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" :to='{name:"Directory"}'>Employee-Directory</router-link>
+                        <router-link class="nav-link" :to='{ name: "Directory" }'>Employee-Directory</router-link>
                     </li>
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" :to='{name:"ApplyLeave"}'>Leave</router-link>
+                        <router-link class="nav-link" :to='{ name: "ApplyLeave" }'>Leave</router-link>
                     </li>
-                    <div class="hidden-links d-none">
+                    <div class="hidden-links d-none" v-if="userStore.isLoggedIn">
                         <li class="nav-item h-100 d-flex align-items-center">
-                            <router-link class="nav-link" :to="{ name: 'Profile', params: { id: 123 } }">Profile</router-link>
+                            <router-link class="nav-link"
+                                :to="{ name: 'Profile', params: { id: 123 } }">Profile</router-link>
                         </li>
                         <li class="nav-item h-100 d-flex align-items-center border-bottom-0">
                             <a class="nav-link link-danger">LogOut</a>
                         </li>
                     </div>
                 </ul>
-                <div class="profile-container">
+                <div class="profile-container" v-if="userStore.isLoggedIn">
                     <div class="dropdown">
                         <div class="dropdown-toggle profile d-flex align-items-center rounded-circle p-2"
                             id="navbarDropdown" role="button" aria-expanded="false">
@@ -34,7 +36,8 @@
                         </div>
                         <ul class="dropdown-menu position-absolute p-0" aria-labelledby="navbarDropdown">
                             <li class="d-flex">
-                                <router-link class="profile-item p-2" :to="{ name: 'Profile', params: { id: 123 } }">Profile</router-link>
+                                <router-link class="profile-item p-2"
+                                    :to="{ name: 'Profile', params: { id: userStore.userId } }">Profile</router-link>
                             </li>
                             <li>
                                 <hr class="dropdown-divider p-0 m-0">
@@ -49,17 +52,20 @@
 </template>
 
 <script lang="ts" setup>
-
+import { useUserStore } from '../stores/userStore'
+const userStore = useUserStore()
 </script>
 
 <style scoped>
-.navbar{
+.navbar {
     background-color: #f7faff !important;
     font-weight: 500;
 }
-.container-fluid{
+
+.container-fluid {
     width: 90%;
 }
+
 .navbar-brand {
     color: #0d6efd;
 }
@@ -74,17 +80,21 @@
     margin-top: 0px;
     background-color: #f7faff !important;
 }
-.nav-item{
+
+.nav-item {
     margin-right: 20px;
     border-radius: 5px;
     overflow: hidden;
 }
-.nav-item:first-child{
+
+.nav-item:first-child {
     margin-left: 20px;
 }
-.nav-item:last-child{
+
+.nav-item:last-child {
     margin-right: 0px;
 }
+
 .nav-item:hover a {
     color: #0d6efd !important;
     background-color: #edf2ff;
@@ -111,6 +121,7 @@
 .logout-btn:hover {
     background-color: #fdfdfd !important;
 }
+
 .active-nav-link {
     color: #0d6efd !important;
     background-color: #edf2ff;
@@ -118,6 +129,7 @@
 
 
 @media (max-width:991px) {
+
     /* .navbar-collapse{
         border-top: 1px solid #e2e2e2;
     } */
@@ -132,7 +144,8 @@
     .hidden-links {
         display: block !important;
     }
-    .nav-item{
+
+    .nav-item {
         border-bottom: 1px solid #e2e2e2;
     }
 }
