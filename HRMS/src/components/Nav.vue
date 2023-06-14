@@ -9,20 +9,20 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 h-100">
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" to="">Home</router-link>
+                        <router-link class="nav-link" :to='{name:"Home"}'>Home</router-link>
                     </li>
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" to="">Employee-Directory</router-link>
+                        <router-link class="nav-link" to=''>Employee-Directory</router-link>
                     </li>
                     <li class="nav-item h-100 d-flex align-items-center">
                         <router-link class="nav-link" to="">Leave</router-link>
                     </li>
                     <div class="hidden-links d-none">
                         <li class="nav-item h-100 d-flex align-items-center">
-                            <router-link class="nav-link" to="">Profile</router-link>
+                            <router-link class="nav-link" :to="{ name: 'Profile', params: { id: 123 } }">Profile</router-link>
                         </li>
                         <li class="nav-item h-100 d-flex align-items-center border-bottom-0">
-                            <a class="nav-link link-danger" href="#">LogOut</a>
+                            <a class="nav-link link-danger">LogOut</a>
                         </li>
                     </div>
                 </ul>
@@ -33,11 +33,13 @@
                             UP
                         </div>
                         <ul class="dropdown-menu position-absolute p-0" aria-labelledby="navbarDropdown">
-                            <li class="d-flex"><router-link class="profile-item p-2" to="#">Profile</router-link></li>
+                            <li class="d-flex">
+                                <router-link class="profile-item p-2" :to="{ name: 'Profile', params: { id: 123 } }">Profile</router-link>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider p-0 m-0">
                             </li>
-                            <li class="d-flex"><a class="logout-btn link-danger p-2" href="#">LogOut</a></li>
+                            <li class="d-flex"><a class="logout-btn link-danger p-2">LogOut</a></li>
                         </ul>
                     </div>
                 </div>
