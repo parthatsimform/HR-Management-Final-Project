@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import type Employee from "@/types/employee";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot, doc } from "firebase/firestore";
 import { db } from "../includes/firebase";
 
 export const useEmployeeStore = defineStore("employee", {
@@ -11,16 +11,12 @@ export const useEmployeeStore = defineStore("employee", {
 	}),
 	actions:{
 		async getEmpData(){
-			try {
-				let userData: object[] = []
-				const querySnapshot = await getDocs(collection(db, "employees"));
-				querySnapshot.forEach((doc: { data: () => object; }) => {
-					userData.push(doc.data())
-				});
-				this.emp_data = userData
-			} catch (error) {
-				console.error("Error getting documents: ", error);
-			}
+			onSnapshot(collection(db,'employees'),(querySnapshot: { data: () => object; }[])=>{
+				this.emp_data= []
+				querySnapshot.forEach((doc: { data: () => object; })=>{
+					this.emp_data.push(doc.data())
+				})
+			})
 		}
 	}
 });

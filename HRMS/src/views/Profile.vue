@@ -31,6 +31,8 @@
 import { shallowRef, ref } from 'vue'
 import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../includes/firebase";
 
 const profileTab = shallowRef(About)
 const isActive = ref<string>('About')
@@ -39,6 +41,14 @@ function changeTab(tabName: string): void {
     tabName === 'About' ? profileTab.value = About : profileTab.value = TimeLine
     tabName === 'About' ? isActive.value = "About" : isActive.value = "TimeLine"
 }
+
+const q = query(collection(db, "cities"), where("capital", "==", true));
+const querySnapshot = await getDocs(q);
+querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
+});
+
 </script>
 
 <style scoped>
