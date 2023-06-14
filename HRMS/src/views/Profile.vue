@@ -33,10 +33,9 @@ import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
 
 const profileTab = shallowRef(About)
-const isActive = ref('About')
+const isActive = ref<string>('About')
 
-console.log(profileTab.value)
-function changeTab(tabName: string) {
+function changeTab(tabName: string): void {
     tabName === 'About' ? profileTab.value = About : profileTab.value = TimeLine
     tabName === 'About' ? isActive.value = "About" : isActive.value = "TimeLine"
 }
