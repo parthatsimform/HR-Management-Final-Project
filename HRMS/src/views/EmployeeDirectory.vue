@@ -8,7 +8,7 @@
                             FrontEnd
                         </div>
                         <div class="common-department-content">
-                            <div class="users-list" v-for="employee in empData">
+                            <div class="users-list" v-for="employee in employeeStore.emp_data">
                                 <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
                                     v-if="employee.department === 'frontend'">
                                     <div
@@ -25,7 +25,7 @@
                             BackEnd
                         </div>
                         <div class="common-department-content">
-                            <div class="users-list" v-for="employee in empData">
+                            <div class="users-list" v-for="employee in employeeStore.emp_data">
                                 <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
                                     v-if="employee.department === 'backend'">
                                     <div
@@ -42,7 +42,7 @@
                             UI/UX
                         </div>
                         <div class="common-department-content">
-                            <div class="users-list" v-for="employee in empData">
+                            <div class="users-list" v-for="employee in employeeStore.emp_data">
                                 <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
                                     v-if="employee.department === 'uiux'">
                                     <div
@@ -59,7 +59,7 @@
                             Devops
                         </div>
                         <div class="common-department-content">
-                            <div class="users-list" v-for="employee in empData">
+                            <div class="users-list" v-for="employee in employeeStore.emp_data">
                                 <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
                                     v-if="employee.department === 'devops'">
                                     <div
@@ -78,29 +78,10 @@
 </template>
 
 <script setup lang="ts">
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
-import { reactive, ref } from 'vue'
-let userData: object[] = []
-const firestore = db;
-const fetchData = async () => {
-    try {
-        const querySnapshot = await getDocs(collection(firestore, "employees"));
-        querySnapshot.forEach((doc: { data: () => object; }) => {
-            userData.push(doc.data())
-        });
-        return userData
-    } catch (error) {
-        console.error("Error getting documents: ", error);
-    }
-};
-
-const empData = ref([])
-empData.value = await fetchData();
-console.log(empData)
+import { useEmployeeStore } from '../stores/employees'
+const employeeStore = useEmployeeStore()
+await employeeStore.getEmpData();
 </script >
-
-
 
 <style scoped>
 .department {

@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import type Employee from "@/types/employee";
 import { useEmployeeStore } from "../stores/employees"
-import { app, db, auth } from "../firebase"
+import { app, db, auth } from "../includes/firebase"
 import { collection, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import router from "@/router";
