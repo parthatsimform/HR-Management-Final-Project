@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg fixed-top border-bottom">
         <div class="container-fluid h-100">
-            <a class="navbar-brand fw-bolder" href="#">HRMS</a>
+            <router-link class="navbar-brand fw-bolder" :to='{name:"Home"}'>HRMS</router-link>
             <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -12,10 +12,10 @@
                         <router-link class="nav-link" :to='{name:"Home"}'>Home</router-link>
                     </li>
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" to=''>Employee-Directory</router-link>
+                        <router-link class="nav-link" :to='{name:"Directory"}'>Employee-Directory</router-link>
                     </li>
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" to="">Leave</router-link>
+                        <router-link class="nav-link" :to='{name:"ApplyLeave"}'>Leave</router-link>
                     </li>
                     <div class="hidden-links d-none">
                         <li class="nav-item h-100 d-flex align-items-center">
@@ -53,6 +53,9 @@
 </script>
 
 <style scoped>
+.navbar{
+    background-color: #f7faff !important;
+}
 .container-fluid{
     width: 90%;
 }
@@ -96,7 +99,10 @@
 .logout-btn:hover {
     background-color: #fdfdfd !important;
 }
-
+.active-nav-link {
+    color: #0d6efd !important;
+    background-color: #ffffff;
+}
 
 
 @media (max-width:991px) {

@@ -19,11 +19,23 @@ const routes = [
 	{
     path: '/profile/:id(\\d+)',
     name: 'Profile',
-    component: () => import("@/views/Profile.vue")
-  }]
+    component: () => import("../views/Profile.vue")
+  },
+  {
+    path: '/emp-directory',
+    name: 'Directory',
+    component: () => import("../views/EmployeeDirectory.vue")
+  },
+  {
+    path: '/apply-leave',
+    name: 'ApplyLeave',
+    component: () => import("../views/ApplyLeave.vue")
+  }
+]
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: routes
+  routes,
+  linkExactActiveClass: 'active-nav-link'
 })
 
 export default router;
