@@ -46,9 +46,6 @@ function changeTab(tabName: string): void {
     tabName === 'About' ? profileTab.value = About : profileTab.value = TimeLine
     tabName === 'About' ? isActive.value = "About" : isActive.value = "TimeLine"
 }
-
-
-
 </script>
 
 <style scoped>

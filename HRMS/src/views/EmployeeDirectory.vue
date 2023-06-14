@@ -13,7 +13,7 @@
                                     v-if="employee.department === 'frontend'">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
-                                        {{ formattedString(employee.fullName) }}</div>
+                                        {{ empInitials(employee.fullName) }}</div>
                                     <div class="emp-name">{{ employee.fullName }}</div>
                                     <p class="emp-dept">FrontEnd</p>
                                 </div>
@@ -30,7 +30,7 @@
                                     v-if="employee.department === 'backend'">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
-                                        {{ formattedString(employee.fullName) }}</div>
+                                        {{ empInitials(employee.fullName) }}</div>
                                     <div class="emp-name">{{ employee.fullName }}</div>
                                     <p class="emp-dept">Backend</p>
                                 </div>
@@ -47,7 +47,7 @@
                                     v-if="employee.department === 'uiux'">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
-                                        {{ formattedString(employee.fullName) }}</div>
+                                        {{ empInitials(employee.fullName) }}</div>
                                     <div class="emp-name">{{ employee.fullName }}</div>
                                     <p class="emp-dept">UI/UX</p>
                                 </div>
@@ -64,7 +64,7 @@
                                     v-if="employee.department === 'devops'">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
-                                        {{ formattedString(employee.fullName) }}</div>
+                                        {{ empInitials(employee.fullName) }}</div>
                                     <div class="emp-name">{{ employee.fullName }}</div>
                                     <p class="emp-dept">DevOps</p>
                                 </div>
@@ -82,7 +82,7 @@ import { useEmployeeStore } from '../stores/employees'
 const employeeStore = useEmployeeStore();
 await employeeStore.getEmpData();
 import { useInitials } from '../composables/useInitials'
-const { formattedString } = useInitials()
+const { empInitials } = useInitials()
 </script >
 
 <style scoped>
