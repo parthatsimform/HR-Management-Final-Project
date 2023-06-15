@@ -6,11 +6,11 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from './stores/userStore'
-const userStore = useUserStore()
+import { useEmployeeStore } from './stores/employees'
+const employeeStore = useEmployeeStore();
 import { auth } from "./includes/firebase"
 if (auth.currentUser) {
-  userStore.userId = auth.currentUser.uid
-  userStore.isLoggedIn = true
+  employeeStore.userId = auth.currentUser.uid
+  employeeStore.isLoggedIn = true
 }
 </script>

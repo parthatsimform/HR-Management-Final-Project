@@ -18,7 +18,7 @@
                     <li class="nav-item h-100 d-flex align-items-center">
                         <router-link class="nav-link" :to='{ name: "ApplyLeave" }'>Leave</router-link>
                     </li>
-                    <div class="hidden-links d-none" v-if="userStore.isLoggedIn">
+                    <div class="hidden-links d-none" v-if="employeeStore.isLoggedIn">
                         <li class="nav-item h-100 d-flex align-items-center">
                             <router-link class="nav-link"
                                 :to="{ name: 'Profile', params: { id: 123 } }">Profile</router-link>
@@ -28,16 +28,16 @@
                         </li>
                     </div>
                 </ul>
-                <div class="profile-container" v-if="userStore.isLoggedIn">
+                <div class="profile-container" v-if="employeeStore.isLoggedIn">
                     <div class="dropdown">
                         <div class="dropdown-toggle profile d-flex align-items-center rounded-circle p-2"
                             id="navbarDropdown" role="button" aria-expanded="false">
-                            UP
+                            {{ empInitials(employeeStore.emp_details.fullName ? employeeStore.emp_details.fullName : '') }}
                         </div>
                         <ul class="dropdown-menu position-absolute p-0" aria-labelledby="navbarDropdown">
                             <li class="d-flex">
                                 <router-link class="profile-item p-2"
-                                    :to="{ name: 'Profile', params: { id: userStore.userId } }">Profile</router-link>
+                                    :to="{ name: 'Profile', params: { id: employeeStore.userId } }">Profile</router-link>
                             </li>
                             <li>
                                 <hr class="dropdown-divider p-0 m-0">
@@ -52,8 +52,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useUserStore } from '../stores/userStore'
-const userStore = useUserStore()
+import { useEmployeeStore } from '../stores/employees'
+const employeeStore = useEmployeeStore();
+import { useInitials } from '../composables/useInitials'
+const { empInitials } = useInitials()
 </script>
 
 <style scoped>

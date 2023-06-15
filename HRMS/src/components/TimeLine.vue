@@ -46,38 +46,21 @@
 import { ref } from 'vue'
 import { useEmployeeStore } from '../stores/employees'
 import gsap from 'gsap'
+import { useDuration } from '../composables/useDuration'
+const { calculateDuration } = useDuration()
 const employeeStore = useEmployeeStore();
 
-
 function formattedDate(date: string): string {
-  const today = new Date(date);
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0'); // add 1 to adjust for 0-based indexing
+  const today: Date = new Date(date);
+  const year: number = today.getFullYear();
+  const month: string = (today.getMonth() + 1).toString().padStart(2, '0');
   const day = today.getDate().toString().padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
-function calculateDuration(startDate: string, endDate: string): number[] {
-  var start = new Date(startDate);
-  var end = new Date(endDate);
-  var years = end.getUTCFullYear() - start.getUTCFullYear();
-  var months = end.getUTCMonth() - start.getUTCMonth();
-  var days = end.getUTCDate() - start.getUTCDate();
 
-  if (months < 0 || (months === 0 && days < 0)) {
-    years--;
-    months += 12;
-  }
-  if (days < 0) {
-    var lastMonth = new Date(end.getUTCFullYear(), end.getUTCMonth() - 1, 0);
-    days += lastMonth.getUTCDate();
-    months--;
-  }
-  return [years, months, days];
-}
-
-const dateToday = new Date()
-const duration = calculateDuration(employeeStore.emp_details.joiningDate, formattedDate(dateToday.toISOString()));
+const dateToday: Date = new Date()
+const duration: number[] = calculateDuration(employeeStore.emp_details.joiningDate, formattedDate(dateToday.toISOString()));
 
 function addYear(date: string, noOfYears: number): string {
   let year = new Date(date).getUTCFullYear() + noOfYears
@@ -109,7 +92,6 @@ for (let i = 0; i < duration[0]; i++) {
     items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
   }, (i + 1) * 250)
 }
-
 
 function beforeEnter(el: { style: { opacity: number; transform: string; }; }) {
   el.style.opacity = 0;

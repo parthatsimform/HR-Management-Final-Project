@@ -9,26 +9,26 @@
                     <h1 Register class="text-center fw-bold">Register</h1>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com"
-                            v-model="employee.emp.fullName">
+                            v-model="employeeStore.emp.fullName">
                         <label for="floatingInput">Full Name</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"
-                            v-model="employee.emp.email">
+                            v-model="employeeStore.emp.email">
                         <label for="floatingInput">Email address</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
-                            v-model="employee.emp.password">
+                            v-model="employeeStore.emp.password">
                         <label for="floatingPassword">Password</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control" id="floatingPassword" placeholder="Confirm Password"
-                            v-model="employee.emp.cPassword">
+                            v-model="employeeStore.emp.cPassword">
                         <label for="floatingPassword">Confirm Password</label>
                     </div>
                     <div class="mb-3">
-                        <select class="form-select" aria-label="Department" v-model="employee.emp.department">
+                        <select class="form-select" aria-label="Department" v-model="employeeStore.emp.department">
                             <option disabled>Select Department</option>
                             <option value="frontend">FrontEnd</option>
                             <option value="backend">BackEnd</option>
@@ -38,15 +38,16 @@
                     </div>
                     <div class="form-floating mb-3">
                         <input type="tel" class="form-control" id="floatingPassword" placeholder="Mobile Number"
-                            v-model="employee.emp.mobile">
+                            v-model="employeeStore.emp.mobile">
                         <label for="floatingInput">Mobile Number</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="date" class="form-control" id="floatingPassword" v-model="employee.emp.dob">
+                        <input type="date" class="form-control" id="floatingPassword" v-model="employeeStore.emp.dob">
                         <label for="floatingInput">Date of Birth</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="date" class="form-control" id="floatingPassword" v-model="employee.emp.joiningDate">
+                        <input type="date" class="form-control" id="floatingPassword"
+                            v-model="employeeStore.emp.joiningDate">
                         <label for="floatingInput">Joining Date</label>
                     </div>
                     <div class="d-flex justify-content-center">
@@ -61,25 +62,23 @@
 <script setup lang="ts">
 import type Employee from "@/types/employee";
 import { useEmployeeStore } from "../stores/employees"
-import { useUserStore } from '../stores/userStore'
 
-const employee = useEmployeeStore()
-const userStore = useUserStore()
+const employeeStore = useEmployeeStore()
 const registerUser = async () => {
     const newUser: Employee = {
-        fullName: employee.emp.fullName,
-        email: employee.emp.email,
-        password: employee.emp.password,
-        department: employee.emp.department,
-        mobile: employee.emp.mobile,
-        dob: employee.emp.dob,
-        joiningDate: employee.emp.joiningDate,
+        fullName: employeeStore.emp.fullName,
+        email: employeeStore.emp.email,
+        password: employeeStore.emp.password,
+        department: employeeStore.emp.department,
+        mobile: employeeStore.emp.mobile,
+        dob: employeeStore.emp.dob,
+        joiningDate: employeeStore.emp.joiningDate,
         isAdmin: false,
         leaveBallance: 10,
         uid: ""
     }
 
-    await userStore.registerUser(newUser)
+    await employeeStore.registerUser(newUser)
 }
 </script>
 

@@ -6,7 +6,6 @@ import router from "@/router";
 import { collection, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
-
 export const useUserStore = defineStore("user", {
 	state: () => ({
 		isLoggedIn: false,
@@ -15,7 +14,6 @@ export const useUserStore = defineStore("user", {
     actions:{
         async registerUser(newUser:Employee):Promise<void>{
             try {
-                console.log("sad")
                 const { user }: { [key: string]: any } = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
                 if (user) {
                     newUser.uid = user.uid

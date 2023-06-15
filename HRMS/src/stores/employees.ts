@@ -1,13 +1,19 @@
 import { defineStore } from "pinia";
 import type Employee from "@/types/employee";
 import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
-import { db } from "../includes/firebase";
+import router from "@/router";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { db, auth } from "../includes/firebase"
+import { collection, addDoc } from "firebase/firestore";
 
 export const useEmployeeStore = defineStore("employee", {
 	state: () => ({
 		emp: { department: "Select Department" } as Employee,
+		isLoggedIn: false,
+        userId: null,
 		emp_data : [],
-		emp_details:{}
+		emp_details:{},
+		emp_role: "TRAINEE"
 	}),
 	actions:{
 		async getEmpData():Promise<void>{
@@ -27,6 +33,24 @@ export const useEmployeeStore = defineStore("employee", {
 				this.emp_details =  doc.data();
 				this.emp_details.docId = doc.id
 			});
-		}
+		},
+		async registerUser(newUser:Employee):Promise<void>{
+            try {
+                const { user }: { [key: string]: any } = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
+                if (user) {
+                    newUser.uid = user.uid
+                    const empRef = await addDoc(collection(db, "employees"), newUser)
+                    if (empRef) {
+                        this.userId = newUser.uid
+                        this.isLoggedIn = true
+                        router.push("/")
+                    } else {
+                        alert("Error creating user")
+                    }
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
 	}
 });

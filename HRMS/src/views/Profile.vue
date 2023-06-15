@@ -8,7 +8,7 @@
                 <div class="profile-name pt-4 px-5 mt-4">
                     <h2 class="fs-1">{{ employeeStore.emp_details.fullName }}</h2>
                     <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
-                    <p>TRAINEE</p>
+                    <p>{{ employeeStore.emp_role }}</p>
                 </div>
             </div>
             <div class="profile-desc d-flex justify-content-center mt-5">
@@ -34,7 +34,8 @@ import About from '@/components/About.vue'
 import { useRoute } from 'vue-router'
 import { useEmployeeStore } from '../stores/employees'
 import { useInitials } from '../composables/useInitials'
-
+import { useDuration } from '../composables/useDuration'
+const { calculateDuration } = useDuration()
 const employeeStore = useEmployeeStore();
 const route = useRoute()
 
@@ -48,6 +49,16 @@ function changeTab(tabName: string): void {
     tabName === 'About' ? profileTab.value = About : profileTab.value = TimeLine
     tabName === 'About' ? isActive.value = "About" : isActive.value = "TimeLine"
 }
+const today = new Date()
+const duration = calculateDuration(employeeStore.emp_details.joiningDate, today)
+if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
+    employeeStore.emp_role = "EMPLOYEE"
+    if (duration[0] > 5) {
+        employeeStore.emp_role = "MANAGER"
+    }
+}
+
+
 </script>
 
 <style scoped>
