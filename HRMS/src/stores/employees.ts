@@ -26,7 +26,6 @@ export const useEmployeeStore = defineStore("employee", {
 			querySnapshot.forEach((doc: { data: () => object; }) => {
 				this.emp_details =  doc.data();
 				this.emp_details.docId = doc.id
-				console.log(this.emp_details)
 			});
 		}
 	}

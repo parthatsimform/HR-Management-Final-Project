@@ -41,7 +41,7 @@ const route = useRoute()
 await employeeStore.getEmpDetails(route.params.id)
 const { empInitials } = useInitials()
 
-const profileTab = shallowRef(TimeLine)
+const profileTab = shallowRef(About)
 const isActive = ref<string>('About')
 
 function changeTab(tabName: string): void {

@@ -4,10 +4,11 @@
       <div class="timeline-space" v-for="( item, index) in items" :key="item.uid">
 
         <div class="d-flex flex-row-reverse align-items-center" v-if="index % 2 == 0">
-          <transition-group class="car-card" name="car-card" tag="div" @before-enter="beforeEnter" @enter="enter" appear>
+          <transition-group class="car-card" name="timeline-card-content" tag="div" @before-enter="beforeEnter"
+            @enter="enter" appear>
             <div class="timeline-card d-flex justify-content-center align-items-center px-4 flex-column text-center"
               :key="`card-${index}`">
-              <div class="card-content mx-1">
+              <div class="card-content card-content-right mx-1">
                 <div>{{ item.message }}</div>
                 <div>{{ item.date }}</div>
               </div>
@@ -20,11 +21,11 @@
           </div>
         </div>
         <div class="d-flex flex-row align-items-center" v-else>
-          <transition-group class="car-card" name="car-card" tag="div" @before-enter="beforeEnterLeft" @enter="enterLeft"
-            appear>
+          <transition-group class="timeline-card-content" name="timeline-card-content" tag="div"
+            @before-enter="beforeEnterLeft" @enter="enterLeft" appear>
             <div class="timeline-card d-flex justify-content-center align-items-center px-4 flex-column text-center"
               :key="`card-${index}`">
-              <div class="card-content mx-1">
+              <div class="card-content card-content-left mx-1">
                 <div>{{ item.message }}</div>
                 <div>{{ item.date }}</div>
               </div>
@@ -164,32 +165,41 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
   width: 1px;
 }
 
-.timeline-end {
-  border: 10px solid #0d6efd;
-  border-radius: 50%;
-}
-
 .timeline-dot {
   border: 10px solid #0d6efd;
   border-radius: 50%;
   height: 2px
 }
 
-.car-card-leave-active {
+.timeline-card-content-leave-active {
   transition: all 0.5s ease;
   position: absolute;
 }
 
-.car-card-move {
+.timeline-card-content-move {
   transition: all 0.5s ease;
 }
 
-.car-form-enter-active {
-  animation: pop 0.5s;
+.card-content-left::after {
+  content: "";
+  position: absolute;
+  top: 18%;
+  left: 100%;
+  margin-left: -30px;
+  border-width: 32px;
+  border-style: solid;
+  border-color: transparent transparent transparent #0d6efd;
 }
 
-.car-form-leave-active {
-  animation: pop 0.5s reverse;
+.card-content-right::after {
+  content: "";
+  position: absolute;
+  top: 15%;
+  right: 88.5%;
+  margin-left: -30px;
+  border-width: 35px;
+  border-style: solid;
+  border-color: transparent #0d6efd transparent transparent;
 }
 </style>
 
