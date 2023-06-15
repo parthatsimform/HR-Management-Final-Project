@@ -14,7 +14,9 @@ export const useEmployeeStore = defineStore("employee", {
 			onSnapshot(collection(db,'employees'),(querySnapshot: { data: () => object; }[])=>{
 				this.emp_data= []
 				querySnapshot.forEach((doc: { data: () => object; })=>{
-					this.emp_data.push(doc.data())
+					let data = doc.data()
+					data.docId = doc.id
+					this.emp_data.push(data)
 				})
 			})
 		},
@@ -23,6 +25,7 @@ export const useEmployeeStore = defineStore("employee", {
 			const querySnapshot = await getDocs(q);
 			querySnapshot.forEach((doc: { data: () => object; }) => {
 				this.emp_details =  doc.data();
+				this.emp_details.docId = doc.id
 				console.log(this.emp_details)
 			});
 		}

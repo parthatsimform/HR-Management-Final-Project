@@ -42,14 +42,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount } from 'vue'
+import { ref } from 'vue'
 import { useEmployeeStore } from '../stores/employees'
-import { useRoute } from 'vue-router'
 import gsap from 'gsap'
-const route = useRoute()
 const employeeStore = useEmployeeStore();
 
-await employeeStore.getEmpDetails(route.params.id)
 
 function formattedDate(date: string): string {
   const today = new Date(date);
@@ -109,7 +106,7 @@ for (let i = 0; i < duration[0]; i++) {
   setTimeout(() => {
     const eventDate = employeeStore.emp_details.joiningDate
     items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
-  }, (i + 1) * 500)
+  }, (i + 1) * 250)
 }
 
 
