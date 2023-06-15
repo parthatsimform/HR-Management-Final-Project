@@ -4,7 +4,7 @@ export default interface Employee {
 	password: string;
 	cPassword?: string;
 	department:
-		| "Select Department"
+		| "Select Department*"
 		| "frontend"
 		| "backend"
 		| "devops"

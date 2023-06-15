@@ -12,16 +12,16 @@
                         <img src="../assets/avatar_2x.png" class="avatar" alt="" />
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <input name="email" type="email" class="form-control" id="floatingInput"
-                            placeholder="name@example.com" />
-                        <label for="floatingInput">Email address</label>
+                    <div class="mb-3">
+                        <input name="email" type="email" class="form-control" id="email" placeholder="Email*"
+                            v-model="employee.emp.email" @input="validateEmail('email')" />
+                        <p class="vAlert emailErr"></p>
                     </div>
 
-                    <div class="form-floating mb-4">
-                        <input name="password" type="password" class="form-control" id="floatingPassword"
-                            placeholder="Password" />
-                        <label for="floatingPassword">Password</label>
+                    <div class="mb-4">
+                        <input name="password" type="password" class="form-control" id="password" placeholder="Password*"
+                            v-model="employee.emp.password" @input="validatePassword('password')" />
+                        <p class="vAlert passwordErr mb-3"></p>
                     </div>
 
                     <div class="d-flex justify-content-center">
@@ -39,18 +39,54 @@
 import { auth } from '@/firebase';
 import router from '@/router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useEmployeeStore } from "../stores/employees"
 
+const employee = useEmployeeStore()
+
+const validateEmail = (id: string): boolean => {
+    const inputEle = document.querySelector("#" + id) as HTMLFormElement
+    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
+    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(inputEle.value)) {
+        inputEle.style.border = "1px solid #dee2e6"
+        errClass.textContent = ""
+        return true;
+    } else {
+        inputEle.style.border = "1px solid red";
+        errClass.textContent = "Please enter valid email address"
+        return false;
+    }
+}
+
+const validatePassword = (id: string): boolean => {
+    const inputEle = document.querySelector("#" + id) as HTMLFormElement
+    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
+
+    if (inputEle.value === "") {
+        inputEle.style.border = "1px solid red";
+        errClass.textContent = "Please enter password"
+        return false;
+    } else {
+        inputEle.style.border = "1px solid #dee2e6"
+        errClass.textContent = ""
+        return true;
+    }
+}
 
 const userLogin = async (e: Event): Promise<void> => {
-    const target = e.target as HTMLFormElement
-    const email = target.email.value;
-    const password = target.password.value;
+    if (validateEmail('email') && validatePassword('password')) {
+        const target = e.target as HTMLFormElement
+        const email = target.email.value;
+        const password = target.password.value;
 
-    try {
-        const user = await signInWithEmailAndPassword(auth, email, password)
-        router.push("/")
-    } catch (err: any) {
-        alert(err.code);
+        try {
+            const user = await signInWithEmailAndPassword(auth, email, password)
+            router.push("/")
+        } catch (err: any) {
+            alert(err.code);
+        }
+    } else {
+        validatePassword('password')
     }
 }
 </script>
@@ -87,6 +123,16 @@ const userLogin = async (e: Event): Promise<void> => {
 
 .login-form {
     width: 300px;
+}
+
+input {
+    height: 50px;
+}
+
+.vAlert {
+    height: 15px;
+    color: red;
+    margin-bottom: 10px;
 }
 
 @media (max-width: 800px) {
