@@ -1,10 +1,9 @@
 <template>
     <div class="profile">
-
         <div class="profile-wrapper mx-auto">
             <div class="profile-name-image d-flex mt-4 ms-4">
                 <div class="profile-image mx-3 mt-4 d-flex align-items-center justify-content-center">
-                    <h1 class="fs-1 ">JD</h1>
+                    <h1 class="fs-1 ">{{ empInitials(employeeStore.emp_details.fullName) }}</h1>
                 </div>
                 <div class="profile-name pt-4 px-5 mt-4">
                     <h2 class="fs-1">{{ employeeStore.emp_details.fullName }}</h2>
@@ -34,12 +33,15 @@ import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
 import { useRoute } from 'vue-router'
 import { useEmployeeStore } from '../stores/employees'
+import { useInitials } from '../composables/useInitials'
+
 const employeeStore = useEmployeeStore();
 const route = useRoute()
-onBeforeMount(async () => {
-    employeeStore.getEmpDetails(route.params.id)
-})
-const profileTab = shallowRef(About)
+
+await employeeStore.getEmpDetails(route.params.id)
+const { empInitials } = useInitials()
+
+const profileTab = shallowRef(TimeLine)
 const isActive = ref<string>('About')
 
 function changeTab(tabName: string): void {
@@ -50,9 +52,7 @@ function changeTab(tabName: string): void {
 
 <style scoped>
 .profile {
-    display: flex;
-    align-items: center;
-    height: 100vh;
+    margin-top: 100px;
 }
 
 .profile-wrapper {

@@ -15,6 +15,7 @@ export const useUserStore = defineStore("user", {
     actions:{
         async registerUser(newUser:Employee):Promise<void>{
             try {
+                console.log("sad")
                 const { user }: { [key: string]: any } = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
                 if (user) {
                     newUser.uid = user.uid
