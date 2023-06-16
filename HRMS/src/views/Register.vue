@@ -61,9 +61,9 @@
 <script setup lang="ts">
 import type Employee from "@/types/employee";
 import { useEmployeeStore } from "../stores/employees"
-import { app, db, auth } from "../firebase"
+import { app, db, auth } from "../includes/firebase"
 import { collection, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, type UserCredential } from "firebase/auth";
 import router from "@/router";
 
 
@@ -77,13 +77,15 @@ const registerUser = async () => {
         mobile: employee.emp.mobile,
         dob: employee.emp.dob,
         joiningDate: employee.emp.joiningDate,
-        isAdmin: false
+        isAdmin: false,
+        leaveBallance: 10,
+        uid: ''
     }
 
-    let user;
     try {
-        user = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
+        const { user }: { [key: string]: any } = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
         if (user) {
+            newUser.uid = user.uid
             const empRef = await addDoc(collection(db, "employees"), newUser)
             if (empRef) {
                 router.push("/")
