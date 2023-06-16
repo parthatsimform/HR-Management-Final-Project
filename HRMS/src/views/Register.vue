@@ -80,7 +80,6 @@ import { collection, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, type UserCredential } from "firebase/auth";
 import router from "@/router";
 
-
 const employee = useEmployeeStore()
 const registerUser = async () => {
     if (validateForm()) {

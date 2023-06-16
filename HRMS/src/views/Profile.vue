@@ -3,12 +3,12 @@
         <div class="profile-wrapper mx-auto">
             <div class="profile-name-image d-flex mt-4 ms-4">
                 <div class="profile-image mx-3 mt-4 d-flex align-items-center justify-content-center">
-                    <h1 class="fs-1 ">JD</h1>
+                    <h1 class="fs-1 m-0">{{ empInitials(employeeStore.emp_details.fullName) }}</h1>
                 </div>
                 <div class="profile-name pt-4 px-5 mt-4">
-                    <h2 class="fs-1">John Doe</h2>
-                    <h6 class="mt-3 mb-3">FrontEnd</h6>
-                    <p>TRAINEE</p>
+                    <h2 class="fs-1">{{ formattedString(employeeStore.emp_details.fullName) }}</h2>
+                    <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
+                    <p>{{ employeeStore.emp_role }}</p>
                 </div>
             </div>
             <div class="profile-desc d-flex justify-content-center mt-5">
@@ -28,9 +28,19 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef, ref } from 'vue'
+import { shallowRef, ref, onBeforeMount } from 'vue'
 import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
+import { useRoute } from 'vue-router'
+import { useEmployeeStore } from '../stores/employees'
+import { useInitials } from '../composables/useInitials'
+import { useDuration } from '../composables/useDuration'
+const { calculateDuration } = useDuration()
+const employeeStore = useEmployeeStore();
+const route = useRoute()
+
+await employeeStore.getEmpDetails(route.params.id)
+const { empInitials } = useInitials()
 
 const profileTab = shallowRef(About)
 const isActive = ref<string>('About')
@@ -39,13 +49,23 @@ function changeTab(tabName: string): void {
     tabName === 'About' ? profileTab.value = About : profileTab.value = TimeLine
     tabName === 'About' ? isActive.value = "About" : isActive.value = "TimeLine"
 }
+const today = new Date()
+const duration = calculateDuration(employeeStore.emp_details.joiningDate, today)
+if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
+    employeeStore.emp_role = "EMPLOYEE"
+    if (duration[0] > 5) {
+        employeeStore.emp_role = "MANAGER"
+    }
+}
+function formattedString(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 </script>
 
 <style scoped>
 .profile {
-    display: flex;
-    align-items: center;
-    height: 100vh;
+    margin-top: 100px;
 }
 
 .profile-wrapper {
@@ -53,6 +73,7 @@ function changeTab(tabName: string): void {
     width: 700px;
     height: 800px;
     border-radius: 20px;
+    overflow: hidden;
 }
 
 .profile-image {
@@ -60,6 +81,7 @@ function changeTab(tabName: string): void {
     height: 150px;
     border-radius: 50%;
     background-color: #E2E2E2;
+    border: 4px solid #0d6efd
 }
 
 .profile-name {
@@ -111,7 +133,7 @@ function changeTab(tabName: string): void {
 
 .tab-change-leave-to {
     opacity: 0;
-    transform: translatex(-100px);
+    transform: translatex(-80px);
 }
 
 .tab-change-leave-active {
@@ -120,5 +142,61 @@ function changeTab(tabName: string): void {
 
 .isActive {
     background-color: #0b5ed7;
+}
+
+@media screen and (max-width: 768px) {
+    .profile {
+        margin-top: 50px;
+    }
+
+    .profile-wrapper {
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 20px;
+    }
+
+    .profile-name-image {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: #E2E2E2;
+    }
+
+    .profile-name {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 25px !important;
+        padding-top: 0px !important;
+    }
+
+    .profile-name-image {
+        margin-left: 0px !important;
+    }
+
+    .profile-desc {
+        margin-top: 0px !important;
+    }
+
+    .profile-name h6 {
+        margin: 10px !important;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .profile-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #E2E2E2;
+    }
 }
 </style>
