@@ -14,13 +14,13 @@
 
                     <div class="mb-3">
                         <input name="email" type="email" class="form-control" id="email" placeholder="Email*"
-                            v-model="employee.emp.email" @input="validateEmail('email')" />
+                            v-model="employeeStore.emp.email" @input="validateEmail('email')" />
                         <p class="vAlert emailErr"></p>
                     </div>
 
                     <div class="mb-4">
                         <input name="password" type="password" class="form-control" id="password" placeholder="Password*"
-                            v-model="employee.emp.password" @input="validatePassword('password')" />
+                            v-model="employeeStore.emp.password" @input="validatePassword('password')" />
                         <p class="vAlert passwordErr mb-3"></p>
                     </div>
 
@@ -41,7 +41,7 @@ import router from '@/router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useEmployeeStore } from "../stores/employees"
 
-const employee = useEmployeeStore()
+const employeeStore = useEmployeeStore()
 
 const validateEmail = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
@@ -81,9 +81,11 @@ const userLogin = async (e: Event): Promise<void> => {
 
         try {
             const user = await signInWithEmailAndPassword(auth, email, password)
-            console.log(user);
-
-            router.push("/")
+            if (auth.currentUser) {
+                localStorage.setItem("isLoggedIn", true)
+                employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
+                router.push("/")
+            }
         } catch (err: any) {
             alert(err.code);
         }
