@@ -1,43 +1,52 @@
 <template>
   <div class="timeline">
     <div class="timeline-wrapper mx-auto d-flex  flex-column mt-5">
+      <div class="d-flex justify-content-center align-items-center ">
+        <div class="timeline-dot-end timeline-start"></div>
+      </div>
       <div class="timeline-space" v-for="( item, index) in items" :key="item.uid">
 
-        <div class="d-flex flex-row-reverse align-items-center" v-if="index % 2 == 0">
-          <transition-group class="car-card" name="timeline-card-content" tag="div" @before-enter="beforeEnter"
-            @enter="enter" appear>
+        <div class="d-flex flex-row-reverse align-items-center card-wrapper" v-if="index % 2 == 0">
+          <transition-group class="timeline-card-content" name="timeline-card-content" tag="div"
+            @before-enter="beforeEnter" @enter="enter" appear>
             <div class="timeline-card d-flex justify-content-center align-items-center px-4 flex-column text-center"
               :key="`card-${index}`">
-              <div class="card-content card-content-right mx-1">
-                <div>{{ item.message }}</div>
-                <div>{{ item.date }}</div>
+              <div
+                class="card-content card-content-right mx-1 d-flex justify-content-center align-items-center flex-column ">
+                <div class="timeline-message">{{ item.message }}</div>
+                <div class="timeline-date">{{ item.date }}</div>
               </div>
             </div>
           </transition-group>
           <div class="d-flex flex-column justify-content-end">
             <div class="timeline-hr mx-auto"></div>
             <div class="timeline-dot"></div>
-            <div class="timeline-hr mx-auto"></div>
+            <div class="timeline-hr after-hr mx-auto"></div>
           </div>
         </div>
-        <div class="d-flex flex-row align-items-center" v-else>
+        <div class="d-flex flex-row align-items-center card-wrapper" v-else>
           <transition-group class="timeline-card-content" name="timeline-card-content" tag="div"
             @before-enter="beforeEnterLeft" @enter="enterLeft" appear>
             <div class="timeline-card d-flex justify-content-center align-items-center px-4 flex-column text-center"
               :key="`card-${index}`">
-              <div class="card-content card-content-left mx-1">
-                <div>{{ item.message }}</div>
-                <div>{{ item.date }}</div>
+              <div
+                class="card-content card-content-left mx-1  d-flex justify-content-center align-items-center flex-column ">
+                <div class="timeline-message">{{ item.message }}</div>
+                <div class="timeline-date">{{ item.date }}</div>
               </div>
             </div>
           </transition-group>
           <div>
             <div class="timeline-hr mx-auto"></div>
             <div class="timeline-dot"></div>
-            <div class="timeline-hr mx-auto"></div>
+            <div class="timeline-hr after-hr mx-auto"></div>
           </div>
         </div>
       </div>
+      <div class="d-flex justify-content-center align-items-center">
+        <div class="timeline-dot-end "></div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -81,7 +90,7 @@ function calculateMonth(date: string, noOfMoth: number): string {
   return `${year}-${finalMonth}-${day}`
 }
 
-const items = ref([])
+const items = ref([{ message: 'Joined as a Trainee', date: formattedDate(employeeStore.emp_details.joiningDate) }])
 if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
   items.value.push({ message: `Congractulations!! Successfully joined as an Employee`, date: calculateMonth(employeeStore.emp_details.joiningDate, 6) });
 }
@@ -139,6 +148,8 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
   background-color: #0d6efd;
   color: white;
   border-radius: 10px;
+  height: 70px;
+  width: 236px;
 }
 
 .timeline-hr {
@@ -183,5 +194,82 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
   border-style: solid;
   border-color: transparent #0d6efd transparent transparent;
 }
-</style>
 
+.timeline-dot-end {
+  border: 10px solid #0d6efd;
+  border-radius: 50%;
+  height: 2px;
+  width: 2px;
+}
+
+@media screen and (max-width: 641px) {
+  .timeline-start {
+    display: none;
+  }
+
+  .profile-name-image {
+    margin: 0px !important;
+  }
+
+  .card-wrapper {
+    display: flex;
+    flex-direction: column !important;
+  }
+
+  .card-content-left::after {
+    content: "";
+    display: none;
+  }
+
+  .card-content-right::after {
+    content: "";
+    display: none;
+  }
+
+  .timeline-hr {
+    height: 25px;
+  }
+
+  .timeline-dot {
+    display: none;
+  }
+
+  .after-hr::after {
+    content: "";
+    margin-top: 100px;
+    margin-left: -10px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: #0d6efd transparent transparent transparent;
+  }
+
+  .timeline-dot-end {
+    border: 10px solid #0d6efd;
+    border-radius: 50%;
+    height: 2px;
+    width: 2px;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .timeline-card {
+    width: 230px;
+    height: 100px;
+    border-radius: 10px;
+    background-color: #E2E2E2;
+  }
+
+  .card-content {
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 10px;
+    height: 70px;
+    width: 186px;
+  }
+
+  .timeline-message,
+  .timeline-date {
+    font-size: 12.5px;
+  }
+}
+</style>

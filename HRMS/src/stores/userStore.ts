@@ -9,7 +9,8 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 export const useUserStore = defineStore("user", {
 	state: () => ({
 		isLoggedIn: false,
-        userId: null
+        userId: null,
+        items:[]
 	}),
     actions:{
         async registerUser(newUser:Employee):Promise<void>{

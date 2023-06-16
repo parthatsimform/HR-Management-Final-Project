@@ -12,26 +12,16 @@ export const useEmployeeStore = defineStore("employee", {
 		isLoggedIn: false,
         userId: null,
 		emp_data : [],
-		emp_details:{},
-		emp_role: "TRAINEE"
+		emp_details:{}
 	}),
 	actions:{
-		async getEmpData():Promise<void>{
-			onSnapshot(collection(db,'employees'),(querySnapshot: { data: () => object; }[])=>{
-				this.emp_data= []
-				querySnapshot.forEach((doc: { data: () => object; })=>{
-					let data = doc.data()
-					data.docId = doc.id
-					this.emp_data.push(data)
-				})
-			})
-		},
-		async getEmpDetails(id:string):Promise<void>{
+			async getEmpDetails(id:string):Promise<void>{
 			const q = query(collection(db, "employees"), where("uid", "==", id));
 			const querySnapshot = await getDocs(q);
 			querySnapshot.forEach((doc: { data: () => object; }) => {
 				this.emp_details =  doc.data();
 				this.emp_details.docId = doc.id
+				this.emp_role = "TRAINEE"
 			});
 		},
 		async registerUser(newUser:Employee):Promise<void>{

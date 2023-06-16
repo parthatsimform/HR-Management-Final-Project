@@ -7,11 +7,11 @@
                         <div class="common-header d-flex justify-content-center align-items-center fs-5 ">
                             FrontEnd
                         </div>
-                        <div class="common-department-content" @drop="onDrop($event, 'frontend')" @dragenter.prevent
+                        <div class="common-department-content" @drop="onDrop($event, 'FrontEnd')" @dragenter.prevent
                             @dragover.prevent>
-                            <div class="users-list" v-for="employee in employeeStore.emp_data">
+                            <div class="users-list" v-for="employee in emp_data">
                                 <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
-                                    v-if="employee.department === 'frontend'" @dragstart="startDrag($event, employee)">
+                                    v-if="employee.department === 'FrontEnd'" @dragstart="startDrag($event, employee)">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
                                         {{ empInitials(employee.fullName) }}</div>
@@ -25,11 +25,11 @@
                         <div class="common-header d-flex justify-content-center align-items-center fs-5 ">
                             BackEnd
                         </div>
-                        <div class="common-department-content" @drop="onDrop($event, 'backend')" @dragenter.prevent
+                        <div class="common-department-content" @drop="onDrop($event, 'BackEnd')" @dragenter.prevent
                             @dragover.prevent>
-                            <div class="users-list" v-for="employee in employeeStore.emp_data">
+                            <div class="users-list" v-for="employee in emp_data">
                                 <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
-                                    v-if="employee.department === 'backend'" @dragstart="startDrag($event, employee)">
+                                    v-if="employee.department === 'BackEnd'" @dragstart="startDrag($event, employee)">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
                                         {{ empInitials(employee.fullName) }}</div>
@@ -43,11 +43,11 @@
                         <div class="common-header d-flex justify-content-center align-items-center fs-5 ">
                             UI/UX
                         </div>
-                        <div class="common-department-content" @drop="onDrop($event, 'uiux')" @dragenter.prevent
+                        <div class="common-department-content" @drop="onDrop($event, 'Ui/Ux')" @dragenter.prevent
                             @dragover.prevent>
-                            <div class="users-list" v-for="employee in employeeStore.emp_data">
+                            <div class="users-list" v-for="employee in emp_data">
                                 <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
-                                    v-if="employee.department === 'uiux'" @dragstart="startDrag($event, employee)">
+                                    v-if="employee.department === 'Ui/Ux'" @dragstart="startDrag($event, employee)">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
                                         {{ empInitials(employee.fullName) }}</div>
@@ -61,11 +61,11 @@
                         <div class="common-header d-flex justify-content-center align-items-center fs-5 ">
                             Devops
                         </div>
-                        <div class="common-department-content" @drop="onDrop($event, 'devops')" @dragenter.prevent
+                        <div class="common-department-content" @drop="onDrop($event, 'DevOps')" @dragenter.prevent
                             @dragover.prevent>
-                            <div class="users-list" v-for="employee in employeeStore.emp_data">
+                            <div class="users-list" v-for="employee in emp_data">
                                 <div class="user-card mx-4 mt-3 mb-3 d-flex flex-column align-items-center" draggable="true"
-                                    v-if="employee.department === 'devops'" @dragstart="startDrag($event, employee)">
+                                    v-if="employee.department === 'DevOps'" @dragstart="startDrag($event, employee)">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
                                         {{ empInitials(employee.fullName) }}</div>
@@ -82,9 +82,24 @@
 </template>
 
 <script setup lang="ts">
-import { useEmployeeStore } from '../stores/employees'
-const employeeStore = useEmployeeStore();
-await employeeStore.getEmpData();
+import { onBeforeMount, ref } from 'vue'
+import { collection, onSnapshot } from "firebase/firestore";
+
+onBeforeMount(() => {
+    getEmpData()
+})
+
+const emp_data = ref([])
+async function getEmpData(): Promise<void> {
+    onSnapshot(collection(db, 'employees'), (querySnapshot: { data: () => object; }[]) => {
+        emp_data.value = []
+        querySnapshot.forEach((doc: { data: () => object; }) => {
+            let data = doc.data()
+            data.docId = doc.id
+            emp_data.value.push(data)
+        })
+    })
+}
 import { useInitials } from '../composables/useInitials'
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from '../includes/firebase'
@@ -97,7 +112,7 @@ const startDrag = (event, item) => {
 }
 const onDrop = async (event, department) => {
     const itemID = event.dataTransfer.getData('itemID')
-    const item = employeeStore.emp_data.filter(item => item.uid == itemID)
+    const item = emp_data.value.filter(item => item.uid == itemID)
     const docId = item[0].docId
     const washingtonRef = doc(db, "employees", docId);
     await updateDoc(washingtonRef, {
@@ -108,7 +123,7 @@ const onDrop = async (event, department) => {
 
 <style scoped>
 .department {
-    margin-top: 140px;
+    margin-top: 100px;
 }
 
 .common-header {
@@ -116,12 +131,15 @@ const onDrop = async (event, department) => {
     background-color: #0d6efd;
     color: white;
     font-weight: bold;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .common-department-content {
     height: 600px;
     background-color: #e2e2e2;
     overflow-y: scroll;
+    box-shadow: 5px 10px 18px rgb(136, 136, 136, 0.5);
 }
 
 .user-card {

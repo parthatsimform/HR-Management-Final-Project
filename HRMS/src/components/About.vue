@@ -61,4 +61,10 @@ col-8 {
 .container {
   max-width: 550px;
 }
+
+@media screen and (max-width: 400px) {
+  .about-personal-info h3 {
+    margin-top: 0px
+  }
+}
 </style>

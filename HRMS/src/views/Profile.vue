@@ -8,7 +8,7 @@
                 <div class="profile-name pt-4 px-5 mt-4">
                     <h2 class="fs-1">{{ formattedString(employeeStore.emp_details.fullName) }}</h2>
                     <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
-                    <p>{{ employeeStore.emp_role }}</p>
+                    <p>{{ employeeStore.emp_details.emp_role }}</p>
                 </div>
             </div>
             <div class="profile-desc d-flex justify-content-center mt-5">
@@ -35,6 +35,7 @@ import { useRoute } from 'vue-router'
 import { useEmployeeStore } from '../stores/employees'
 import { useInitials } from '../composables/useInitials'
 import { useDuration } from '../composables/useDuration'
+
 const { calculateDuration } = useDuration()
 const employeeStore = useEmployeeStore();
 const route = useRoute()
@@ -49,16 +50,17 @@ function changeTab(tabName: string): void {
     tabName === 'About' ? profileTab.value = About : profileTab.value = TimeLine
     tabName === 'About' ? isActive.value = "About" : isActive.value = "TimeLine"
 }
-const today = new Date()
-const duration = calculateDuration(employeeStore.emp_details.joiningDate, today)
+const today: Date = new Date()
+
+const duration: number[] = calculateDuration(employeeStore.emp_details.joiningDate, today.toString())
 if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
-    employeeStore.emp_role = "EMPLOYEE"
+    employeeStore.emp_details.emp_role = "EMPLOYEE"
     if (duration[0] > 5) {
-        employeeStore.emp_role = "MANAGER"
+        employeeStore.emp_details.emp_role = "MANAGER"
     }
 }
-function formattedString(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+function formattedString(inputString: string): string {
+    return inputString.charAt(0).toUpperCase() + inputString.slice(1);
 }
 
 </script>
@@ -74,6 +76,7 @@ function formattedString(string) {
     height: 800px;
     border-radius: 20px;
     overflow: hidden;
+    background-color: white;
 }
 
 .profile-image {
@@ -176,6 +179,10 @@ function formattedString(string) {
         align-items: center;
         margin-top: 25px !important;
         padding-top: 0px !important;
+    }
+
+    .profile-name h2 {
+        text-align: center;
     }
 
     .profile-name-image {
