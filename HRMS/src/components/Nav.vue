@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg fixed-top border-bottom" v-if="auth.currentUser">
+    <nav class="navbar navbar-expand-lg fixed-top border-bottom">
         <div class="container-fluid h-100">
             <router-link class="navbar-brand fw-bolder" :to='{ name: "Home" }'
                 exact-active-class="no-active">HRMS</router-link>
@@ -7,7 +7,7 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" v-if="employeeStore.isLoggedIn">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 h-100">
                     <li class="nav-item h-100 d-flex align-items-center">
                         <router-link class="nav-link" :to='{ name: "Home" }'>Home</router-link>
@@ -31,8 +31,8 @@
                 <div class="profile-container">
                     <div class="dropdown">
                         <div class="dropdown-toggle profile d-flex align-items-center justify-content-center rounded-circle p-2"
-                            id="navbarDropdown" role="button" aria-expanded="false" v-if="userData.name">
-                            {{ empInitials(userData.name) }}
+                            id="navbarDropdown" role="button" aria-expanded="false">
+                            {{ empInitials(auth.currentUser?.displayName) }}
                         </div>
                         <ul class="dropdown-menu position-absolute p-0" aria-labelledby="navbarDropdown">
                             <li class="d-flex">
@@ -42,7 +42,7 @@
                             <li>
                                 <hr class="dropdown-divider p-0 m-0">
                             </li>
-                            <li class="d-flex"><a class="logout-btn link-danger p-2">LogOut</a></li>
+                            <li class="d-flex" @click="logout"><a class="logout-btn link-danger p-2">LogOut</a></li>
                         </ul>
                     </div>
                 </div>
@@ -52,29 +52,19 @@
 </template>
 
 <script lang="ts" setup>
-import { useInitials } from '../composables/useInitials'
-const { empInitials } = useInitials()
-import { ref, onMounted } from 'vue';
-import { auth, db } from '@/includes/firebase';
-import { collection, onSnapshot, query, where } from "firebase/firestore";
-let userData = ref<{ [key: string]: string }>({})
+import { useFormatName } from '../composables/useFormatName'
+const { empInitials } = useFormatName()
+import { auth } from '@/includes/firebase';
+import router from '@/router';
+import { useEmployeeStore } from '@/stores/employees';
+const employeeStore = useEmployeeStore()
 
-onMounted(async () => {
-    const q = query(collection(db, "employees"), where("uid", "==", auth.currentUser!.uid));
-    onSnapshot(q, (querySnapshot) => {
-        const fbUser: { [key: string]: string }[] = []
-        querySnapshot.forEach((doc: { [x: string]: any }) => {
-            const docObj = doc.data()
-            const user = {
-                email: <string>docObj.email,
-                name: <string>docObj.fullName,
-                id: <string>doc.id
-            }
-            fbUser.push(user)
-        });
-        userData.value = fbUser[0]
-    })
-})
+const logout = async () => {
+    await auth.signOut()
+    localStorage.removeItem("isLoggedIn")
+    employeeStore.isLoggedIn = false
+    router.push("/login")
+}
 </script>
 
 <style scoped>
@@ -176,11 +166,13 @@ onMounted(async () => {
         margin: 0 !important;
         border-radius: 0;
     }
-    .nav-item:hover a{
+
+    .nav-item:hover a {
         background-color: transparent !important;
     }
+
     .active-nav-link {
-    background-color: transparent !important;
-}
+        background-color: transparent !important;
+    }
 }
 </style>

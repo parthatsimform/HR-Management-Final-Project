@@ -33,14 +33,14 @@ import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
 import { useRoute } from 'vue-router'
 import { useEmployeeStore } from '../stores/employees'
-import { useInitials } from '../composables/useInitials'
+import { useFormatName } from '../composables/useFormatName'
 import { useDuration } from '../composables/useDuration'
 const { calculateDuration } = useDuration()
 const employeeStore = useEmployeeStore();
 const route = useRoute()
 
 await employeeStore.getEmpDetails(route.params.id)
-const { empInitials } = useInitials()
+const { empInitials } = useFormatName()
 
 const profileTab = shallowRef(About)
 const isActive = ref<string>('About')

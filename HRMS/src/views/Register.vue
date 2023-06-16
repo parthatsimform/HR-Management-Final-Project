@@ -9,17 +9,17 @@
                     <h1 Register class="text-center fw-bold">Register</h1>
                     <div class="mb-3">
                         <input type="text" id="name" class="form-control" placeholder="Full name*"
-                            v-model="employee.emp.fullName" @input="validateName('name')">
+                            v-model="employeeStore.emp.fullName" @input="validateName('name')">
                         <p class="vAlert nameErr"></p>
                     </div>
                     <div class="mb-3">
                         <input type="email" id="email" class="form-control" placeholder="Email*"
-                            v-model="employee.emp.email" @input="validateEmail('email')">
+                            v-model="employeeStore.emp.email" @input="validateEmail('email')">
                         <p class="vAlert emailErr"></p>
                     </div>
                     <div class="input-group">
                         <input type="password" id="password" class="form-control" placeholder="Password*"
-                            v-model="employee.emp.password" @input="validatePassword('password')">
+                            v-model="employeeStore.emp.password" @input="validatePassword('password')">
                         <span class="passwordTipIcon" id="basic-addon1">
                             ?
                             <span class="passwordTip">
@@ -32,11 +32,11 @@
                     <p class="vAlert passwordErr mb-3"></p>
                     <div class="mb-3">
                         <input type="password" id="cPassword" class="form-control" placeholder="Confirm Password*"
-                            v-model="employee.emp.cPassword" @input="validateCPassword('cPassword')">
+                            v-model="employeeStore.emp.cPassword" @input="validateCPassword('cPassword')">
                         <p class="vAlert cPasswordErr"></p>
                     </div>
                     <div class="mb-3">
-                        <select class="form-select" id="dept" aria-label="Department" v-model="employee.emp.department"
+                        <select class="form-select" id="dept" aria-label="Department" v-model="employeeStore.emp.department"
                             @change="validateDept('dept')">
                             <option disabled>Select Department*</option>
                             <option value="FrontEnd">FrontEnd</option>
@@ -48,18 +48,18 @@
                     </div>
                     <div class="mb-3">
                         <input type="tel" id="mobile" class="form-control" placeholder="Mobile Number*"
-                            v-model="employee.emp.mobile" @input="validateMobile('mobile')">
+                            v-model="employeeStore.emp.mobile" @input="validateMobile('mobile')">
                         <p class="vAlert mobileErr"></p>
                     </div>
                     <div class="mb-3">
                         <label for="dob" class="form-label">Date of Birth*</label>
-                        <input type="date" class="form-control" id="dob" v-model="employee.emp.dob"
+                        <input type="date" class="form-control" id="dob" v-model="employeeStore.emp.dob"
                             @input="validateDOB('dob')">
                         <p class="vAlert dobErr"></p>
                     </div>
                     <div class="mb-3">
                         <label for="dob" class="form-label">Joining Date*</label>
-                        <input type="date" id="joinDate" class="form-control" v-model="employee.emp.joiningDate"
+                        <input type="date" id="joinDate" class="form-control" v-model="employeeStore.emp.joiningDate"
                             min="1950-01-01" max="2023-06-30" @input="validateJoinDate('joinDate')">
                         <p class="vAlert joinDateErr"></p>
                     </div>
@@ -75,22 +75,22 @@
 <script setup lang="ts">
 import type Employee from "@/types/employee";
 import { useEmployeeStore } from "../stores/employees"
-import { app, db, auth } from "../includes/firebase"
+import { db, auth } from "../includes/firebase"
 import { collection, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword, type UserCredential } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import router from "@/router";
 
-const employee = useEmployeeStore()
+const employeeStore = useEmployeeStore()
 const registerUser = async () => {
     if (validateForm()) {
         const newUser: Employee = {
-            fullName: employee.emp.fullName,
-            email: employee.emp.email,
-            password: employee.emp.password,
-            department: employee.emp.department,
-            mobile: employee.emp.mobile,
-            dob: employee.emp.dob,
-            joiningDate: employee.emp.joiningDate,
+            fullName: employeeStore.emp.fullName,
+            email: employeeStore.emp.email,
+            password: employeeStore.emp.password,
+            department: employeeStore.emp.department,
+            mobile: employeeStore.emp.mobile,
+            dob: employeeStore.emp.dob,
+            joiningDate: employeeStore.emp.joiningDate,
             isAdmin: false,
             leaveBallance: 10,
             uid: ''
@@ -103,6 +103,9 @@ const registerUser = async () => {
                 newUser.uid = user.uid
                 const empRef = await addDoc(collection(db, "employees"), newUser)
                 if (empRef) {
+                    await updateProfile(user, { displayName: newUser.fullName })
+                    localStorage.setItem("isLoggedIn", true)
+                    employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
                     router.push("/")
                 } else {
                     alert("Error creating user!!")
@@ -189,7 +192,7 @@ const validatePassword = (id: string): boolean => {
 const validateCPassword = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
     const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
-    if (inputEle.value === employee.emp.password) {
+    if (inputEle.value === employeeStore.emp.password) {
         inputEle.style.border = "1px solid #dee2e6"
         errClass.textContent = ""
         return true;
@@ -267,7 +270,7 @@ const validateJoinDate = (id: string): boolean => {
         inputEle.style.border = "1px solid red";
         errClass.textContent = "Please select valid date having year >=1900"
         return false;
-    } else if (inputEle.value <= employee.emp.dob) {
+    } else if (inputEle.value <= employeeStore.emp.dob) {
         inputEle.style.border = "1px solid red";
         errClass.textContent = "Joining date can't be less than DOB"
         return false;

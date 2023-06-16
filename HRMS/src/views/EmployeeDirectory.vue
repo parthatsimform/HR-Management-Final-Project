@@ -14,7 +14,8 @@
                                     v-if="employee.department === 'frontend'" @dragstart="startDrag($event, employee)">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
-                                        {{ empInitials(employee.fullName) }}</div>
+                                        {{ empInitials(employee.fullName) }}
+                                    </div>
                                     <div class="emp-name">{{ employee.fullName }}</div>
                                     <p class="emp-dept">FrontEnd</p>
                                 </div>
@@ -32,7 +33,8 @@
                                     v-if="employee.department === 'backend'" @dragstart="startDrag($event, employee)">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
-                                        {{ empInitials(employee.fullName) }}</div>
+                                        {{ empInitials(employee.fullName) }}
+                                    </div>
                                     <div class="emp-name">{{ employee.fullName }}</div>
                                     <p class="emp-dept">Backend</p>
                                 </div>
@@ -50,7 +52,8 @@
                                     v-if="employee.department === 'uiux'" @dragstart="startDrag($event, employee)">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
-                                        {{ empInitials(employee.fullName) }}</div>
+                                        {{ empInitials(employee.fullName) }}
+                                    </div>
                                     <div class="emp-name">{{ employee.fullName }}</div>
                                     <p class="emp-dept">UI/UX</p>
                                 </div>
@@ -68,7 +71,8 @@
                                     v-if="employee.department === 'devops'" @dragstart="startDrag($event, employee)">
                                     <div
                                         class="profile-image emp-initials mt-2 d-flex align-items-center justify-content-center">
-                                        {{ empInitials(employee.fullName) }}</div>
+                                        {{ empInitials(employee.fullName) }}
+                                    </div>
                                     <div class="emp-name">{{ employee.fullName }}</div>
                                     <p class="emp-dept">DevOps</p>
                                 </div>
@@ -85,10 +89,10 @@
 import { useEmployeeStore } from '../stores/employees'
 const employeeStore = useEmployeeStore();
 await employeeStore.getEmpData();
-import { useInitials } from '../composables/useInitials'
+import { useFormatName } from '../composables/useFormatName'
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from '../includes/firebase'
-const { empInitials } = useInitials()
+const { empInitials } = useFormatName()
 
 const startDrag = (event, item) => {
     event.dataTransfer.dropEffect = 'move'
