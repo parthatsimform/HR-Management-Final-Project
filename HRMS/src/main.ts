@@ -14,11 +14,11 @@ import { auth } from "./includes/firebase";
 
 let app: any;
 auth.onAuthStateChanged(() => {
-  if (!app) {
-    const app = createApp(App);
-    app.use(createPinia());
-    app.use(router);
-    app.component("Nav", Nav);
-    app.mount("#app");
-  }
+	if (!app) {
+		app = createApp(App);
+		app.use(createPinia());
+		app.use(router);
+		app.component("Nav", Nav);
+		app.mount("#app");
+	}
 });

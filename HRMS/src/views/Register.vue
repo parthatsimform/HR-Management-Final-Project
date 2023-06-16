@@ -39,10 +39,10 @@
                         <select class="form-select" id="dept" aria-label="Department" v-model="employee.emp.department"
                             @change="validateDept('dept')">
                             <option disabled>Select Department*</option>
-                            <option value="frontend">FrontEnd</option>
-                            <option value="backend">BackEnd</option>
-                            <option value="devops">DevOps</option>
-                            <option value="uiux">UI/UX</option>
+                            <option value="FrontEnd">FrontEnd</option>
+                            <option value="BackEnd">BackEnd</option>
+                            <option value="DevOps">DevOps</option>
+                            <option value="Ui/Ux">Ui/Ux</option>
                         </select>
                         <p class="vAlert deptErr"></p>
                     </div>
@@ -105,11 +105,13 @@ const registerUser = async () => {
                 if (empRef) {
                     router.push("/")
                 } else {
-                    alert("Error creating user")
+                    alert("Error creating user!!")
                 }
+            } else {
+                alert('Error registering user!!');
             }
         } catch (err) {
-            console.log(err);
+            alert(err);
         }
     } else {
         validateName('name')

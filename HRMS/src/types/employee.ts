@@ -5,14 +5,14 @@ export default interface Employee {
 	cPassword?: string;
 	department:
 		| "Select Department*"
-		| "frontend"
-		| "backend"
-		| "devops"
-		| "uiux";
+		| "FrontEnd"
+		| "BackEnd"
+		| "DevOps"
+		| "Ui/Ux";
 	mobile: number;
 	dob: Date;
 	joiningDate: Date;
 	isAdmin?: false;
-	leaveBallance : number;
-	uid : string;
+	leaveBallance: number;
+	uid: string;
 }
