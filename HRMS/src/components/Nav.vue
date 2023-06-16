@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg fixed-top border-bottom">
+    <nav class="navbar navbar-expand-lg fixed-top border-bottom" v-if="auth.currentUser">
         <div class="container-fluid h-100">
             <router-link class="navbar-brand fw-bolder" :to='{ name: "Home" }'
                 exact-active-class="no-active">HRMS</router-link>
@@ -18,7 +18,7 @@
                     <li class="nav-item h-100 d-flex align-items-center">
                         <router-link class="nav-link" :to='{ name: "ApplyLeave" }'>Leave</router-link>
                     </li>
-                    <div class="hidden-links d-none" v-if="employeeStore.isLoggedIn">
+                    <div class="hidden-links d-none">
                         <li class="nav-item h-100 d-flex align-items-center">
                             <router-link class="nav-link"
                                 :to="{ name: 'Profile', params: { id: 123 } }">Profile</router-link>
@@ -28,16 +28,16 @@
                         </li>
                     </div>
                 </ul>
-                <div class="profile-container" v-if="employeeStore.isLoggedIn">
+                <div class="profile-container">
                     <div class="dropdown">
                         <div class="dropdown-toggle profile d-flex align-items-center justify-content-center rounded-circle p-2"
-                            id="navbarDropdown" role="button" aria-expanded="false">
-                            {{ empInitials(employeeStore.emp_details.fullName ? employeeStore.emp_details.fullName : '') }}
+                            id="navbarDropdown" role="button" aria-expanded="false" v-if="userData.name">
+                            {{ empInitials(userData.name) }}
                         </div>
                         <ul class="dropdown-menu position-absolute p-0" aria-labelledby="navbarDropdown">
                             <li class="d-flex">
                                 <router-link class="profile-item p-2"
-                                    :to="{ name: 'Profile', params: { id: employeeStore.userId } }">Profile</router-link>
+                                    :to="{ name: 'Profile', params: { id: auth.currentUser.uid } }">Profile</router-link>
                             </li>
                             <li>
                                 <hr class="dropdown-divider p-0 m-0">
@@ -52,10 +52,29 @@
 </template>
 
 <script lang="ts" setup>
-import { useEmployeeStore } from '../stores/employees'
-const employeeStore = useEmployeeStore();
 import { useInitials } from '../composables/useInitials'
 const { empInitials } = useInitials()
+import { ref, onMounted } from 'vue';
+import { auth, db } from '@/includes/firebase';
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+let userData = ref<{ [key: string]: string }>({})
+
+onMounted(async () => {
+    const q = query(collection(db, "employees"), where("uid", "==", auth.currentUser!.uid));
+    onSnapshot(q, (querySnapshot) => {
+        const fbUser: { [key: string]: string }[] = []
+        querySnapshot.forEach((doc: { [x: string]: any }) => {
+            const docObj = doc.data()
+            const user = {
+                email: <string>docObj.email,
+                name: <string>docObj.fullName,
+                id: <string>doc.id
+            }
+            fbUser.push(user)
+        });
+        userData.value = fbUser[0]
+    })
+})
 </script>
 
 <style scoped>
