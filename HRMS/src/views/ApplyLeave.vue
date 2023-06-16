@@ -6,7 +6,7 @@
                     <form class="leave-form" @submit.prevent="applyLeave">
                         <h1 class="text-center fw-bold mb-5">Apply for Leave</h1>
                         <div class="form-fields">
-                            <select id="leaveType" v-model="store.leave.type" @change="handleLeaveType">
+                            <select id="leaveType" v-model="store.leave.type" @input="handleLeaveType">
                                 <option disabled>Leave Type</option>
                                 <option value="planned">Planned</option>
                                 <option value="unPlanned">Un-Planned</option>
@@ -27,7 +27,7 @@
                             <div class="form-fields dates d-flex flex-column">
                                 <label for="endDate">Leave To:</label>
                                 <input type="date" id="endDate" :disabled="store.leave.type === 'Leave Type' ? true : false"
-                                    v-model="store.leave.endDate" @change="handleDateChange"
+                                    v-model="store.leave.endDate" @input="handleDateChange"
                                     :min="store.leave.startDate ? store.leave.startDate : today" />
                                 <p class="vAlert endDateErr" id='endDateErr'></p>
                             </div>
@@ -220,51 +220,50 @@ const getDateDifference = (date1, date2) => {
 }
 
 const store = useLeaveStore()
-const applyLeave = async (): Promise<void> => {
-    if (validateForm() && checkReasonLength() && isValidEmail() && auth.currentUser) {
+const applyLeave = async (e: Event): Promise<void> => {
+    e.preventDefault();
+    const userDocRef = doc(db, "employees", userDoc.value);
+    const userDocSnap = await getDoc(userDocRef);
+    const user = userDocSnap.data();
+    const totalLeave = user?.leaveBallance ?? 0;
+    if (
+        validateForm() &&
+        checkReasonLength() &&
+        isValidEmail() &&
+        auth.currentUser &&
+        totalLeave > 0 &&
+        getDateDifference(store.leave.startDate, store.leave.endDate) <= totalLeave
+    ) {
         const leave: Leave = {
-            fromEmail: auth.currentUser.email ? auth.currentUser.email : '',
+            fromEmail: auth.currentUser.email ?? "",
             toEmail: store.leave.toEmail,
             type: store.leave.type,
             startDate: store.leave.startDate,
             endDate: store.leave.endDate,
             reason: store.leave.reason,
-            uid: auth.currentUser.uid ? auth.currentUser.uid : '',
-            status: 'Pending',
-        }
-
+            uid: auth.currentUser.uid ?? "",
+            status: "Pending",
+        };
         try {
-            const res = await addDoc(collection(db, "leaves"), leave)
+            await updateDoc(userDocRef, {
+                leaveBallance: totalLeave - getDateDifference(store.leave.startDate, store.leave.endDate),
+            });
+            const res = await addDoc(collection(db, "leaves"), leave);
             if (res) {
-                const userRef = doc(db, 'employees', userDoc.value)
-                const userSnap = await getDoc(userRef)
-                const user = userSnap.data()
-                if (user) {
-                    const totalLeave = user.leaveBallance
-                    const requestedLeave = getDateDifference(store.leave.startDate, store.leave.endDate)
-                    if (totalLeave !== 0 && totalLeave - requestedLeave > -1) {
-                        const updatedLeaveCount = totalLeave - requestedLeave
-                        await updateDoc(userRef, {
-                            leaveBallance: updatedLeaveCount
-                        })
-                        alert("Leave applied successfully")
-                        store.$reset()
-                    } else {
-                        alert('Leave ballance not sufficient!!')
-                    }
-                } else {
-                    alert('Error finding user!!')
-                    store.$reset()
-                }
+                alert("Leave applied successfully");
+                store.$reset();
             } else {
-                alert("Error while applying !!!")
-                store.$reset()
+                alert("Error while applying !!!");
+                store.$reset();
             }
         } catch (err) {
             console.log(err);
         }
+    } else if (totalLeave === 0) {
+        alert("Insufficient Leave Ballance!!");
+        store.$reset();
     }
-}
+};
 
 const handleLeaveDisplay = async (id: string): Promise<void> => {
     const docRef = doc(db, "leaves", id);
