@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { auth } from '@/firebase';
+import { auth } from '@/includes/firebase';
 import router from '@/router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useEmployeeStore } from "../stores/employees"

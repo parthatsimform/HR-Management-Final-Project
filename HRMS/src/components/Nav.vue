@@ -134,6 +134,14 @@
     }
     .nav-item{
         border-bottom: 1px solid #e2e2e2;
+        margin: 0 !important;
+        border-radius: 0;
     }
+    .nav-item:hover a{
+        background-color: transparent !important;
+    }
+    .active-nav-link {
+    background-color: transparent !important;
+}
 }
 </style>
