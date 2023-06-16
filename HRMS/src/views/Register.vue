@@ -79,6 +79,7 @@ import { db, auth } from "../includes/firebase"
 import { collection, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import router from "@/router";
+import { onBeforeUnmount } from "vue";
 
 const employeeStore = useEmployeeStore()
 const registerUser = async () => {
@@ -280,6 +281,9 @@ const validateJoinDate = (id: string): boolean => {
         return true;
     }
 }
+onBeforeUnmount(() => {
+    employeeStore.emp = { department: "Select Department*" } as Employee
+})
 </script>
 
 <style scoped>

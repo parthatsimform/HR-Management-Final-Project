@@ -40,6 +40,8 @@ import { auth } from '@/includes/firebase';
 import router from '@/router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useEmployeeStore } from "../stores/employees"
+import { onBeforeUnmount } from 'vue';
+import type Employee from '@/types/employee';
 
 const employeeStore = useEmployeeStore()
 
@@ -93,6 +95,11 @@ const userLogin = async (e: Event): Promise<void> => {
         validatePassword('password')
     }
 }
+
+onBeforeUnmount(() => {
+    employeeStore.emp = { department: "Select Department*" } as Employee
+})
+
 </script>
 
 <style scoped>

@@ -19,7 +19,7 @@
                                 <input type="date" id="startDate"
                                     :disabled="store.leave.type === 'Leave Type' ? true : false"
                                     v-model="store.leave.startDate" :min="today" :max="store.leave.endDate"
-                                    @input="handleDateChange" />
+                                    @input="removeAlert($event.target)" />
                                 <p class="vAlert startDateErr" :class="{ 'txt-black': store.leave.type === 'Leave Type' }">
                                     {{ handleNoticeTxt() }}
                                 </p>
@@ -27,7 +27,7 @@
                             <div class="form-fields dates d-flex flex-column">
                                 <label for="endDate">Leave To:</label>
                                 <input type="date" id="endDate" :disabled="store.leave.type === 'Leave Type' ? true : false"
-                                    v-model="store.leave.endDate" @input="handleDateChange"
+                                    v-model="store.leave.endDate" @input="removeAlert($event.target)"
                                     :min="store.leave.startDate ? store.leave.startDate : today" />
                                 <p class="vAlert endDateErr" id='endDateErr'></p>
                             </div>
@@ -122,7 +122,7 @@ import type Employee from "@/types/employee";
 import { useLeaveStore } from '../stores/leaveStore'
 import { auth, db } from '@/includes/firebase';
 import { collection, addDoc, getDocs, getDoc, doc, updateDoc, onSnapshot, query, where, type DocumentData } from "firebase/firestore";
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
 import { useToggleFormAlert } from '../composables/useToggleFormAlert.js'
 import { useValidateIP } from '../composables/useValidateIP'
 
@@ -275,31 +275,29 @@ const handleLeaveDisplay = async (id: string): Promise<void> => {
 }
 
 const handleNoticeTxt = () => {
+    const endDateEl = document.getElementById("endDateErr") as HTMLElement
     if (store.leave.type === 'Leave Type') {
         return "Please select Leave type first**"
-    } else if (endDateErr.textContent === '') {
-        return ''
     }
-}
-
-const handleDateChange = (e: Event) => {
-    removeAlert(e.target)
+    return
 }
 
 const handleLeaveType = () => {
     const leaveSelect = document.getElementById('leaveType') as HTMLElement
+    const startDateEl = document.getElementById("startDate") as HTMLInputElement
+    const endDateEl = document.getElementById("endDate") as HTMLInputElement
     removeAlert(leaveSelect)
     if (store.leave.type === 'planned') {
         store.leave.startDate = getDayAfterTomorrowDate()
-        startDate.min = store.leave.startDate
+        startDateEl.min = store.leave.startDate
         store.leave.endDate = ''
     }
     if (store.leave.type === 'unPlanned') {
         store.leave.startDate = today
-        startDate.min = today
+        startDateEl.min = today
         store.leave.endDate = getDayAfterTomorrowDate()
-        endDate.min = today
-        endDate.max = store.leave.endDate
+        endDateEl.min = today
+        endDateEl.max = store.leave.endDate
     }
 }
 function getDayAfterTomorrowDate() {
@@ -333,18 +331,23 @@ function getDayAfterTomorrowDate() {
     return formattedDate;
 }
 const checkReasonLength = () => {
-    const len = reason.value.length;
+    const reasonEl = document.getElementById("reason") as HTMLInputElement
+    const len = reasonEl.value.length;
     let message = "";
     let isValid = true;
-    if (reason.value.trim() === '') {
+    if (reasonEl.value.trim() === '') {
         message = " reason is required*";
         isValid = false;
     } else if (len < 10) {
         message = ` must be at least 10 characters, you are only using ${len} characters*`;
         isValid = false;
     }
-    return isValid ? removeAlert(reason) : displayAlert(reason, message);
+    return isValid ? removeAlert(reasonEl) : displayAlert(reasonEl, message);
 }
+
+onBeforeUnmount(() => {
+    store.leave = { type: "Leave Type" } as Leave
+})
 
 </script>
 

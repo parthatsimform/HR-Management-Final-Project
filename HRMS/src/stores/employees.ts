@@ -1,12 +1,6 @@
 import { defineStore } from "pinia";
 import type Employee from "@/types/employee";
-import {
-	collection,
-	getDocs,
-	onSnapshot,
-	query,
-	where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import router from "@/router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { db, auth } from "../includes/firebase";

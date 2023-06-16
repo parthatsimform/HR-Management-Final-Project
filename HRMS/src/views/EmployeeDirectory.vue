@@ -146,6 +146,10 @@ const onDrop = async (event, department) => {
     box-shadow: 5px 10px 18px rgb(136, 136, 136, 0.5);
 }
 
+.common-department-content::-webkit-scrollbar {
+    display: none;
+}
+
 .user-card {
     height: 120px;
     background-color: white;

@@ -1,10 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useEmployeeStore } from "@/stores/employees";
 
 const routes = [
 	{
 		name: "Home",
 		path: "/",
 		component: () => import("../views/Home.vue"),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	{
 		name: "Login",
@@ -20,22 +24,45 @@ const routes = [
 		path: "/profile/:id",
 		name: "Profile",
 		component: () => import("../views/Profile.vue"),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	{
 		path: "/emp-directory",
 		name: "Directory",
 		component: () => import("../views/EmployeeDirectory.vue"),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	{
 		path: "/apply-leave",
 		name: "ApplyLeave",
 		component: () => import("../views/ApplyLeave.vue"),
+		meta: {
+			requiresAuth: true,
+		},
+	},
+	{
+		path: "/:catchAll(.*)*",
+		redirect: { name: "Home" },
 	},
 ];
+
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes,
 	linkExactActiveClass: "active-nav-link",
+});
+
+router.beforeEach((to, from, next) => {
+	const employeeStore = useEmployeeStore();
+	if (!to.meta.requiresAuth) {
+		employeeStore.isLoggedIn ? next({ name: "Home" }) : next();
+	} else {
+		employeeStore.isLoggedIn ? next() : next({ name: "Login" });
+	}
 });
 
 export default router;

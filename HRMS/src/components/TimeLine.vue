@@ -137,6 +137,10 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
   overflow-y: scroll;
 }
 
+.timeline-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
 .timeline-card {
   width: 290px;
   height: 100px;
