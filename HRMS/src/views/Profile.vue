@@ -3,10 +3,10 @@
         <div class="profile-wrapper mx-auto">
             <div class="profile-name-image d-flex mt-4 ms-4">
                 <div class="profile-image mx-3 mt-4 d-flex align-items-center justify-content-center">
-                    <h1 class="fs-1 ">{{ empInitials(employeeStore.emp_details.fullName) }}</h1>
+                    <h1 class="fs-1 m-0">{{ empInitials(employeeStore.emp_details.fullName) }}</h1>
                 </div>
                 <div class="profile-name pt-4 px-5 mt-4">
-                    <h2 class="fs-1">{{ employeeStore.emp_details.fullName }}</h2>
+                    <h2 class="fs-1">{{ formattedString(employeeStore.emp_details.fullName) }}</h2>
                     <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
                     <p>{{ employeeStore.emp_role }}</p>
                 </div>
@@ -57,7 +57,9 @@ if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
         employeeStore.emp_role = "MANAGER"
     }
 }
-
+function formattedString(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 </script>
 
@@ -79,6 +81,7 @@ if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
     height: 150px;
     border-radius: 50%;
     background-color: #E2E2E2;
+    border: 4px solid #0d6efd
 }
 
 .profile-name {
@@ -139,5 +142,61 @@ if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
 
 .isActive {
     background-color: #0b5ed7;
+}
+
+@media screen and (max-width: 768px) {
+    .profile {
+        margin-top: 50px;
+    }
+
+    .profile-wrapper {
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 20px;
+    }
+
+    .profile-name-image {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: #E2E2E2;
+    }
+
+    .profile-name {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 25px !important;
+        padding-top: 0px !important;
+    }
+
+    .profile-name-image {
+        margin-left: 0px !important;
+    }
+
+    .profile-desc {
+        margin-top: 0px !important;
+    }
+
+    .profile-name h6 {
+        margin: 10px !important;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .profile-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #E2E2E2;
+    }
 }
 </style>

@@ -58,7 +58,6 @@ function formattedDate(date: string): string {
   return `${year}-${month}-${day}`;
 }
 
-
 const dateToday: Date = new Date()
 const duration: number[] = calculateDuration(employeeStore.emp_details.joiningDate, formattedDate(dateToday.toISOString()));
 
@@ -86,6 +85,7 @@ const items = ref([])
 if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
   items.value.push({ message: `Congractulations!! Successfully joined as an Employee`, date: calculateMonth(employeeStore.emp_details.joiningDate, 6) });
 }
+
 for (let i = 0; i < duration[0]; i++) {
   setTimeout(() => {
     const eventDate = employeeStore.emp_details.joiningDate

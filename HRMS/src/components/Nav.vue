@@ -30,7 +30,7 @@
                 </ul>
                 <div class="profile-container" v-if="employeeStore.isLoggedIn">
                     <div class="dropdown">
-                        <div class="dropdown-toggle profile d-flex align-items-center rounded-circle p-2"
+                        <div class="dropdown-toggle profile d-flex align-items-center justify-content-center rounded-circle p-2"
                             id="navbarDropdown" role="button" aria-expanded="false">
                             {{ empInitials(employeeStore.emp_details.fullName ? employeeStore.emp_details.fullName : '') }}
                         </div>
@@ -75,6 +75,11 @@ const { empInitials } = useInitials()
 .profile {
     background-color: #e9ecef;
     cursor: pointer;
+}
+
+.dropdown-toggle {
+    width: 40px;
+    /* height: 30px; */
 }
 
 .dropdown:hover>.dropdown-menu {
