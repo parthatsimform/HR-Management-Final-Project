@@ -18,17 +18,19 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { auth, db } from '@/includes/firebase';
-import { collection,onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 let userData = ref<{ [key: string]: string }>({})
+console.log(auth.currentUser?.uid);
+
 onMounted(async () => {
     const q = query(collection(db, "employees"), where("uid", "==", auth.currentUser!.uid));
     onSnapshot(q, (querySnapshot) => {
         const fbUser: { [key: string]: string }[] = []
         querySnapshot.forEach((doc: { [x: string]: any }) => {
-            const docObj = doc.data() 
+            const docObj = doc.data()
             const user = {
-                email : <string>docObj.email,
-                name : <string>docObj.fullName, 
+                email: <string>docObj.email,
+                name: <string>docObj.fullName,
                 id: <string>doc.id
             }
             fbUser.push(user)

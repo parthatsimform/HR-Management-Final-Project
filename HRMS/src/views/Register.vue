@@ -96,9 +96,9 @@ const registerUser = async () => {
             uid: ''
         }
 
-        let user;
         try {
-            user = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
+            const { user } = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
+
             if (user) {
                 newUser.uid = user.uid
                 const empRef = await addDoc(collection(db, "employees"), newUser)

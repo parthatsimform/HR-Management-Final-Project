@@ -81,6 +81,8 @@ const userLogin = async (e: Event): Promise<void> => {
 
         try {
             const user = await signInWithEmailAndPassword(auth, email, password)
+            console.log(user);
+
             router.push("/")
         } catch (err: any) {
             alert(err.code);
