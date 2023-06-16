@@ -6,7 +6,7 @@
                     <form class="leave-form" @submit.prevent="applyLeave">
                         <h1 class="text-center fw-bold mb-5">Apply for Leave</h1>
                         <div class="form-fields">
-                            <select id="leaveType" v-model="store.leave.type" @input="handleLeaveType">
+                            <select id="leaveType" v-model="store.leave.type" @change="handleLeaveType">
                                 <option disabled>Leave Type</option>
                                 <option value="planned">Planned</option>
                                 <option value="unPlanned">Un-Planned</option>
@@ -19,7 +19,7 @@
                                 <input type="date" id="startDate"
                                     :disabled="store.leave.type === 'Leave Type' ? true : false"
                                     v-model="store.leave.startDate" :min="today" :max="store.leave.endDate"
-                                    @change="handleDateChange" />
+                                    @input="handleDateChange" />
                                 <p class="vAlert startDateErr" :class="{ 'txt-black': store.leave.type === 'Leave Type' }">
                                     {{ handleNoticeTxt() }}
                                 </p>
@@ -279,8 +279,6 @@ const handleNoticeTxt = () => {
         return "Please select Leave type first**"
     } else if (endDateErr.textContent === '') {
         return ''
-    } else {
-        return 'Please select start date*'
     }
 }
 
