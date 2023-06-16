@@ -86,9 +86,6 @@
 </template>
 
 <script setup lang="ts">
-import { useEmployeeStore } from '../stores/employees'
-const employeeStore = useEmployeeStore();
-await employeeStore.getEmpData();
 import { useFormatName } from '../composables/useFormatName'
 import { onBeforeMount, ref } from 'vue'
 import { collection, onSnapshot } from "firebase/firestore";
