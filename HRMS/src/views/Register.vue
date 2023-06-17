@@ -1,42 +1,44 @@
 <template>
-    <div class="container-fluid d-flex justify-content-center align-items-center">
-        <div class="registration-container w-75 d-flex justify-content-center">
-            <div class="img-container w-50">
+    <div class="container-fluid p-0 d-flex justify-content-center align-items-center">
+        <div class="registration-container d-flex justify-content-center mb-5">
+            <div class="img-container pe-3 ps-3 w-50 d-flex align-items-center justify-content-center">
                 <img class="h-100 w-100" src="../assets/Signup.svg" alt="">
             </div>
             <div class="form-container w-50 d-flex align-items-center justify-content-center p-4">
                 <form class="registration-form" @submit.prevent="registerUser">
-                    <h1 Register class="text-center fw-bold">Register</h1>
-                    <div class="mb-3">
-                        <input type="text" id="name" class="form-control" placeholder="Full name*"
+                    <h2 Register class="text-center fw-bold mb-3">Register</h2>
+                    <div class="mb-1 form-fields">
+                        <input type="text" id="name" placeholder="Full name*"
                             v-model="employeeStore.emp.fullName" @input="validateName('name')">
                         <p class="vAlert nameErr"></p>
                     </div>
-                    <div class="mb-3">
-                        <input type="email" id="email" class="form-control" placeholder="Email*"
+                    <div class="mb-1 form-fields">
+                        <input type="email" id="email" placeholder="Email*"
                             v-model="employeeStore.emp.email" @input="validateEmail('email')">
                         <p class="vAlert emailErr"></p>
                     </div>
-                    <div class="input-group">
-                        <input type="password" id="password" class="form-control" placeholder="Password*"
-                            v-model="employeeStore.emp.password" @input="validatePassword('password')">
-                        <span class="passwordTipIcon" id="basic-addon1">
-                            ?
-                            <span class="passwordTip">
-                                Password must be 8-12 characters long and contain at least one numeric digit and a
-                                special
-                                character.
+                    <div class="input-group form-fields">
+                        <div class="w-100 d-flex flex-roe">
+                            <input type="password" class="p-ip" id="password" placeholder="Password*"
+                                v-model="employeeStore.emp.password" @input="validatePassword('password')">
+                            <span class="passwordTipIcon d-flex justify-content-center align-items-center" id="basic-addon1">
+                                ?
+                                <span class="passwordTip">
+                                    Password must be 8-12 characters long and contain at least one numeric digit and a
+                                    special
+                                    character.
+                                </span>
                             </span>
-                        </span>
+                        </div>
+                        <p class="vAlert passwordErr"></p>
                     </div>
-                    <p class="vAlert passwordErr mb-3"></p>
-                    <div class="mb-3">
-                        <input type="password" id="cPassword" class="form-control" placeholder="Confirm Password*"
+                    <div class="mb-1 form-fields">
+                        <input type="password" id="cPassword" placeholder="Confirm Password*"
                             v-model="employeeStore.emp.cPassword" @input="validateCPassword('cPassword')">
                         <p class="vAlert cPasswordErr"></p>
                     </div>
-                    <div class="mb-3">
-                        <select class="form-select" id="dept" aria-label="Department" v-model="employeeStore.emp.department"
+                    <div class="mb-1 form-fields">
+                        <select id="dept" aria-label="Department" v-model="employeeStore.emp.department"
                             @change="validateDept('dept')">
                             <option disabled>Select Department*</option>
                             <option value="FrontEnd">FrontEnd</option>
@@ -46,26 +48,27 @@
                         </select>
                         <p class="vAlert deptErr"></p>
                     </div>
-                    <div class="mb-3">
-                        <input type="tel" id="mobile" class="form-control" placeholder="Mobile Number*"
+                    <div class="mb-1 form-fields">
+                        <input type="tel" id="mobile" placeholder="Mobile Number*"
                             v-model="employeeStore.emp.mobile" @input="validateMobile('mobile')">
                         <p class="vAlert mobileErr"></p>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-1 form-fields">
                         <label for="dob" class="form-label">Date of Birth*</label>
-                        <input type="date" class="form-control" id="dob" v-model="employeeStore.emp.dob"
+                        <input type="date" id="dob" v-model="employeeStore.emp.dob"
                             @input="validateDOB('dob')">
                         <p class="vAlert dobErr"></p>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-1 form-fields">
                         <label for="dob" class="form-label">Joining Date*</label>
-                        <input type="date" id="joinDate" class="form-control" v-model="employeeStore.emp.joiningDate"
+                        <input type="date" id="joinDate" v-model="employeeStore.emp.joiningDate"
                             min="1950-01-01" max="2023-06-30" @input="validateJoinDate('joinDate')">
                         <p class="vAlert joinDateErr"></p>
                     </div>
-                    <div class="d-flex justify-content-center">
-                        <button class="btn btn-primary w-50 py-2 fw-bold" type="submit">Register</button>
+                    <div class="d-flex justify-content-center mb-2">
+                        <button class="btn btn-primary w-75 fw-medium py-2" type="submit">Register</button>
                     </div>
+                    <p class="text-center">Already have an account? <RouterLink :to="{name:'Login'}">Login</RouterLink> here. </p>
                 </form>
             </div>
         </div>
@@ -299,14 +302,8 @@ onBeforeUnmount(() => {
 .img-container {
     background-color: #005ae2;
 }
-
-.vAlert {
-    height: 15px;
-    color: red;
-    margin-bottom: 10px;
-}
-
 .registration-container {
+    width: 80%;
     border-radius: 20px;
     overflow: hidden;
     background-color: #fff;
@@ -317,26 +314,55 @@ onBeforeUnmount(() => {
     width: 300px;
 }
 
-input,
-select {
-    height: 50px;
+.form-fields {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
 }
 
+.form-fields input,
+.form-fields select {
+    border: 1px solid #e4e4e4 !important;
+    background-color: #fff !important;
+    height: 40px;
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+
+.p-ip{
+    width: 90%;
+    border-radius: 8px 0px 0px 8px !important;
+}
+
+.form-fields input:focus,
+.form-fields select:focus {
+    outline: 2px solid #2f69fe;
+}
+.form-fields input::placeholder,
+.form-fields select::placeholder {
+    font-weight: 600;
+    font-size: 15px;
+}
 .passwordTipIcon {
+    width: 10%;
     cursor: pointer;
     background-color: #f8f9fa;
     color: gray;
     padding: 12px;
     border: 1px solid #dee2e6;
+    border-radius: 0px 8px 8px 0px !important;
+    height: 40px;
 }
 
 .passwordTipIcon .passwordTip {
+    font-size: 13px;
+    text-align: justify;
     visibility: hidden;
-    width: 280px;
+    width: 250px;
     background-color: #555;
     color: white;
-    border-radius: 5px;
-    padding: 5px;
+    border-radius: 8px;
+    padding: 10px 15px;
     position: absolute;
     z-index: 1;
     bottom: 100%;
@@ -362,9 +388,24 @@ select {
     opacity: 1;
 }
 
+.form-fields p {
+    font-size: 12px;
+    height: 15px;
+    margin-bottom: 10px;
+    color: #ff0000;
+}
 @media (max-width:1200px) {
+    .registration-container {
+        width: 95% !important;
+    }
+}
+
+@media (max-width:1024px) {
+    .registration-container {
+        width: 75% !important;
+    }
     .img-container {
-        display: none;
+        display: none !important;
     }
 
     .form-container {
@@ -394,7 +435,7 @@ select {
 
 @media (max-width:400px) {
     .form-container {
-        width: 95% !important;
+        padding: 20px 0px !important;
     }
 }
 </style>

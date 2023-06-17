@@ -1,34 +1,33 @@
 <template>
-    <div class="container-fluid d-flex justify-content-center align-items-center">
-        <div class="login-container w-75 d-flex justify-content-center">
-            <div class="img-container w-50">
+    <div class="container-fluid p-0 d-flex justify-content-center align-items-center">
+        <div class="login-container w-75 d-flex justify-content-center mb-5">
+            <div class="img-container w-50 d-flex align-items-center justify-content-center">
                 <img class="h-100 w-100" src="../assets/login.png" alt="" />
             </div>
-
-            <div class="form-container w-50 d-flex align-items-center justify-content-center p-4">
+            <div class="form-container w-50 d-flex align-items-center justify-content-center pe-5 ps-5">
                 <form class="login-form" @submit.prevent="userLogin">
-                    <h1 class="text-center fw-bold">Login</h1>
+                    <h2 class="text-center fw-bold mb-3">Login</h2>
                     <div class="avatar-container d-flex justify-content-center mb-3">
                         <img src="../assets/avatar_2x.png" class="avatar" alt="" />
                     </div>
-
-                    <div class="mb-3">
-                        <input name="email" type="email" class="form-control" id="email" placeholder="Email*"
+                    <div class=" form-fields">
+                        <input name="email" type="email" id="email" placeholder="Email*"
                             v-model="employeeStore.emp.email" @input="validateEmail('email')" />
                         <p class="vAlert emailErr"></p>
                     </div>
 
-                    <div class="mb-4">
-                        <input name="password" type="password" class="form-control" id="password" placeholder="Password*"
+                    <div class=" form-fields">
+                        <input name="password" type="password" id="password" placeholder="Password*"
                             v-model="employeeStore.emp.password" @input="validatePassword('password')" />
                         <p class="vAlert passwordErr mb-3"></p>
                     </div>
 
-                    <div class="d-flex justify-content-center">
-                        <button class="btn btn-primary w-50 py-2 fw-bold" type="submit">
+                    <div class="d-flex justify-content-center mb-2">
+                        <button class="btn btn-primary w-75 py-2 fw-medium" type="submit">
                             Sign In
                         </button>
                     </div>
+                    <p class="text-center">Don't an account? <RouterLink :to="{name:'Register'}">Register</RouterLink> here. </p>
                 </form>
             </div>
         </div>
@@ -113,6 +112,7 @@ onBeforeUnmount(() => {
 }
 
 .login-container {
+    height: 500px;
     border-radius: 20px;
     overflow: hidden;
     background-color: #fff;
@@ -133,42 +133,75 @@ onBeforeUnmount(() => {
 }
 
 .login-form {
-    width: 300px;
+    width: 325px;
 }
 
-input {
-    height: 50px;
+.form-fields {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
 }
 
-.vAlert {
+.form-fields input {
+    border: 1px solid #e4e4e4 !important;
+    background-color: #fff !important;
+    height: 40px;
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+
+.form-fields input:focus {
+    outline: 2px solid #2f69fe;
+}
+
+.form-fields input::placeholder {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.form-fields p {
+    font-size: 12px;
     height: 15px;
-    color: red;
     margin-bottom: 10px;
+    color: #ff0000;
 }
-
+@media (max-width:1200px) {
+    .login-container {
+        width: 85% !important;
+    }
+}
+@media (max-width:1024px) {
+    .login-container {
+        width: 90% !important;
+    }
+}
 @media (max-width: 800px) {
+    .login-container {
+        padding: 0 !important;
+        width: 75% !important;
+    }
     .img-container {
-        display: none;
+        display: none !important;
     }
 
     .form-container {
-        width: 80% !important;
+        padding: 0 !important;
+        width: 70% !important;
     }
-}
 
-@media (max-width: 600px) {
-    .login-container {
-        width: 95% !important;
+    .login-form {
+        width: 400px;
     }
 }
 
 @media (max-width: 600px) {
     .login-container {
         width: 100% !important;
+        height: 450px;
     }
 
     .form-container {
-        width: 90% !important;
+        width: 80% !important;
     }
 }
 

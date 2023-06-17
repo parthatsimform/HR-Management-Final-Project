@@ -3,12 +3,12 @@
         <section>
             <div class="container-fluid d-flex flex-column justify-content-center align-items-center">
                 <h1 class="text-center home-head">
-                    Hey <strong class="usr-name">
-                        {{ displayName() }}
-                    </strong>!
+                    <p class="p-0 m-0">Hey</p> <strong class="usr-name">
+                        {{ displayName() }}!
+                    </strong>
                 </h1>
                 <h1 class="text-center home-head">
-                    Welcome to <strong class="brand-name">HRMS</strong>!!
+                    Welcome to <strong class="brand-name">HRMS!!</strong>
                 </h1>
             </div>
         </section>
@@ -27,7 +27,7 @@ const { displayName } = useFormatName()
 }
 
 .home-head {
-    font-size: 100px;
+    font-size: 5rem;
 }
 
 h1 {
@@ -35,26 +35,39 @@ h1 {
 }
 
 .usr-name {
+    font-size: 6rem;
     background: -webkit-linear-gradient(#09C6F9, #045DE9);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-@media (max-width:700px) {
+@media (max-width:800px) {
     .home-head {
-        font-size: 80px !important;
+        font-size: 4rem !important;
+    }
+
+    .usr-name {
+        font-size: 5rem;
     }
 }
 
 @media (max-width:550px) {
     .home-head {
-        font-size: 60px !important;
+        font-size: 3rem !important;
+    }
+
+    .usr-name {
+        font-size: 3.5rem;
     }
 }
 
 @media (max-width:350px) {
     .home-head {
-        font-size: 50px !important;
+        font-size: 2.5rem !important;
+    }
+
+    .usr-name {
+        font-size: 3rem;
     }
 }
 </style>

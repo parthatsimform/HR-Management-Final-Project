@@ -4,7 +4,7 @@ export const useValidateIP = () => {
     const isValidEmail = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(Email.value)) {
-            return displayAlert(Email, " is not valid*");
+            return displayAlert(Email, "Email is not valid*");
         } else return removeAlert(Email);
     }
     const isValidPassword = () => {
@@ -15,31 +15,31 @@ export const useValidateIP = () => {
         const check_numeric = /(?=.*\d)/;
 
         if (!check_length.test(Password.value)) {
-            return displayAlert(Password, " must be 8-12 characters long*");
+            return displayAlert(Password, "Password must be 8-12 characters long*");
         } else if (!check_upperCase.test(Password.value)) {
             return displayAlert(
                 Password,
-                " must contain at least one Uppercase letter*"
+                "Password must contain at least one Uppercase letter*"
             );
         } else if (!check_lowerCase.test(Password.value)) {
             return displayAlert(
                 Password,
-                " must contain at least one Lowercase letter*"
+                "Password must contain at least one Lowercase letter*"
             );
         } else if (!check_upperCase.test(Password.value)) {
             return displayAlert(
                 Password,
-                " must contain at least one Uppercase letter*"
+                "Password must contain at least one Uppercase letter*"
             );
         } else if (!check_special_char.test(Password.value)) {
             return displayAlert(
                 Password,
-                " must contain at least one special character*"
+                "Password must contain at least one special character*"
             );
         } else if (!check_numeric.test(Password.value)) {
             return displayAlert(
                 Password,
-                " must contain at least one numeric digit*"
+                "Password must contain at least one numeric digit*"
             );
         } else return removeAlert(Password);
     }

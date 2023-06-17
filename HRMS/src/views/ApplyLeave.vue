@@ -1,10 +1,10 @@
 <template>
     <section>
         <div class="container-fluid d-flex justify-content-center align-items-center w-75">
-            <div class="apply-leave-container d-flex w-100 pt-5 pb-5 pe-3 ps-3 mt-5">
+            <div class="apply-leave-container d-flex w-100 pt-4 pb-4 pe-3 ps-3 mt-5 mb-5">
                 <div class="leave-form-container d-flex justify-content-center w-50 pe-3">
                     <form class="leave-form" @submit.prevent="applyLeave">
-                        <h1 class="text-center fw-bold mb-5">Apply for Leave</h1>
+                        <h2 class="text-center fw-bold mb-5">Apply for Leave</h2>
                         <div class="form-fields">
                             <select id="leaveType" v-model="store.leave.type" @change="handleLeaveType">
                                 <option disabled>Leave Type</option>
@@ -33,25 +33,25 @@
                             </div>
                         </div>
                         <div class="form-fields">
-                            <textarea id="reason" placeholder="Enter reason for Leave" v-model="store.leave.reason"
+                            <textarea id="Reason" placeholder="Enter reason for Leave" v-model="store.leave.reason"
                                 @input="checkReasonLength"></textarea>
-                            <p class="vAlert reasonErr"></p>
+                            <p class="vAlert ReasonErr"></p>
                         </div>
                         <div class="form-fields">
                             <input id="Email" placeholder="Requesting From (Email)" v-model="store.leave.toEmail"
-                                @change="isValidEmail" />
+                                @change="isValidEmail()" />
                             <p class="vAlert EmailErr"></p>
                         </div>
                         <p class="vAlert"></p>
                         <div class="d-flex justify-content-center">
-                            <button class="btn btn-primary py-2 fw-bold" type="submit">
+                            <button class="btn btn-primary py-2 fw-medium" type="submit">
                                 Add Request
                             </button>
                         </div>
                     </form>
                 </div>
                 <div class="leave-display-container d-flex flex-column justify-content-center align-items-center w-50 ps-3">
-                    <h1 class="text-center fw-bold mb-5">Your Leaves</h1>
+                    <h2 class="text-center fw-bold mb-5">Your Leaves</h2>
                     <div class="leave-display h-100 p-3 overflow-y-scroll">
                         <div class="card flex-row overflow-hidden mb-2" v-for="leave in leaves" :key="leave.id">
                             <div class="card-body w-100">
@@ -74,7 +74,7 @@
         </div>
         <div class="modal fade" id="exampleModal" @click="modelLeave = {}" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered d-flex justify-content-center align-items-center">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title d-flex justify-content-center align-items-center w-100"
@@ -82,16 +82,16 @@
                         <button type="button" @click="modelLeave = {}" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body p-5">
+                    <div class="modal-body p-4">
                         <div class="leave-detail-container mb-1">
                             <label class=" fw-light">Duration :</label>
-                            <p class="leave-detail-content fs-4 w-100">{{ modelLeave.startDate }} <span
+                            <p class="leave-detail-content fs-5 w-100">{{ modelLeave.startDate }} <span
                                     class=" fw-light fs-6">to</span> {{
                                         modelLeave.endDate }}</p>
                         </div>
                         <div class="leave-detail-container mb-1">
                             <label class="fw-light">Type :</label>
-                            <p class="leave-detail-content fs-4 w-100">{{ modelLeave.type }}</p>
+                            <p class="leave-detail-content fs-5 w-100">{{ modelLeave.type }}</p>
                         </div>
                         <div class="leave-detail-container mb-1">
                             <label class="fw-light">Reason :</label>
@@ -99,11 +99,11 @@
                         </div>
                         <div class="leave-detail-container mb-1">
                             <label class="fw-light">Requested From :</label>
-                            <p class="leave-detail-content fs-4 w-100">{{ modelLeave.fromEmail }}</p>
+                            <p class="leave-detail-content fs-5 w-100">{{ modelLeave.fromEmail }}</p>
                         </div>
                         <div class="leave-detail-container mb-1">
                             <label class="fw-light">Status :</label>
-                            <p class="leave-detail-content fs-4 w-100 text-b" :class="{
+                            <p class="leave-detail-content fs-5 w-100 text-b" :class="{
                                 'text-success': modelLeave.status === 'Approved',
                                 'text-danger': modelLeave.status === 'Rejected',
                                 'text-normal': modelLeave.status === 'Pending'
@@ -175,7 +175,6 @@ onMounted(async () => {
         userDoc.value = fbUser[0].id
     })
 })
-
 
 const validateForm = () => {
     const formElements = document.forms[0].elements as HTMLFormControlsCollection
@@ -282,22 +281,21 @@ const handleNoticeTxt = () => {
     return
 }
 
-const handleLeaveType = () => {
-    const leaveSelect = document.getElementById('leaveType') as HTMLElement
+const handleLeaveType = (e:Event) => {
+    const leaveSelect = e.target as HTMLElement
     const startDateEl = document.getElementById("startDate") as HTMLInputElement
     const endDateEl = document.getElementById("endDate") as HTMLInputElement
     removeAlert(leaveSelect)
     if (store.leave.type === 'planned') {
         store.leave.startDate = getDayAfterTomorrowDate()
         startDateEl.min = store.leave.startDate
-        store.leave.endDate = ''
+        endDateEl.removeAttribute('max')
     }
     if (store.leave.type === 'unPlanned') {
         store.leave.startDate = today
         startDateEl.min = today
-        store.leave.endDate = getDayAfterTomorrowDate()
         endDateEl.min = today
-        endDateEl.max = store.leave.endDate
+        endDateEl.max = getDayAfterTomorrowDate()
     }
 }
 function getDayAfterTomorrowDate() {
@@ -331,12 +329,12 @@ function getDayAfterTomorrowDate() {
     return formattedDate;
 }
 const checkReasonLength = () => {
-    const reasonEl = document.getElementById("reason") as HTMLInputElement
-    const len = reasonEl.value.length;
+    const reasonEl = document.getElementById('Reason') as HTMLInputElement
+    const len = reasonEl.value.trim().length;
     let message = "";
     let isValid = true;
     if (reasonEl.value.trim() === '') {
-        message = " reason is required*";
+        message = " Reason is required*";
         isValid = false;
     } else if (len < 10) {
         message = ` must be at least 10 characters, you are only using ${len} characters*`;
@@ -378,9 +376,9 @@ onBeforeUnmount(() => {
 .form-fields select {
     border: 1px solid #e4e4e4 !important;
     background-color: #fff !important;
-    height: 50px;
+    height: 40px;
     border-radius: 8px;
-    padding: 5px;
+    padding: 5px 10px;
 }
 
 .form-fields textarea {
@@ -393,7 +391,15 @@ onBeforeUnmount(() => {
     outline: 1px solid #6792ff;
 }
 
+.form-fields input::placeholder,
+.form-fields select::placeholder,
+.form-fields textarea::placeholder {
+    font-weight: 600;
+    font-size: 15px;
+}
+
 .form-fields p {
+    font-size: 12px;
     height: 15px;
     margin-bottom: 10px;
     color: #ff0000;
@@ -408,7 +414,7 @@ onBeforeUnmount(() => {
 }
 
 .leave-display-container {
-    height: 550px;
+    height: 500px;
 }
 
 .leave-form,
@@ -447,6 +453,10 @@ onBeforeUnmount(() => {
 
 .btn {
     width: 200px;
+}
+
+.modal-content{
+    width: 400px;
 }
 
 .leave-detail-content {

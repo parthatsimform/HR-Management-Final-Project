@@ -1,29 +1,29 @@
 <template>
   <div class="about">
     <div class="about-wrapper">
-      <div class="about-personal-info mx-auto mt-5">
-        <h3 class="fs-3">Employee Details</h3>
+      <div class="about-personal-info mx-auto">
+        <h3 class="fs-3 mt-5">Employee Details</h3>
         <hr />
         <div class="personal-detail">
           <div class="container ms-4">
             <div class="row">
-              <div class="col-4">Name</div>
+              <div class="col-4 fw-medium">Name</div>
               <div class="col-8">{{ employeeStore.emp_details.fullName }}</div>
             </div>
             <div class="row">
-              <div class="col-4">Email</div>
+              <div class="col-4 fw-medium">Email</div>
               <div class="col-8">{{ employeeStore.emp_details.email }}</div>
             </div>
             <div class="row">
-              <div class="col-4">Mobile</div>
+              <div class="col-4 fw-medium">Mobile</div>
               <div class="col-8">{{ employeeStore.emp_details.mobile }}</div>
             </div>
             <div class="row">
-              <div class="col-4">Joining Date</div>
+              <div class="col-4 fw-medium">Joining Date</div>
               <div class="col-8">{{ employeeStore.emp_details.joiningDate }}</div>
             </div>
             <div class="row">
-              <div class="col-4">DOB</div>
+              <div class="col-4 fw-medium">DOB</div>
               <div class="col-8">{{ employeeStore.emp_details.dob }}</div>
             </div>
           </div>

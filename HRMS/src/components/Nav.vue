@@ -47,6 +47,14 @@
                     </div>
                 </div>
             </div>
+            <div class="logged-out-usr-links d-flex" v-else>
+                <li class="nav-item h-100 d-flex align-items-center ms-0 me-3">
+                    <router-link class="nav-link pt-2 pb-2 ps-3 pe-3" :to='{ name: "Login" }'>Login</router-link>
+                </li>
+                <li class="nav-item h-100 d-flex align-items-center">
+                    <router-link class="nav-link pt-2 pb-2 ps-3 pe-3" :to='{ name: "Register" }'>Register</router-link>
+                </li>
+            </div>
         </div>
     </nav>
 </template>
@@ -88,7 +96,6 @@ const logout = async () => {
 
 .dropdown-toggle {
     width: 40px;
-    /* height: 30px; */
 }
 
 .dropdown:hover>.dropdown-menu {
@@ -145,10 +152,6 @@ const logout = async () => {
 
 
 @media (max-width:991px) {
-
-    /* .navbar-collapse{
-        border-top: 1px solid #e2e2e2;
-    } */
     .navbar-toggler {
         border: none;
     }

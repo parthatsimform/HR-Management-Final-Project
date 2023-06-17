@@ -1,6 +1,6 @@
 export const useToggleFormAlert = () => {
     const displayAlert = (el, msg) => {
-        el.style.border = "1px solid red";
+        el.style = "border : 1px solid red !important";
         const alertElClass = `${el.id}Err`;
         const errEl = document.querySelector(`.${alertElClass}`)
         errEl.style = "color : red !important"
