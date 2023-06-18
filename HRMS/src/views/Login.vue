@@ -11,8 +11,8 @@
                         <img src="../assets/avatar_2x.png" class="avatar" alt="" />
                     </div>
                     <div class=" form-fields">
-                        <input name="email" type="email" id="email" placeholder="Email*"
-                            v-model="employeeStore.emp.email" @input="validateEmail('email')" />
+                        <input name="email" type="email" id="email" placeholder="Email*" v-model="employeeStore.emp.email"
+                            @input="validateEmail('email')" />
                         <p class="vAlert emailErr"></p>
                     </div>
 
@@ -27,7 +27,8 @@
                             Sign In
                         </button>
                     </div>
-                    <p class="text-center">Don't an account? <RouterLink :to="{name:'Register'}">Register</RouterLink> here. </p>
+                    <p class="text-center">Don't an account? <RouterLink :to="{ name: 'Register' }">Register</RouterLink> here.
+                    </p>
                 </form>
             </div>
         </div>
@@ -165,21 +166,25 @@ onBeforeUnmount(() => {
     margin-bottom: 10px;
     color: #ff0000;
 }
+
 @media (max-width:1200px) {
     .login-container {
         width: 85% !important;
     }
 }
+
 @media (max-width:1024px) {
     .login-container {
         width: 90% !important;
     }
 }
+
 @media (max-width: 800px) {
     .login-container {
         padding: 0 !important;
         width: 75% !important;
     }
+
     .img-container {
         display: none !important;
     }
@@ -206,8 +211,10 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 400px) {
+    .login-form {
+        width: 90%;
+    }
     .form-container {
         width: 100% !important;
     }
-}
-</style>
+}</style>

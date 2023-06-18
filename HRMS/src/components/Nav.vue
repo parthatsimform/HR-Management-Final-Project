@@ -4,7 +4,7 @@
             <router-link class="navbar-brand fw-bolder" :to='{ name: "Home" }'
                 exact-active-class="no-active">HRMS</router-link>
             <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" v-if="employeeStore.isLoggedIn">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent" v-if="employeeStore.isLoggedIn">
@@ -47,12 +47,12 @@
                     </div>
                 </div>
             </div>
-            <div class="logged-out-usr-links d-flex" v-else>
-                <li class="nav-item h-100 d-flex align-items-center ms-0 me-3">
-                    <router-link class="nav-link pt-2 pb-2 ps-3 pe-3" :to='{ name: "Login" }'>Login</router-link>
+            <div class="d-flex" v-else>
+                <li class="logged-out-usr-links h-100 d-flex align-items-center ms-0 me-3">
+                    <router-link class="link-item text-decoration-none pt-2 pb-2 ps-3 pe-3" :to='{ name: "Login" }'>Login</router-link>
                 </li>
-                <li class="nav-item h-100 d-flex align-items-center">
-                    <router-link class="nav-link pt-2 pb-2 ps-3 pe-3" :to='{ name: "Register" }'>Register</router-link>
+                <li class="logged-out-usr-links h-100 d-flex align-items-center m-0">
+                    <router-link class="link-item text-decoration-none pt-2 pb-2 ps-3 pe-3" :to='{ name: "Register" }'>Register</router-link>
                 </li>
             </div>
         </div>
@@ -104,10 +104,14 @@ const logout = async () => {
     background-color: #f7faff !important;
 }
 
-.nav-item {
+.nav-item ,
+.logged-out-usr-links{
     margin-right: 20px;
     border-radius: 5px;
     overflow: hidden;
+}
+.logged-out-usr-links a{
+    color:#000000
 }
 
 .nav-item:first-child {
@@ -118,11 +122,11 @@ const logout = async () => {
     margin-right: 0px;
 }
 
-.nav-item:hover a {
-    color: #0d6efd !important;
+.nav-item:hover a,
+.logged-out-usr-links:hover a{
+    color: #0d6efd;
     background-color: #edf2ff;
 }
-
 .dropdown-toggle::after {
     display: none;
 }
@@ -173,9 +177,16 @@ const logout = async () => {
     .nav-item:hover a {
         background-color: transparent !important;
     }
-
+    .logged-out-usr-links a{
+        background-color: transparent !important;
+    }
     .active-nav-link {
         background-color: transparent !important;
+    }
+}
+@media (max-width:400px) {
+    .logged-out-usr-links{
+        margin: 0 !important;
     }
 }
 </style>
