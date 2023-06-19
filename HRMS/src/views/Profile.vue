@@ -42,7 +42,6 @@ const route = useRoute()
 
 await employeeStore.getEmpDetails(route.params.id)
 const { empInitials } = useFormatName()
-
 const profileTab = shallowRef(TimeLine)
 const isActive = ref<string>('About')
 

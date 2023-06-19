@@ -57,15 +57,10 @@ import { useEmployeeStore } from '../stores/employees'
 import gsap from 'gsap'
 import { useDuration } from '../composables/useDuration'
 const { calculateDuration } = useDuration()
-const employeeStore = useEmployeeStore();
+import { useFormattedDate } from '../composables/useFormatedDate';
+const { formattedDate } = useFormattedDate()
 
-function formattedDate(date: string): string {
-  const today: Date = new Date(date);
-  const year: number = today.getFullYear();
-  const month: string = (today.getMonth() + 1).toString().padStart(2, '0');
-  const day = today.getDate().toString().padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+const employeeStore = useEmployeeStore();
 
 const dateToday: Date = new Date()
 const duration: number[] = calculateDuration(employeeStore.emp_details.joiningDate, formattedDate(dateToday.toISOString()));
@@ -95,22 +90,37 @@ if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
   items.value.push({ message: `Congractulations!! Successfully joined as an Employee`, date: calculateMonth(employeeStore.emp_details.joiningDate, 6) });
 }
 
-for (let i = 0; i < duration[0]; i++) {
-  if (i >= 5) {
-    if ((i + 1) % 5 == 0) {
-      setTimeout(() => {
-        const eventDate = employeeStore.emp_details.joiningDate
-        items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
-      }, (i + 1) * 250)
-    }
-  } else {
+await timeLineYear()
+await timeLineTechStack()
+async function timeLineYear() {
+  for (let i = 0; i < duration[0] || i < employeeStore.emp_details.techStack.length; i++) {
+    if (employeeStore.emp_details.techStack[i].date)
+      if (i >= 5) {
+        if ((i + 1) % 5 == 0) {
+          setTimeout(() => {
+            const eventDate = employeeStore.emp_details.joiningDate
+            items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
+          }, (i + 1) * 250)
+        }
+      } else {
+        setTimeout(() => {
+          const eventDate = employeeStore.emp_details.joiningDate
+          items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
+        }, (i + 1) * 250)
+      }
+  }
+}
+
+async function timeLineTechStack() {
+  for (let i = 0; i < employeeStore.emp_details.techStack.length; i++) {
     setTimeout(() => {
-      const eventDate = employeeStore.emp_details.joiningDate
-      items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
+      items.value.push({ message: `Teck Stack Changed to ${employeeStore.emp_details.techStack[i].techStack}`, date: employeeStore.emp_details.techStack[i].date });
     }, (i + 1) * 250)
   }
-
 }
+
+
+
 
 function beforeEnter(el: { style: { opacity: number; transform: string; }; }) {
   el.style.opacity = 0;

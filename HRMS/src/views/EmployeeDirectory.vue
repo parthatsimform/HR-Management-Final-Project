@@ -111,10 +111,16 @@ import { onBeforeMount, ref } from "vue";
 import { collection, onSnapshot } from "firebase/firestore";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../includes/firebase";
+import { useEmployeeStore } from '../stores/employees'
+import { auth } from '@/includes/firebase';
+import { useFormattedDate } from '../composables/useFormatedDate';
+const { formattedDate } = useFormattedDate()
+const employeeStore = useEmployeeStore();
 const { empInitials } = useFormatName();
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
     getEmpData();
+    await employeeStore.getEmpDetails(auth.currentUser.uid)
 });
 
 const emp_data = ref([]);
@@ -140,10 +146,29 @@ const onDrop = async (event, department) => {
     const itemID = event.dataTransfer.getData("itemID");
     const item = emp_data.value.filter((item) => item.uid == itemID);
     const docId = item[0].docId;
-    const washingtonRef = doc(db, "employees", docId);
-    await updateDoc(washingtonRef, {
-        department: department,
-    });
+
+    if (item[0].department !== department) {
+        if (employeeStore.emp_details.isAdmin) {
+            const techStack = [...item[0].techStack];
+
+            const today = new Date();
+            const date = formattedDate(today.toISOString());
+            console.log(date)
+            const stackData = {
+                techStack: department,
+                date: date
+            };
+            techStack.push(stackData)
+            const empRef = doc(db, "employees", docId);
+            await updateDoc(empRef, {
+                department: department,
+                techStack: techStack
+            });
+        }
+        else {
+            alert("Switching department is not possible")
+        }
+    }
 };
 </script>
 

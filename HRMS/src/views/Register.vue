@@ -8,20 +8,21 @@
                 <form class="registration-form" @submit.prevent="registerUser">
                     <h2 Register class="text-center fw-bold mb-3">Register</h2>
                     <div class="mb-1 form-fields">
-                        <input type="text" id="name" placeholder="Full name*"
-                            v-model="employeeStore.emp.fullName" @input="validateName('name')">
+                        <input type="text" id="name" placeholder="Full name*" v-model="employeeStore.emp.fullName"
+                            @input="validateName('name')">
                         <p class="vAlert nameErr"></p>
                     </div>
                     <div class="mb-1 form-fields">
-                        <input type="email" id="email" placeholder="Email*"
-                            v-model="employeeStore.emp.email" @input="validateEmail('email')">
+                        <input type="email" id="email" placeholder="Email*" v-model="employeeStore.emp.email"
+                            @input="validateEmail('email')">
                         <p class="vAlert emailErr"></p>
                     </div>
                     <div class="input-group form-fields">
                         <div class="w-100 d-flex flex-roe">
                             <input type="password" class="p-ip" id="password" placeholder="Password*"
                                 v-model="employeeStore.emp.password" @input="validatePassword('password')">
-                            <span class="passwordTipIcon d-flex justify-content-center align-items-center" id="basic-addon1">
+                            <span class="passwordTipIcon d-flex justify-content-center align-items-center"
+                                id="basic-addon1">
                                 ?
                                 <span class="passwordTip">
                                     Password must be 8-12 characters long and contain at least one numeric digit and a
@@ -49,26 +50,26 @@
                         <p class="vAlert deptErr"></p>
                     </div>
                     <div class="mb-1 form-fields">
-                        <input type="tel" id="mobile" placeholder="Mobile Number*"
-                            v-model="employeeStore.emp.mobile" @input="validateMobile('mobile')">
+                        <input type="tel" id="mobile" placeholder="Mobile Number*" v-model="employeeStore.emp.mobile"
+                            @input="validateMobile('mobile')">
                         <p class="vAlert mobileErr"></p>
                     </div>
                     <div class="mb-1 form-fields">
                         <label for="dob" class="form-label">Date of Birth*</label>
-                        <input type="date" id="dob" v-model="employeeStore.emp.dob"
-                            @input="validateDOB('dob')">
+                        <input type="date" id="dob" v-model="employeeStore.emp.dob" @input="validateDOB('dob')">
                         <p class="vAlert dobErr"></p>
                     </div>
                     <div class="mb-1 form-fields">
                         <label for="dob" class="form-label">Joining Date*</label>
-                        <input type="date" id="joinDate" v-model="employeeStore.emp.joiningDate"
-                            min="1950-01-01" max="2023-06-30" @input="validateJoinDate('joinDate')">
+                        <input type="date" id="joinDate" v-model="employeeStore.emp.joiningDate" min="1950-01-01"
+                            max="2023-06-30" @input="validateJoinDate('joinDate')">
                         <p class="vAlert joinDateErr"></p>
                     </div>
                     <div class="d-flex justify-content-center mb-2">
                         <button class="btn btn-primary w-75 fw-medium py-2" type="submit">Register</button>
                     </div>
-                    <p class="text-center">Already have an account? <RouterLink :to="{name:'Login'}">Login</RouterLink> here. </p>
+                    <p class="text-center">Already have an account? <RouterLink :to="{ name: 'Login' }">Login</RouterLink>
+                        here. </p>
                 </form>
             </div>
         </div>
@@ -97,7 +98,8 @@ const registerUser = async () => {
             joiningDate: employeeStore.emp.joiningDate,
             isAdmin: false,
             leaveBallance: 10,
-            uid: ''
+            uid: '',
+            techStack: []
         }
 
         try {
@@ -302,6 +304,7 @@ onBeforeUnmount(() => {
 .img-container {
     background-color: #005ae2;
 }
+
 .registration-container {
     width: 80%;
     border-radius: 20px;
@@ -329,7 +332,7 @@ onBeforeUnmount(() => {
     padding: 5px 10px;
 }
 
-.p-ip{
+.p-ip {
     width: 90%;
     border-radius: 8px 0px 0px 8px !important;
 }
@@ -338,11 +341,13 @@ onBeforeUnmount(() => {
 .form-fields select:focus {
     outline: 2px solid #2f69fe;
 }
+
 .form-fields input::placeholder,
 .form-fields select::placeholder {
     font-weight: 600;
     font-size: 15px;
 }
+
 .passwordTipIcon {
     width: 10%;
     cursor: pointer;
@@ -394,6 +399,7 @@ onBeforeUnmount(() => {
     margin-bottom: 10px;
     color: #ff0000;
 }
+
 @media (max-width:1200px) {
     .registration-container {
         width: 85% !important;
@@ -435,5 +441,4 @@ onBeforeUnmount(() => {
     .form-container {
         padding: 20px 0px !important;
     }
-}
-</style>
+}</style>
