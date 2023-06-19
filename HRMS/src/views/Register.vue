@@ -109,7 +109,8 @@ const registerUser = async () => {
             joiningDate: employeeStore.emp.joiningDate,
             isAdmin: false,
             leaveBallance: 10,
-            uid: ''
+            uid: '',
+            techStackTimeLine: []
         }
 
         try {

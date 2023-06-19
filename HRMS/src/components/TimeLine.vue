@@ -19,9 +19,9 @@
             </div>
           </transition-group>
           <div class="d-flex flex-column justify-content-end">
-            <div class="timeline-hr"></div>
+            <div class="timeline-hr mx-auto"></div>
             <div class="timeline-dot"></div>
-            <div class="timeline-hr after-hr"></div>
+            <div class="timeline-hr after-hr mx-auto"></div>
           </div>
         </div>
         <div class="d-flex flex-row align-items-center card-wrapper" v-else>
@@ -57,15 +57,10 @@ import { useEmployeeStore } from '../stores/employees'
 import gsap from 'gsap'
 import { useDuration } from '../composables/useDuration'
 const { calculateDuration } = useDuration()
-const employeeStore = useEmployeeStore();
+import { useFormattedDate } from '../composables/useFormatedDate';
+const { formattedDate } = useFormattedDate()
 
-function formattedDate(date: string): string {
-  const today: Date = new Date(date);
-  const year: number = today.getFullYear();
-  const month: string = (today.getMonth() + 1).toString().padStart(2, '0');
-  const day = today.getDate().toString().padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+const employeeStore = useEmployeeStore();
 
 const dateToday: Date = new Date()
 const duration: number[] = calculateDuration(employeeStore.emp_details.joiningDate, formattedDate(dateToday.toISOString()));
@@ -95,12 +90,37 @@ if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
   items.value.push({ message: `Congractulations!! Successfully joined as an Employee`, date: calculateMonth(employeeStore.emp_details.joiningDate, 6) });
 }
 
-for (let i = 0; i < duration[0]; i++) {
-  setTimeout(() => {
-    const eventDate = employeeStore.emp_details.joiningDate
-    items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
-  }, (i + 1) * 250)
+await timeLineYear()
+await timeLineTechStack()
+async function timeLineYear() {
+  for (let i = 0; i < duration[0] || i < employeeStore.emp_details.techStack.length; i++) {
+    if (employeeStore.emp_details.techStack[i].date)
+      if (i >= 5) {
+        if ((i + 1) % 5 == 0) {
+          setTimeout(() => {
+            const eventDate = employeeStore.emp_details.joiningDate
+            items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
+          }, (i + 1) * 250)
+        }
+      } else {
+        setTimeout(() => {
+          const eventDate = employeeStore.emp_details.joiningDate
+          items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
+        }, (i + 1) * 250)
+      }
+  }
 }
+
+async function timeLineTechStack() {
+  for (let i = 0; i < employeeStore.emp_details.techStack.length; i++) {
+    setTimeout(() => {
+      items.value.push({ message: `Teck Stack Changed to ${employeeStore.emp_details.techStack[i].techStack}`, date: employeeStore.emp_details.techStack[i].date });
+    }, (i + 1) * 250)
+  }
+}
+
+
+
 
 function beforeEnter(el: { style: { opacity: number; transform: string; }; }) {
   el.style.opacity = 0;
@@ -141,6 +161,13 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
   display: none;
 }
 
+.timeline-card {
+  width: 290px;
+  height: 100px;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
 .card-content {
   background-color: #0d6efd;
   color: white;
@@ -150,16 +177,15 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
 }
 
 .timeline-hr {
-  border: 2px solid #0d6efd;
+  border: 2px solid #aeaeae;
   height: 45px;
   width: 1px;
-  margin-left: 9.5px;
 }
 
 .timeline-dot {
   border: 10px solid #0d6efd;
   border-radius: 50%;
-  height: 2px;
+  height: 2px
 }
 
 .timeline-card-content-leave-active {
@@ -184,12 +210,13 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
 
 .card-content-right::after {
   content: "";
-    position: absolute;
-    right: 88.7%;
-    margin-left: -30px;
-    border-width: 35px;
-    border-style: solid;
-    border-color: transparent #0d6efd transparent transparent;
+  position: absolute;
+  top: 15%;
+  right: 88.5%;
+  margin-left: -30px;
+  border-width: 35px;
+  border-style: solid;
+  border-color: transparent #0d6efd transparent transparent;
 }
 
 .timeline-dot-end {
@@ -246,6 +273,10 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
     height: 2px;
     width: 2px;
   }
+
+  .timeline-card {
+    background-color: #E2E2E2;
+  }
 }
 
 @media screen and (max-width: 390px) {
@@ -268,5 +299,7 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
   .timeline-date {
     font-size: 12.5px;
   }
+
+
 }
 </style>

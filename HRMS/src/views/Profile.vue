@@ -1,21 +1,21 @@
 <template>
-    <div class="profile container-fluid p-0">
-        <div class="profile-wrapper mx-auto p-5">
-            <div class="profile-name-image d-flex align-items-center justify-content-center w-100">
-                <div class="profile-image d-flex align-items-center justify-content-center">
+    <div class="profile">
+        <div class="profile-wrapper mx-auto">
+            <div class="profile-name-image d-flex mt-4 ms-4">
+                <div class="profile-image mx-3 mt-4 d-flex align-items-center justify-content-center">
                     <h1 class="fs-1 m-0">{{ empInitials(employeeStore.emp_details.fullName) }}</h1>
                 </div>
-                <div class="profile-name ps-4 d-flex flex-column justify-content-center">
-                    <h2 class="fs-1 m-0">{{ formattedString(employeeStore.emp_details.fullName) }}</h2>
-                    <h6 class="mt-3">{{ employeeStore.emp_details.department }}</h6>
-                    <p v-if="false">{{ employeeStore.emp_details.emp_role }}</p>
+                <div class="profile-name pt-4 px-5 mt-4">
+                    <h2 class="fs-1">{{ formattedString(employeeStore.emp_details.fullName) }}</h2>
+                    <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
+                    <p>{{ employeeStore.emp_details.emp_role }}</p>
                 </div>
             </div>
-            <div class="profile-desc d-flex justify-content-center mt-4">
-                <div class="profile-about pt-2 text-center fw-medium" :class="isActive == 'About' ? 'isActive' : ''"
+            <div class="profile-desc d-flex justify-content-center mt-5">
+                <div class="profile-about pt-2 text-center" :class="isActive == 'About' ? 'isActive' : ''"
                     @click="changeTab('About')">About
                 </div>
-                <div class="profile-timeline pt-2 text-center fw-medium" :class="isActive == 'TimeLine' ? 'isActive' : ''"
+                <div class="profile-timeline pt-2 text-center" :class="isActive == 'TimeLine' ? 'isActive' : ''"
                     @click="changeTab('TimeLine')">Timeline</div>
             </div>
             <div class="profile-content">
@@ -42,8 +42,7 @@ const route = useRoute()
 
 await employeeStore.getEmpDetails(route.params.id)
 const { empInitials } = useFormatName()
-
-const profileTab = shallowRef(About)
+const profileTab = shallowRef(TimeLine)
 const isActive = ref<string>('About')
 
 function changeTab(tabName: string): void {
@@ -73,7 +72,7 @@ function formattedString(inputString: string): string {
 .profile-wrapper {
     box-shadow: 5px 10px 18px rgb(136, 136, 136, 0.5);
     width: 700px;
-    height: 600px;
+    height: 800px;
     border-radius: 20px;
     overflow: hidden;
     background-color: white;
@@ -88,7 +87,8 @@ function formattedString(inputString: string): string {
 }
 
 .profile-name {
-    width: 74%;
+    width: 500px;
+    height: 150px;
 }
 
 .profile-name h6 {
