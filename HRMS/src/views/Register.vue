@@ -14,7 +14,7 @@
                     </div>
                     <div class="mb-1 form-fields">
                         <input type="email" id="email" placeholder="Email*" v-model="employeeStore.emp.email"
-                            @input="validateEmail('email')">
+                            @input="isValidEmail('email')">
                         <p class="vAlert emailErr"></p>
                     </div>
                     <div class="input-group form-fields">
@@ -84,6 +84,11 @@ import { collection, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import router from "@/router";
 import { onBeforeUnmount } from "vue";
+import { useToggleFormAlert } from '../composables/useToggleFormAlert'
+import { useValidateIP } from '../composables/useValidateIP'
+
+const { displayAlert, removeAlert } = useToggleFormAlert()
+const { isValidEmail } = useValidateIP()
 import Swal from 'sweetalert2'
 
 const employeeStore = useEmployeeStore()
@@ -121,7 +126,7 @@ const registerUser = async () => {
                 const empRef = await addDoc(collection(db, "employees"), newUser)
                 if (empRef) {
                     await updateProfile(user, { displayName: newUser.fullName })
-                    localStorage.setItem("isLoggedIn", true)
+                    localStorage.setItem("isLoggedIn", 'true')
                     employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
                     router.push("/")
                 } else {
@@ -159,7 +164,7 @@ const registerUser = async () => {
         }
     } else {
         validateName('name')
-        validateEmail('email')
+        isValidEmail('email')
         validatePassword('password')
         validateCPassword('cPassword')
         validateDept('dept')
@@ -172,7 +177,7 @@ const registerUser = async () => {
 
 const validateForm = (): boolean => {
     if (validateName('name') &&
-        validateEmail('email') &&
+        isValidEmail('email') &&
         validatePassword('password') &&
         validateCPassword('cPassword') &&
         validateDept('dept') &&
@@ -187,88 +192,62 @@ const validateForm = (): boolean => {
 
 const validateName = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === "") {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter your full name"
+        displayAlert(inputEle, "Please enter your full name")
         return false;
     } else {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
-    }
-}
-
-const validateEmail = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
-    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(inputEle.value)) {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
-        return true;
-    } else {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter valid email address"
-        return false;
     }
 }
 
 const validatePassword = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
 
     if (passwordRegex.test(inputEle.value)) {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
     } else {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter valid password"
+        displayAlert(inputEle, "Please enter valid password")
         return false;
     }
 }
 
 const validateCPassword = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === employeeStore.emp.password) {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
+    } else if (!inputEle.value) {
+        displayAlert(inputEle, "Please enter your password again")
+        return false
     } else {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter same password again"
+        displayAlert(inputEle, "Please enter same password again")
         return false;
     }
 }
 
 const validateDept = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === "Select Department*") {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select department"
+        displayAlert(inputEle, "Please select department")
         return false;
     } else {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
     }
 }
 
 const validateMobile = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
-    const mobileRegex: RegExp = /^[0-9]{10}$/
-    if (mobileRegex.test(inputEle.value)) {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+    const indiaPhoneRegex = /^[6-9]\d{9}$/;
+    const usPhoneRegex = /^(\+?1-?)?\d{3}-?\d{3}-?\d{4}$/;
+    if (indiaPhoneRegex.test(inputEle.value) || usPhoneRegex.test(inputEle.value)) {
+        removeAlert(inputEle)
         return true;
     } else {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter 10 digit mobile number"
+        displayAlert(inputEle, "Please enter valid mobile number")
         return false;
     }
 }
@@ -284,40 +263,31 @@ const validDate = (dob: Date) => {
 
 const validateDOB = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === "") {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select your date of birth"
+        displayAlert(inputEle, "Please select your date of birth")
         return false;
     } else if (!validDate(inputEle.value)) {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select valid DOB having year >=1900"
+        displayAlert(inputEle, "Please select valid DOB")
         return false;
     } else {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
     }
 }
 
 const validateJoinDate = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === "") {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select your Joining Date"
+        displayAlert(inputEle, "Please select your Joining Date")
         return false;
     } else if (!validDate(inputEle.value)) {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select valid date having year >=1900"
+        displayAlert(inputEle, "Please select valid joining date")
         return false;
     } else if (inputEle.value <= employeeStore.emp.dob) {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Joining date can't be less than DOB"
+        displayAlert(inputEle, "Joining date can't be less than DOB")
         return false;
     } else {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
     }
 }

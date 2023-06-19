@@ -4,7 +4,7 @@
             <div class="container-fluid d-flex flex-column justify-content-center align-items-center">
                 <h1 class="text-center home-head">
                     <p class="p-0 m-0">Hey</p> <strong class="usr-name">
-                        {{ displayName() }}!
+                        {{ auth.currentUser!.displayName ?displayName(auth.currentUser!.displayName) : ''  }}!
                     </strong>
                 </h1>
                 <h1 class="text-center home-head">
@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+import { auth } from '@/includes/firebase';
 import { useFormatName } from '@/composables/useFormatName'
 
 const { displayName } = useFormatName()

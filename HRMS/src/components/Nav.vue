@@ -32,12 +32,12 @@
                     <div class="dropdown">
                         <div class="dropdown-toggle profile d-flex align-items-center justify-content-center rounded-circle p-2"
                             id="navbarDropdown" role="button" aria-expanded="false">
-                            {{ empInitials(auth.currentUser?.displayName) }}
+                            {{ auth.currentUser!.displayName ?empInitials(auth.currentUser!.displayName) : '' }}
                         </div>
                         <ul class="dropdown-menu position-absolute p-0" aria-labelledby="navbarDropdown">
                             <li class="d-flex">
                                 <router-link class="profile-item p-2"
-                                    :to="{ name: 'Profile', params: { id: auth.currentUser.uid } }">Profile</router-link>
+                                    :to="{ name: 'Profile', params: { id: auth.currentUser!.uid } }">Profile</router-link>
                             </li>
                             <li>
                                 <hr class="dropdown-divider p-0 m-0">
@@ -70,7 +70,7 @@ const employeeStore = useEmployeeStore()
 const logout = async () => {
     await auth.signOut()
     localStorage.removeItem("isLoggedIn")
-    employeeStore.isLoggedIn = false
+    employeeStore.isLoggedIn = 'false'
     router.push("/login")
 }
 </script>
