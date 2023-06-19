@@ -18,8 +18,8 @@
                                 <label for="startDate">Leave From:</label>
                                 <input type="date" id="startDate"
                                     :disabled="store.leave.type === 'Leave Type' ? true : false"
-                                    v-model="store.leave.startDate" :min="today" :max="store.leave.endDate"
-                                    @input="removeAlert($event.target)" />
+                                    v-model="store.leave.startDate" :min="today" :max="(store.leave.endDate as string)"
+                                    @input="removeAlert($event.target as HTMLFormElement)" />
                                 <p class="vAlert startDateErr" :class="{ 'txt-black': store.leave.type === 'Leave Type' }">
                                     {{ handleNoticeTxt() }}
                                 </p>
@@ -27,20 +27,20 @@
                             <div class="form-fields dates d-flex flex-column">
                                 <label for="endDate">Leave To:</label>
                                 <input type="date" id="endDate" :disabled="store.leave.type === 'Leave Type' ? true : false"
-                                    v-model="store.leave.endDate" @input="removeAlert($event.target)"
-                                    :min="store.leave.startDate ? store.leave.startDate : today" />
+                                    v-model="store.leave.endDate" @input="removeAlert($event.target as HTMLFormElement)"
+                                    :min="store.leave.startDate ? (store.leave.startDate as string) : today" />
                                 <p class="vAlert endDateErr" id='endDateErr'></p>
                             </div>
                         </div>
                         <div class="form-fields">
                             <textarea id="Reason" placeholder="Enter reason for Leave" v-model="store.leave.reason"
-                                @input="checkReasonLength"></textarea>
+                                @input="checkReasonLength('Reason')"></textarea>
                             <p class="vAlert ReasonErr"></p>
                         </div>
                         <div class="form-fields">
-                            <input id="Email" placeholder="Requesting From (Email)" v-model="store.leave.toEmail"
-                                @change="isValidEmail()" />
-                            <p class="vAlert EmailErr"></p>
+                            <input id="email" placeholder="Requesting From (Email)" v-model="store.leave.toEmail"
+                                @change="isValidEmail('email')" />
+                            <p class="vAlert emailErr"></p>
                         </div>
                         <p class="vAlert"></p>
                         <div class="d-flex justify-content-center">
@@ -121,38 +121,41 @@ import type Leave from '../types/leaveObj'
 import type Employee from "@/types/employee";
 import { useLeaveStore } from '../stores/leaveStore'
 import { auth, db } from '@/includes/firebase';
-import { collection, addDoc, getDocs, getDoc, doc, updateDoc, onSnapshot, query, where, type DocumentData } from "firebase/firestore";
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
-import { useToggleFormAlert } from '../composables/useToggleFormAlert.js'
+import { collection, addDoc, getDoc, doc, updateDoc, onSnapshot, query, where, type DocumentData } from "firebase/firestore";
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useToggleFormAlert } from '../composables/useToggleFormAlert'
 import { useValidateIP } from '../composables/useValidateIP'
 
-let userDoc = ref('')
+let userDoc = ref<string>('')
 
-function getTodayDate() {
-    const today = new Date();
+function getTodayDate(): string {
+    const today: Date = new Date();
 
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const year: number = today.getFullYear();
+    const month: string = String(today.getMonth() + 1).padStart(2, '0');
+    const day: string = String(today.getDate()).padStart(2, '0');
 
-    const formattedDate = `${year}-${month}-${day}`;
+    const formattedDate: string = `${year}-${month}-${day}`;
 
     return formattedDate;
 }
 
-const today = getTodayDate()
+const today: string = getTodayDate()
 const { displayAlert, removeAlert } = useToggleFormAlert()
 const { isValidEmail } = useValidateIP()
-let leaves = ref<{ [key: string]: any }[]>([])
+interface leaveObj extends Leave {
+    id: string
+}
+let leaves = ref<leaveObj[]>([])
 const modelLeave = ref<DocumentData>({})
 onMounted(async () => {
     const q = query(collection(db, "leaves"), where("uid", "==", auth.currentUser!.uid));
     onSnapshot(q, (querySnapshot) => {
-        const FbLeaves: Leave[] = []
-        querySnapshot.forEach((doc: { [x: string]: any }) => {
-            const leave = {
-                ...doc.data(),
-                id: doc.id
+        const FbLeaves: leaveObj[] = []
+        querySnapshot.forEach((doc) => {
+            const leave: leaveObj = {
+                ...doc.data() as Leave,
+                id: doc.id as string
             }
             FbLeaves.push(leave)
         });
@@ -160,19 +163,21 @@ onMounted(async () => {
     })
 })
 
-
+interface empObj extends Employee {
+    docId: string;
+}
 onMounted(async () => {
     const q = query(collection(db, "employees"), where("uid", "==", auth.currentUser!.uid));
     onSnapshot(q, (querySnapshot) => {
-        const fbUser: Employee[] = []
-        querySnapshot.forEach((doc: { [x: string]: any }) => {
-            const user = {
-                ...doc.data(),
-                id: doc.id
+        const fbUser: empObj[] = []
+        querySnapshot.forEach((doc) => {
+            const user: empObj = {
+                ...doc.data() as Employee,
+                docId: doc.id as string
             }
             fbUser.push(user)
         });
-        userDoc.value = fbUser[0].id
+        userDoc.value = fbUser[0].docId
     })
 })
 
@@ -206,7 +211,7 @@ const validateForm = () => {
     return isValid
 }
 
-const getDateDifference = (date1, date2) => {
+const getDateDifference = (date1: Date | string, date2: Date | string) => {
     const oneDay = 24 * 60 * 60 * 1000;
 
     const firstDate = new Date(date1);
@@ -227,8 +232,8 @@ const applyLeave = async (e: Event): Promise<void> => {
     const totalLeave = user?.leaveBallance ?? 0;
     if (
         validateForm() &&
-        checkReasonLength() &&
-        isValidEmail() &&
+        checkReasonLength('Reason') &&
+        isValidEmail('email') &&
         auth.currentUser &&
         totalLeave > 0 &&
         getDateDifference(store.leave.startDate, store.leave.endDate) <= totalLeave
@@ -274,15 +279,14 @@ const handleLeaveDisplay = async (id: string): Promise<void> => {
 }
 
 const handleNoticeTxt = () => {
-    const endDateEl = document.getElementById("endDateErr") as HTMLElement
     if (store.leave.type === 'Leave Type') {
         return "Please select Leave type first**"
     }
     return
 }
 
-const handleLeaveType = (e:Event) => {
-    const leaveSelect = e.target as HTMLElement
+const handleLeaveType = (e: Event) => {
+    const leaveSelect = e.target as HTMLFormElement
     const startDateEl = document.getElementById("startDate") as HTMLInputElement
     const endDateEl = document.getElementById("endDate") as HTMLInputElement
     removeAlert(leaveSelect)
@@ -328,8 +332,8 @@ function getDayAfterTomorrowDate() {
 
     return formattedDate;
 }
-const checkReasonLength = () => {
-    const reasonEl = document.getElementById('Reason') as HTMLInputElement
+const checkReasonLength = (id: string): boolean => {
+    const reasonEl = document.getElementById(id) as HTMLFormElement
     const len = reasonEl.value.trim().length;
     let message = "";
     let isValid = true;
@@ -455,7 +459,7 @@ onBeforeUnmount(() => {
     width: 200px;
 }
 
-.modal-content{
+.modal-content {
     width: 400px;
 }
 

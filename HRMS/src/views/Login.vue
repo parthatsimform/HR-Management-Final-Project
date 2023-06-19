@@ -12,7 +12,7 @@
                     </div>
                     <div class=" form-fields">
                         <input name="email" type="email" id="email" placeholder="Email*" v-model="employeeStore.emp.email"
-                            @input="validateEmail('email')" />
+                            @input="isValidEmail('email')" />
                         <p class="vAlert emailErr"></p>
                     </div>
 
@@ -27,7 +27,8 @@
                             Sign In
                         </button>
                     </div>
-                    <p class="text-center">Don't an account? <RouterLink :to="{ name: 'Register' }">Register</RouterLink> here.
+                    <p class="text-center">Don't an account? <RouterLink :to="{ name: 'Register' }">Register</RouterLink>
+                        here.
                     </p>
                 </form>
             </div>
@@ -42,49 +43,35 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useEmployeeStore } from "../stores/employees"
 import { onBeforeUnmount } from 'vue';
 import type Employee from '@/types/employee';
+import { useToggleFormAlert } from '../composables/useToggleFormAlert'
+import { useValidateIP } from '../composables/useValidateIP'
+
+const { displayAlert, removeAlert } = useToggleFormAlert()
+const { isValidEmail } = useValidateIP()
 
 const employeeStore = useEmployeeStore()
 
-const validateEmail = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
-    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(inputEle.value)) {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
-        return true;
-    } else {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter valid email address"
-        return false;
-    }
-}
-
 const validatePassword = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
-
     if (inputEle.value === "") {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter password"
+        displayAlert(inputEle,"Please enter password")
         return false;
     } else {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
     }
 }
 
 const userLogin = async (e: Event): Promise<void> => {
-    if (validateEmail('email') && validatePassword('password')) {
+    if (isValidEmail('email') && validatePassword('password')) {
         const target = e.target as HTMLFormElement
         const email = target.email.value;
         const password = target.password.value;
 
         try {
-            const user = await signInWithEmailAndPassword(auth, email, password)
+            await signInWithEmailAndPassword(auth, email, password)
             if (auth.currentUser) {
-                localStorage.setItem("isLoggedIn", true)
+                localStorage.setItem("isLoggedIn", 'true')
                 employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
                 router.push("/")
             }
@@ -215,7 +202,9 @@ onBeforeUnmount(() => {
     .login-form {
         width: 90%;
     }
+
     .form-container {
         width: 100% !important;
     }
-}</style>
+}
+</style>

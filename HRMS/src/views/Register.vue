@@ -8,20 +8,21 @@
                 <form class="registration-form" @submit.prevent="registerUser">
                     <h2 Register class="text-center fw-bold mb-3">Register</h2>
                     <div class="mb-1 form-fields">
-                        <input type="text" id="name" placeholder="Full name*"
-                            v-model="employeeStore.emp.fullName" @input="validateName('name')">
+                        <input type="text" id="name" placeholder="Full name*" v-model="employeeStore.emp.fullName"
+                            @input="validateName('name')">
                         <p class="vAlert nameErr"></p>
                     </div>
                     <div class="mb-1 form-fields">
-                        <input type="email" id="email" placeholder="Email*"
-                            v-model="employeeStore.emp.email" @input="validateEmail('email')">
+                        <input type="email" id="email" placeholder="Email*" v-model="employeeStore.emp.email"
+                            @input="isValidEmail('email')">
                         <p class="vAlert emailErr"></p>
                     </div>
                     <div class="input-group form-fields">
                         <div class="w-100 d-flex flex-roe">
                             <input type="password" class="p-ip" id="password" placeholder="Password*"
                                 v-model="employeeStore.emp.password" @input="validatePassword('password')">
-                            <span class="passwordTipIcon d-flex justify-content-center align-items-center" id="basic-addon1">
+                            <span class="passwordTipIcon d-flex justify-content-center align-items-center"
+                                id="basic-addon1">
                                 ?
                                 <span class="passwordTip">
                                     Password must be 8-12 characters long and contain at least one numeric digit and a
@@ -49,26 +50,26 @@
                         <p class="vAlert deptErr"></p>
                     </div>
                     <div class="mb-1 form-fields">
-                        <input type="tel" id="mobile" placeholder="Mobile Number*"
-                            v-model="employeeStore.emp.mobile" @input="validateMobile('mobile')">
+                        <input type="tel" id="mobile" placeholder="Mobile Number*" v-model="employeeStore.emp.mobile"
+                            @input="validateMobile('mobile')">
                         <p class="vAlert mobileErr"></p>
                     </div>
                     <div class="mb-1 form-fields">
                         <label for="dob" class="form-label">Date of Birth*</label>
-                        <input type="date" id="dob" v-model="employeeStore.emp.dob"
-                            @input="validateDOB('dob')">
+                        <input type="date" id="dob" v-model="employeeStore.emp.dob" @input="validateDOB('dob')">
                         <p class="vAlert dobErr"></p>
                     </div>
                     <div class="mb-1 form-fields">
                         <label for="dob" class="form-label">Joining Date*</label>
-                        <input type="date" id="joinDate" v-model="employeeStore.emp.joiningDate"
-                            min="1950-01-01" max="2023-06-30" @input="validateJoinDate('joinDate')">
+                        <input type="date" id="joinDate" v-model="employeeStore.emp.joiningDate" min="1950-01-01"
+                            max="2023-06-30" @input="validateJoinDate('joinDate')">
                         <p class="vAlert joinDateErr"></p>
                     </div>
                     <div class="d-flex justify-content-center mb-2">
                         <button class="btn btn-primary w-75 fw-medium py-2" type="submit">Register</button>
                     </div>
-                    <p class="text-center">Already have an account? <RouterLink :to="{name:'Login'}">Login</RouterLink> here. </p>
+                    <p class="text-center">Already have an account? <RouterLink :to="{ name: 'Login' }">Login</RouterLink>
+                        here. </p>
                 </form>
             </div>
         </div>
@@ -83,6 +84,11 @@ import { collection, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import router from "@/router";
 import { onBeforeUnmount } from "vue";
+import { useToggleFormAlert } from '../composables/useToggleFormAlert'
+import { useValidateIP } from '../composables/useValidateIP'
+
+const { displayAlert, removeAlert } = useToggleFormAlert()
+const { isValidEmail } = useValidateIP()
 
 const employeeStore = useEmployeeStore()
 const registerUser = async () => {
@@ -97,7 +103,7 @@ const registerUser = async () => {
             joiningDate: employeeStore.emp.joiningDate,
             isAdmin: false,
             leaveBallance: 10,
-            uid: ''
+            uid: '',
         }
 
         try {
@@ -108,7 +114,7 @@ const registerUser = async () => {
                 const empRef = await addDoc(collection(db, "employees"), newUser)
                 if (empRef) {
                     await updateProfile(user, { displayName: newUser.fullName })
-                    localStorage.setItem("isLoggedIn", true)
+                    localStorage.setItem("isLoggedIn", 'true')
                     employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
                     router.push("/")
                 } else {
@@ -122,7 +128,7 @@ const registerUser = async () => {
         }
     } else {
         validateName('name')
-        validateEmail('email')
+        isValidEmail('email')
         validatePassword('password')
         validateCPassword('cPassword')
         validateDept('dept')
@@ -135,7 +141,7 @@ const registerUser = async () => {
 
 const validateForm = (): boolean => {
     if (validateName('name') &&
-        validateEmail('email') &&
+        isValidEmail('email') &&
         validatePassword('password') &&
         validateCPassword('cPassword') &&
         validateDept('dept') &&
@@ -150,88 +156,62 @@ const validateForm = (): boolean => {
 
 const validateName = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === "") {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter your full name"
+        displayAlert(inputEle, "Please enter your full name")
         return false;
     } else {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
-    }
-}
-
-const validateEmail = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
-    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(inputEle.value)) {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
-        return true;
-    } else {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter valid email address"
-        return false;
     }
 }
 
 const validatePassword = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
 
     if (passwordRegex.test(inputEle.value)) {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
     } else {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter valid password"
+        displayAlert(inputEle, "Please enter valid password")
         return false;
     }
 }
 
 const validateCPassword = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === employeeStore.emp.password) {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
+    } else if (!inputEle.value) {
+        displayAlert(inputEle, "Please enter your password again")
+        return false
     } else {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter same password again"
+        displayAlert(inputEle, "Please enter same password again")
         return false;
     }
 }
 
 const validateDept = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === "Select Department*") {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select department"
+        displayAlert(inputEle, "Please select department")
         return false;
     } else {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
     }
 }
 
 const validateMobile = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
-    const mobileRegex: RegExp = /^[0-9]{10}$/
-    if (mobileRegex.test(inputEle.value)) {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+    const indiaPhoneRegex = /^[6-9]\d{9}$/;
+    const usPhoneRegex = /^(\+?1-?)?\d{3}-?\d{3}-?\d{4}$/;
+    if (indiaPhoneRegex.test(inputEle.value) || usPhoneRegex.test(inputEle.value)) {
+        removeAlert(inputEle)
         return true;
     } else {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please enter 10 digit mobile number"
+        displayAlert(inputEle, "Please enter valid mobile number")
         return false;
     }
 }
@@ -247,40 +227,31 @@ const validDate = (dob: Date) => {
 
 const validateDOB = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === "") {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select your date of birth"
+        displayAlert(inputEle, "Please select your date of birth")
         return false;
     } else if (!validDate(inputEle.value)) {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select valid DOB having year >=1900"
+        displayAlert(inputEle, "Please select valid DOB")
         return false;
     } else {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
     }
 }
 
 const validateJoinDate = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const errClass = document.querySelector("." + id + "Err") as HTMLParagraphElement
     if (inputEle.value === "") {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select your Joining Date"
+        displayAlert(inputEle, "Please select your Joining Date")
         return false;
     } else if (!validDate(inputEle.value)) {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Please select valid date having year >=1900"
+        displayAlert(inputEle, "Please select valid joining date")
         return false;
     } else if (inputEle.value <= employeeStore.emp.dob) {
-        inputEle.style.border = "1px solid red";
-        errClass.textContent = "Joining date can't be less than DOB"
+        displayAlert(inputEle, "Joining date can't be less than DOB")
         return false;
     } else {
-        inputEle.style.border = "1px solid #dee2e6"
-        errClass.textContent = ""
+        removeAlert(inputEle)
         return true;
     }
 }
@@ -302,6 +273,7 @@ onBeforeUnmount(() => {
 .img-container {
     background-color: #005ae2;
 }
+
 .registration-container {
     width: 80%;
     border-radius: 20px;
@@ -329,7 +301,7 @@ onBeforeUnmount(() => {
     padding: 5px 10px;
 }
 
-.p-ip{
+.p-ip {
     width: 90%;
     border-radius: 8px 0px 0px 8px !important;
 }
@@ -338,11 +310,13 @@ onBeforeUnmount(() => {
 .form-fields select:focus {
     outline: 2px solid #2f69fe;
 }
+
 .form-fields input::placeholder,
 .form-fields select::placeholder {
     font-weight: 600;
     font-size: 15px;
 }
+
 .passwordTipIcon {
     width: 10%;
     cursor: pointer;
@@ -394,6 +368,7 @@ onBeforeUnmount(() => {
     margin-bottom: 10px;
     color: #ff0000;
 }
+
 @media (max-width:1200px) {
     .registration-container {
         width: 85% !important;
