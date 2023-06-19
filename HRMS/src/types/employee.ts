@@ -15,5 +15,5 @@ export default interface Employee {
 	isAdmin?: false;
 	leaveBallance: number;
 	uid: string;
-	techStackTimeLine:string[];
+	techStackTimeLine: object[];
 }

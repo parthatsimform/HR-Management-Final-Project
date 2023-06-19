@@ -109,8 +109,8 @@ const employeeStore = useEmployeeStore();
 const { empInitials } = useFormatName();
 
 onBeforeMount(async () => {
-    getEmpData();
-    await employeeStore.getEmpDetails(auth.currentUser.uid)
+  getEmpData();
+  await employeeStore.getEmpDetails(auth.currentUser!.uid)
 });
 interface empObj extends Employee {
   docId: string;
@@ -150,90 +150,90 @@ const onDrop = async (event: DragEvent, department: string) => {
 
 <style scoped>
 .container-fluid {
-    width: 85%;
+  width: 85%;
 }
 
 .department {
-    margin-top: 100px;
+  margin-top: 100px;
 }
 
 .common-header {
-    height: 50px;
-    background-color: #0d6efd;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px 8px 0px 0px;
+  height: 50px;
+  background-color: #0d6efd;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px 8px 0px 0px;
 }
 
 .common-department-content {
-    height: 75vh;
-    background-color: #e2e2e2;
-    overflow-y: scroll;
-    box-shadow: 5px 10px 18px rgb(136, 136, 136, 0.5);
-    border-radius: 0px 0px 8px 8px;
+  height: 75vh;
+  background-color: #e2e2e2;
+  overflow-y: scroll;
+  box-shadow: 5px 10px 18px rgb(136, 136, 136, 0.5);
+  border-radius: 0px 0px 8px 8px;
 }
 
 .common-department-content::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .user-card {
-    height: 90px;
-    overflow: hidden;
-    background-color: white;
-    border-radius: 8px;
-    cursor: pointer;
+  height: 90px;
+  overflow: hidden;
+  background-color: white;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .common-department-content :hover {
-    transform: scale(1.02);
-    transition: 0.25s;
+  transform: scale(1.02);
+  transition: 0.25s;
 }
 
 .emp-dept {
-    color: #0d6efd;
+  color: #0d6efd;
 }
 
 .profile-image {
-    border-radius: 8px;
-    background-color: #e2e2e2;
-    font-weight: bold;
+  border-radius: 8px;
+  background-color: #e2e2e2;
+  font-weight: bold;
 }
 
 .emp-initials {
-    height: 60px;
-    width: 60px;
+  height: 60px;
+  width: 60px;
 }
 
 .emp-name {
-    font-size: 20px;
-    font-weight: bold;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    white-space: break-spaces;
+  font-size: 20px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  white-space: break-spaces;
 }
 
 .emp-dept {
-    font-size: 15px;
+  font-size: 15px;
 }
 
 @media (max-width: 1200px) {
-    .container-fluid {
-        width: 90%;
-    }
+  .container-fluid {
+    width: 90%;
+  }
 
-    .user-card {
-        height: 100px;
-        flex-direction: column !important;
-    }
+  .user-card {
+    height: 100px;
+    flex-direction: column !important;
+  }
 
-    .emp-initials {
-        height: 40px;
-        width: 40px;
-    }
+  .emp-initials {
+    height: 40px;
+    width: 40px;
+  }
 
   .emp-name {
     font-size: 15px;
@@ -247,33 +247,33 @@ const onDrop = async (event: DragEvent, department: string) => {
 }
 
 @media (max-width: 991px) {
-    .emp-name {
-        font-size: 15px;
-    }
+  .emp-name {
+    font-size: 15px;
+  }
 
-    .emp-dept {
-        font-size: 12px;
-    }
+  .emp-dept {
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 767px) {
-    .common-department-content {
-        height: 350px;
-    }
+  .common-department-content {
+    height: 350px;
+  }
 
-    .common-header {
-        margin-top: 20px;
-    }
+  .common-header {
+    margin-top: 20px;
+  }
 }
 
 @media (max-width: 569px) {
-    .user-card {
-        height: 100px;
-    }
+  .user-card {
+    height: 100px;
+  }
 
-    .profile-image {
-        font-size: 15px;
-    }
+  .profile-image {
+    font-size: 15px;
+  }
 }
 </style>
 
