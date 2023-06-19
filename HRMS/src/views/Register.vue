@@ -99,7 +99,7 @@ const registerUser = async () => {
             isAdmin: false,
             leaveBallance: 10,
             uid: '',
-            techStack: []
+            techStackTimeLine: []
         }
 
         try {
@@ -441,4 +441,5 @@ onBeforeUnmount(() => {
     .form-container {
         padding: 20px 0px !important;
     }
-}</style>
+}
+</style>

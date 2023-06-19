@@ -153,7 +153,6 @@ const onDrop = async (event, department) => {
 
             const today = new Date();
             const date = formattedDate(today.toISOString());
-            console.log(date)
             const stackData = {
                 techStack: department,
                 date: date
