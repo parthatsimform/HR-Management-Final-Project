@@ -19,9 +19,9 @@
             </div>
           </transition-group>
           <div class="d-flex flex-column justify-content-end">
-            <div class="timeline-hr"></div>
+            <div class="timeline-hr mx-auto"></div>
             <div class="timeline-dot"></div>
-            <div class="timeline-hr after-hr"></div>
+            <div class="timeline-hr after-hr mx-auto"></div>
           </div>
         </div>
         <div class="d-flex flex-row align-items-center card-wrapper" v-else>
@@ -96,10 +96,20 @@ if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
 }
 
 for (let i = 0; i < duration[0]; i++) {
-  setTimeout(() => {
-    const eventDate = employeeStore.emp_details.joiningDate
-    items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
-  }, (i + 1) * 250)
+  if (i >= 5) {
+    if ((i + 1) % 5 == 0) {
+      setTimeout(() => {
+        const eventDate = employeeStore.emp_details.joiningDate
+        items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
+      }, (i + 1) * 250)
+    }
+  } else {
+    setTimeout(() => {
+      const eventDate = employeeStore.emp_details.joiningDate
+      items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) });
+    }, (i + 1) * 250)
+  }
+
 }
 
 function beforeEnter(el: { style: { opacity: number; transform: string; }; }) {
@@ -141,6 +151,13 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
   display: none;
 }
 
+.timeline-card {
+  width: 290px;
+  height: 100px;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
 .card-content {
   background-color: #0d6efd;
   color: white;
@@ -150,16 +167,15 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
 }
 
 .timeline-hr {
-  border: 2px solid #0d6efd;
+  border: 2px solid #aeaeae;
   height: 45px;
   width: 1px;
-  margin-left: 9.5px;
 }
 
 .timeline-dot {
   border: 10px solid #0d6efd;
   border-radius: 50%;
-  height: 2px;
+  height: 2px
 }
 
 .timeline-card-content-leave-active {
@@ -184,12 +200,13 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
 
 .card-content-right::after {
   content: "";
-    position: absolute;
-    right: 88.7%;
-    margin-left: -30px;
-    border-width: 35px;
-    border-style: solid;
-    border-color: transparent #0d6efd transparent transparent;
+  position: absolute;
+  top: 15%;
+  right: 88.5%;
+  margin-left: -30px;
+  border-width: 35px;
+  border-style: solid;
+  border-color: transparent #0d6efd transparent transparent;
 }
 
 .timeline-dot-end {
@@ -246,6 +263,10 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
     height: 2px;
     width: 2px;
   }
+
+  .timeline-card {
+    background-color: #E2E2E2;
+  }
 }
 
 @media screen and (max-width: 390px) {
@@ -268,5 +289,7 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
   .timeline-date {
     font-size: 12.5px;
   }
+
+
 }
 </style>
