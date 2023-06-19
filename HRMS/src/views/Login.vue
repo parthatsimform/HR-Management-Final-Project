@@ -27,7 +27,8 @@
                             Sign In
                         </button>
                     </div>
-                    <p class="text-center">Don't an account? <RouterLink :to="{ name: 'Register' }">Register</RouterLink> here.
+                    <p class="text-center">Don't an account? <RouterLink :to="{ name: 'Register' }">Register</RouterLink>
+                        here.
                     </p>
                 </form>
             </div>
@@ -42,6 +43,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useEmployeeStore } from "../stores/employees"
 import { onBeforeUnmount } from 'vue';
 import type Employee from '@/types/employee';
+import Swal from 'sweetalert2'
 
 const employeeStore = useEmployeeStore()
 
@@ -82,14 +84,45 @@ const userLogin = async (e: Event): Promise<void> => {
         const password = target.password.value;
 
         try {
-            const user = await signInWithEmailAndPassword(auth, email, password)
+            await signInWithEmailAndPassword(auth, email, password)
             if (auth.currentUser) {
                 localStorage.setItem("isLoggedIn", true)
                 employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
                 router.push("/")
             }
         } catch (err: any) {
-            alert(err.code);
+            let errMsg: string = err.code;
+            switch (err.code) {
+                case "auth/wrong-password":
+                case "auth/invalid-app-credential":
+                case "auth/invalid-email":
+                case "auth/user-not-found":
+                    errMsg = "Invalid Credentials"
+                    break;
+
+                case "auth/too-many-requests":
+                    errMsg = "Too many requests.\nPlease try after some time."
+                    break;
+
+                default:
+                    errMsg = err.code
+                    break;
+            }
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                customClass: {
+                    container: 'mt-5'
+                }
+            })
+            Toast.fire({
+                icon: 'error',
+                title: errMsg
+            })
         }
     } else {
         validatePassword('password')
@@ -215,7 +248,9 @@ onBeforeUnmount(() => {
     .login-form {
         width: 90%;
     }
+
     .form-container {
         width: 100% !important;
     }
-}</style>
+}
+</style>

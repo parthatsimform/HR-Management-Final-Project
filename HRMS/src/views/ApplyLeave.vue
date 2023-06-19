@@ -121,10 +121,11 @@ import type Leave from '../types/leaveObj'
 import type Employee from "@/types/employee";
 import { useLeaveStore } from '../stores/leaveStore'
 import { auth, db } from '@/includes/firebase';
-import { collection, addDoc, getDocs, getDoc, doc, updateDoc, onSnapshot, query, where, type DocumentData } from "firebase/firestore";
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
+import { collection, addDoc, getDoc, doc, updateDoc, onSnapshot, query, where, type DocumentData } from "firebase/firestore";
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useToggleFormAlert } from '../composables/useToggleFormAlert.js'
 import { useValidateIP } from '../composables/useValidateIP'
+import Swal from 'sweetalert2'
 
 let userDoc = ref('')
 
@@ -225,6 +226,16 @@ const applyLeave = async (e: Event): Promise<void> => {
     const userDocSnap = await getDoc(userDocRef);
     const user = userDocSnap.data();
     const totalLeave = user?.leaveBallance ?? 0;
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: {
+            container: 'mt-5'
+        }
+    })
     if (
         validateForm() &&
         checkReasonLength() &&
@@ -249,17 +260,29 @@ const applyLeave = async (e: Event): Promise<void> => {
             });
             const res = await addDoc(collection(db, "leaves"), leave);
             if (res) {
-                alert("Leave applied successfully");
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Leave applied successfully'
+                })
                 store.$reset();
             } else {
-                alert("Error while applying !!!");
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Error while applying !!!'
+                })
                 store.$reset();
             }
         } catch (err) {
-            console.log(err);
+            Toast.fire({
+                icon: 'error',
+                title: 'Error while applying !!!'
+            })
         }
-    } else if (totalLeave === 0) {
-        alert("Insufficient Leave Ballance!!");
+    } else if (getDateDifference(store.leave.startDate, store.leave.endDate) > totalLeave) {
+        Toast.fire({
+            icon: 'warning',
+            title: 'Insufficient Leave Ballance!!'
+        })
         store.$reset();
     }
 };
@@ -281,7 +304,7 @@ const handleNoticeTxt = () => {
     return
 }
 
-const handleLeaveType = (e:Event) => {
+const handleLeaveType = (e: Event) => {
     const leaveSelect = e.target as HTMLElement
     const startDateEl = document.getElementById("startDate") as HTMLInputElement
     const endDateEl = document.getElementById("endDate") as HTMLInputElement
@@ -414,7 +437,7 @@ onBeforeUnmount(() => {
 }
 
 .leave-display-container {
-    height: 500px;
+    height: 650px;
 }
 
 .leave-form,
@@ -455,7 +478,7 @@ onBeforeUnmount(() => {
     width: 200px;
 }
 
-.modal-content{
+.modal-content {
     width: 400px;
 }
 
