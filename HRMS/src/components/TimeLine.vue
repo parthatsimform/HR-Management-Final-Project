@@ -4,16 +4,15 @@
       <div class="d-flex justify-content-center align-items-center">
         <div class="timeline-dot-end timeline-start"></div>
       </div>
-
-      <div class="timeline-space" v-for="(item, index) in items" :key="item.message">
+      <div class="timeline-space" v-for="( item, index) in timeLineList" :key="item.message">
         <div class="d-flex flex-row-reverse align-items-center card-wrapper" v-if="index % 2 == 0">
           <transition-group class="timeline-card-content" name="timeline-card-content" tag="div"
             @before-enter="beforeEnter" @enter="enter" appear>
             <div class="timeline-card d-flex justify-content-center align-items-center px-4 flex-column text-center"
               :key="`card-${index}`">
               <div
-                class="card-content card-content-right mx-1 d-flex justify-content-center align-items-center flex-column">
-                <div class="timeline-message">{{ item.message }}</div>
+                class="card-content card-content-right mx-1 d-flex justify-content-center align-items-center flex-column ">
+                <div class="timeline-message mx-1">{{ item.message }}</div>
                 <div class="timeline-date">{{ item.date }}</div>
               </div>
             </div>
@@ -30,8 +29,8 @@
             <div class="timeline-card d-flex justify-content-center align-items-center px-4 flex-column text-center"
               :key="`card-${index}`">
               <div
-                class="card-content card-content-left mx-1 d-flex justify-content-center align-items-center flex-column">
-                <div class="timeline-message">{{ item.message }}</div>
+                class="card-content card-content-left mx-1  d-flex justify-content-center align-items-center flex-column ">
+                <div class="timeline-message mx-1">{{ item.message }}</div>
                 <div class="timeline-date">{{ item.date }}</div>
               </div>
             </div>
@@ -51,12 +50,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
-import { useEmployeeStore } from "../stores/employees"
-import gsap from "gsap"
-import { useDuration } from "../composables/useDuration"
-
-import { useFormattedDate } from "../composables/useFormatedDate"
+import { ref } from 'vue'
+import { useEmployeeStore } from '../stores/employees'
+import { useDuration } from '../composables/useDuration'
+import { useFormattedDate } from '../composables/useFormatedDate';
+import gsap from 'gsap'
 
 const { calculateDuration } = useDuration()
 const { formattedDate } = useFormattedDate()
@@ -75,65 +73,54 @@ function addYear(date: string | Date, noOfYears: number): string {
   return `${year}-${month}-${day}`;
 }
 
-function calculateMonth(date: string | Date, noOfMoth: number): string {
-  let month = new Date(date).getUTCMonth() + 1;
-  let year = new Date(date).getUTCFullYear();
-  let day = new Date(date).getUTCDate().toString().padStart(2, "0");
-  month = month + noOfMoth;
+function calculateMonth(date: string, noOfMoth: number): string {
+  let month: number = (new Date(date).getUTCMonth() + 1)
+  let year: number = new Date(date).getUTCFullYear()
+  let day: string = new Date(date).getUTCDate().toString().padStart(2, '0')
+  month = month + noOfMoth
   if (month % 12 > 0 && month > 12) {
-    month = month % 12;
-    year += 1;
+    month = month % 12
+    year += 1
   }
-  const finalMonth = month.toString().padStart(2, "0");
-  return `${year}-${finalMonth}-${day}`;
+  const finalMonth: string = month.toString().padStart(2, '0')
+  return `${year}-${finalMonth}-${day}`
 }
 
-const items = ref([
-  {
-    message: "Joined as a Trainee",
-    date: formattedDate(employeeStore.emp_details.joiningDate),
-  },
-]);
+const items = ref<object[]>([{ message: 'Joined as a Trainee', date: formattedDate(employeeStore.emp_details.joiningDate) }])
 
-if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
-  items.value.push({
-    message: `Congractulations!! Successfully joined as an Employee`,
-    date: calculateMonth(employeeStore.emp_details.joiningDate, 6),
-  });
+async function displayTimeLineYear(): Promise<void> {
+  if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
+    items.value.push({ message: `Congractulations!! Successfully joined as an Employee`, date: calculateMonth(employeeStore.emp_details.joiningDate, 6) });
+  }
+  for (let i = 0; i < duration[0]; i++) {
+    const eventDate = employeeStore.emp_details.joiningDate
+    items.value.push({ message: `You have successfully completed ${i + 1} ${i === 0 ? 'year' : 'years'}`, date: addYear(eventDate, i + 1) })
+  }
 }
 
-for (let i = 0; i < duration[0]; i++) {
+async function displayTimeLineStack(): Promise<void> {
+  for (let i = 0; i < employeeStore.emp_details.techStackTimeLine.length; i++) {
+    items.value.push({ message: `Teck Stack Changed to ${employeeStore.emp_details.techStackTimeLine[i].techStackTimeLine}`, date: employeeStore.emp_details.techStackTimeLine[i].date });
+  }
+}
+
+const timeLinedata: () => Promise<void> = async () => {
+  await displayTimeLineYear()
+  await displayTimeLineStack()
+}
+timeLinedata()
+
+items.value = await items.value.sort((a: Date, b: Date) => new Date(a.date) - new Date(b.date));
+let timeLineList = ref<object[]>([])
+for (let i = 0; i < items.value.length; i++) {
   setTimeout(() => {
-    const eventDate = employeeStore.emp_details.joiningDate;
-    items.value.push({
-      message: `You have successfully completed ${i + 1} ${i === 0 ? "year" : "years"}`,
-      date: addYear(eventDate, i + 1),
-    });
-  }, (i + 1) * 250);
+    timeLineList.value.push(items.value[i])
+  }, (i + 1) * 250)
 }
 
-for (let i = 0; i < employeeStore.emp_details.techStackTimeLine.length; i++) {
-  setTimeout(() => {
-    items.value.push({
-      message: `Teck Stack Changed to ${employeeStore.emp_details.techStackTimeLine[i].techStack}`,
-      date: employeeStore.emp_details.techStackTimeLine[i].date,
-    });
-  }, (i + 1) * 250);
-}
-
-items.value = await items.value.sort(
-  (a: Date, b: Date) => new Date(a.date) - new Date(b.date)
-);
-
-console.log(items.value);
-console.log(items.value.value);
-for (let i = 0; i < items.value[1].length; i++) {
-  console.log(items.value[i]);
-}
-
-function beforeEnter(el: { style: { opacity: number; transform: string } }) {
+function beforeEnter(el: { style: { opacity: number; transform: string; }; }) {
   el.style.opacity = 0;
-  el.style.transform = "translateX(100px)";
+  el.style.transform = 'translateX(100px)'
 }
 
 function enter(el: { dataset: { index: number } }, done: boolean) {
@@ -142,15 +129,15 @@ function enter(el: { dataset: { index: number } }, done: boolean) {
     x: 0,
     duration: 0.5,
     onComplete: done,
-    delay: el.dataset.index * 0.1,
-  });
+    delay: el.dataset.index * 0.1
+  })
 }
 
 function beforeEnterLeft(el: {
   style: { opacity: number; transform: string };
 }) {
   el.style.opacity = 0;
-  el.style.transform = "translateX(-100px)";
+  el.style.transform = 'translateX(-100px)'
 }
 
 function enterLeft(el: { dataset: { index: number } }, done: boolean) {
@@ -159,8 +146,8 @@ function enterLeft(el: { dataset: { index: number } }, done: boolean) {
     x: 0,
     duration: 0.5,
     onComplete: done,
-    delay: el.dataset.index * 0.1,
-  });
+    delay: el.dataset.index * 0.1
+  })
 }
 </script>
 
@@ -199,7 +186,7 @@ function enterLeft(el: { dataset: { index: number } }, done: boolean) {
 .timeline-dot {
   border: 10px solid #0d6efd;
   border-radius: 50%;
-  height: 2px;
+  height: 2px
 }
 
 .timeline-card-content-leave-active {
@@ -289,7 +276,7 @@ function enterLeft(el: { dataset: { index: number } }, done: boolean) {
   }
 
   .timeline-card {
-    background-color: #e2e2e2;
+    background-color: #E2E2E2;
   }
 }
 
@@ -298,7 +285,7 @@ function enterLeft(el: { dataset: { index: number } }, done: boolean) {
     width: 230px;
     height: 100px;
     border-radius: 10px;
-    background-color: #e2e2e2;
+    background-color: #E2E2E2;
   }
 
   .card-content {

@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef, ref, onBeforeMount } from 'vue'
+import { shallowRef, ref } from 'vue'
 import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
 import { useRoute } from 'vue-router'
@@ -44,7 +44,7 @@ const route = useRoute()
 
 await employeeStore.getEmpDetails(route.params.id as string)
 const { empInitials } = useFormatName()
-const profileTab = shallowRef(TimeLine)
+const profileTab = shallowRef(About)
 const isActive = ref<string>('About')
 
 function changeTab(tabName: string): void {
