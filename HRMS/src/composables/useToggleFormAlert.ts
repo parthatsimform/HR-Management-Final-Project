@@ -1,9 +1,9 @@
 export const useToggleFormAlert = () => {
     const displayAlert = (el:HTMLFormElement, msg:string):boolean => {
-        el.style = "border : 1px solid red !important";
+        el.style = "border : 1px solid red";
         const alertElClass : string = `${el.id}Err`;
         const errEl = document.querySelector(`.${alertElClass}`) as HTMLElement
-        errEl!.style = "color : red !important"
+        errEl!.style = "color : red"
         errEl!.textContent = `${msg}`;
         return false;
     };
