@@ -96,6 +96,7 @@
 
 <script setup lang="ts">
 import type Employee from "@/types/employee";
+import type empDoc from "@/types/empDoc"
 import { useFormatName } from "../composables/useFormatName";
 import { onBeforeMount, ref } from "vue";
 import { collection, onSnapshot, type DocumentData } from "firebase/firestore";
@@ -112,17 +113,15 @@ onBeforeMount(async () => {
   getEmpData();
   await employeeStore.getEmpDetails(auth.currentUser!.uid)
 });
-interface empObj extends Employee {
-  docId: string;
-}
-const empData = ref(<empObj[]>[]);
+
+const empData = ref(<empDoc[]>[]);
 async function getEmpData(): Promise<void> {
   onSnapshot(
     collection(db, "employees"),
     (querySnapshot) => {
-      empData.value = [] as empObj[];
+      empData.value = [] as empDoc[];
       querySnapshot.forEach((doc) => {
-        const data: empObj = {
+        const data: empDoc = {
           ...doc.data() as Employee,
           docId: doc.id
         }
@@ -132,15 +131,15 @@ async function getEmpData(): Promise<void> {
   );
 }
 
-const startDrag = (event: DragEvent, item: empObj) => {
+const startDrag = (event: DragEvent, item: empDoc): void => {
   event.dataTransfer!.dropEffect = "move";
   event.dataTransfer!.effectAllowed = "move";
   event.dataTransfer!.setData("itemID", item.uid);
 };
-const onDrop = async (event: DragEvent, department: string) => {
-  const itemID = event.dataTransfer!.getData("itemID");
-  const item = empData.value.filter((item) => item.uid == itemID);
-  const docId = item[0].docId;
+const onDrop = async (event: DragEvent, department: string): Promise<void> => {
+  const itemID: string = event.dataTransfer!.getData("itemID");
+  const item: empDoc[] = empData.value.filter((item) => item.uid == itemID);
+  const docId: string = item[0].docId;
   const washingtonRef = doc(db, "employees", docId);
   await updateDoc(washingtonRef, {
     department: department,

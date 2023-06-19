@@ -80,9 +80,9 @@
 import type Employee from "@/types/employee";
 import { useEmployeeStore } from "../stores/employees"
 import { db, auth } from "../includes/firebase"
-import { collection, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import router from "@/router";
+import { collection, addDoc, type DocumentData, DocumentReference } from "firebase/firestore";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
+import router from "@/router"
 import { onBeforeUnmount } from "vue";
 import { useToggleFormAlert } from '../composables/useToggleFormAlert'
 import { useValidateIP } from '../composables/useValidateIP'
@@ -92,7 +92,7 @@ const { isValidEmail } = useValidateIP()
 import Swal from 'sweetalert2'
 
 const employeeStore = useEmployeeStore()
-const registerUser = async () => {
+const registerUser = async (): Promise<void> => {
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -120,10 +120,9 @@ const registerUser = async () => {
 
         try {
             const { user } = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
-
             if (user) {
                 newUser.uid = user.uid
-                const empRef = await addDoc(collection(db, "employees"), newUser)
+                const empRef: DocumentReference<DocumentData> = await addDoc(collection(db, "employees"), newUser)
                 if (empRef) {
                     await updateProfile(user, { displayName: newUser.fullName })
                     localStorage.setItem("isLoggedIn", 'true')
@@ -203,7 +202,7 @@ const validateName = (id: string): boolean => {
 
 const validatePassword = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
+    const passwordRegex: RegExp = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
 
     if (passwordRegex.test(inputEle.value)) {
         removeAlert(inputEle)
@@ -241,8 +240,8 @@ const validateDept = (id: string): boolean => {
 
 const validateMobile = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    const indiaPhoneRegex = /^[6-9]\d{9}$/;
-    const usPhoneRegex = /^(\+?1-?)?\d{3}-?\d{3}-?\d{4}$/;
+    const indiaPhoneRegex: RegExp = /^[6-9]\d{9}$/;
+    const usPhoneRegex: RegExp = /^(\+?1-?)?\d{3}-?\d{3}-?\d{4}$/;
     if (indiaPhoneRegex.test(inputEle.value) || usPhoneRegex.test(inputEle.value)) {
         removeAlert(inputEle)
         return true;

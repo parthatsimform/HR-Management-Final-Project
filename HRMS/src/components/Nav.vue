@@ -64,13 +64,14 @@
 
 <script lang="ts" setup>
 import { useFormatName } from '../composables/useFormatName'
-const { empInitials } = useFormatName()
 import { auth } from '@/includes/firebase';
 import router from '@/router';
 import { useEmployeeStore } from '@/stores/employees';
+
+const { empInitials } = useFormatName()
 const employeeStore = useEmployeeStore()
 
-const logout = async () => {
+const logout = async (): Promise<void> => {
     await auth.signOut()
     localStorage.removeItem("isLoggedIn")
     employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
