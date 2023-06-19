@@ -51,10 +51,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useEmployeeStore } from '../stores/employees'
-import gsap from 'gsap'
 import { useDuration } from '../composables/useDuration'
-const { calculateDuration } = useDuration()
 import { useFormattedDate } from '../composables/useFormatedDate';
+import gsap from 'gsap'
+
+const { calculateDuration } = useDuration()
 const { formattedDate } = useFormattedDate()
 const employeeStore = useEmployeeStore();
 const dateToday: Date = new Date()
@@ -68,21 +69,21 @@ function addYear(date: string, noOfYears: number): string {
 }
 
 function calculateMonth(date: string, noOfMoth: number): string {
-  let month = (new Date(date).getUTCMonth() + 1)
-  let year = new Date(date).getUTCFullYear()
-  let day = new Date(date).getUTCDate().toString().padStart(2, '0')
+  let month: number = (new Date(date).getUTCMonth() + 1)
+  let year: number = new Date(date).getUTCFullYear()
+  let day: string = new Date(date).getUTCDate().toString().padStart(2, '0')
   month = month + noOfMoth
   if (month % 12 > 0 && month > 12) {
     month = month % 12
     year += 1
   }
-  const finalMonth = month.toString().padStart(2, '0')
+  const finalMonth: string = month.toString().padStart(2, '0')
   return `${year}-${finalMonth}-${day}`
 }
 
-const items = ref([{ message: 'Joined as a Trainee', date: formattedDate(employeeStore.emp_details.joiningDate) }])
+const items = ref<object[]>([{ message: 'Joined as a Trainee', date: formattedDate(employeeStore.emp_details.joiningDate) }])
 
-async function displayTimeLineYear() {
+async function displayTimeLineYear(): Promise<void> {
   if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
     items.value.push({ message: `Congractulations!! Successfully joined as an Employee`, date: calculateMonth(employeeStore.emp_details.joiningDate, 6) });
   }
@@ -92,20 +93,20 @@ async function displayTimeLineYear() {
   }
 }
 
-async function displayTimeLineStack() {
+async function displayTimeLineStack(): Promise<void> {
   for (let i = 0; i < employeeStore.emp_details.techStackTimeLine.length; i++) {
     items.value.push({ message: `Teck Stack Changed to ${employeeStore.emp_details.techStackTimeLine[i].techStackTimeLine}`, date: employeeStore.emp_details.techStackTimeLine[i].date });
   }
 }
 
-const timeLinedata = async () => {
+const timeLinedata: () => Promise<void> = async () => {
   await displayTimeLineYear()
   await displayTimeLineStack()
 }
 timeLinedata()
 
 items.value = await items.value.sort((a: Date, b: Date) => new Date(a.date) - new Date(b.date));
-let timeLineList = ref([])
+let timeLineList = ref<object[]>([])
 for (let i = 0; i < items.value.length; i++) {
   setTimeout(() => {
     timeLineList.value.push(items.value[i])

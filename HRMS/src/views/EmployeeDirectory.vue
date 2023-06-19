@@ -9,22 +9,27 @@
                         </div>
                         <div class="common-department-content" @drop="onDrop($event, 'FrontEnd')" @dragenter.prevent
                             @dragover.prevent>
-                            <div class="users-list" v-for="employee in emp_data">
-                                <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
-                                    draggable="true" v-if="employee.department === 'FrontEnd'"
-                                    @dragstart="startDrag($event, employee)">
-                                    <div class="profile-container d-flex align-items-center justify-content-center">
-                                        <div
-                                            class="profile-image emp-initials d-flex align-items-center justify-content-center">
-                                            {{ empInitials(employee.fullName) }}
+                            <transition-group name="content-card" tag="div" @before-enter="beforeEnter" @enter="enter"
+                                @before-leave="beforeLeave" @leave="leave" appear>
+                                <div class="users-list" v-for="employee in emp_data" :key="employee.uid">
+
+                                    <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
+                                        :draggable="employeeStore.emp_details.isAdmin"
+                                        v-if="employee.department === 'FrontEnd'" @dragstart="startDrag($event, employee)">
+                                        <div class="profile-container d-flex align-items-center justify-content-center">
+                                            <div
+                                                class="profile-image emp-initials d-flex align-items-center justify-content-center">
+                                                {{ empInitials(employee.fullName) }}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex ps-2 flex-column justify-content-center emp-info-container">
+                                            <div class="emp-name">{{ employee.fullName }}</div>
+                                            <label class="emp-dept">{{ employee.email }}</label>
+                                            <label class="emp-dept">FrontEnd</label>
                                         </div>
                                     </div>
-                                    <div class="d-flex ps-2 flex-column justify-content-center emp-info-container">
-                                        <div class="emp-name">{{ employee.fullName }}</div>
-                                        <label class="emp-dept">FrontEnd</label>
-                                    </div>
                                 </div>
-                            </div>
+                            </transition-group>
                         </div>
                     </div>
                     <div class="col-6 col-md-3 employee-dept-table">
@@ -33,22 +38,25 @@
                         </div>
                         <div class="common-department-content" @drop="onDrop($event, 'BackEnd')" @dragenter.prevent
                             @dragover.prevent>
-                            <div class="users-list" v-for="employee in emp_data">
-                                <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
-                                    draggable="true" v-if="employee.department === 'BackEnd'"
-                                    @dragstart="startDrag($event, employee)">
-                                    <div class="profile-container d-flex align-items-center justify-content-center">
-                                        <div
-                                            class="profile-image emp-initials d-flex align-items-center justify-content-center">
-                                            {{ empInitials(employee.fullName) }}
+                            <transition-group name="content-card" tag="div" @before-enter="beforeEnter" @enter="enter"
+                                @before-leave="beforeLeave" @leave="leave" appear>
+                                <div class="users-list" v-for="employee in emp_data" :key="employee.uid">
+                                    <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
+                                        :draggable="employeeStore.emp_details.isAdmin"
+                                        v-if="employee.department === 'BackEnd'" @dragstart="startDrag($event, employee)">
+                                        <div class="profile-container d-flex align-items-center justify-content-center">
+                                            <div
+                                                class="profile-image emp-initials d-flex align-items-center justify-content-center">
+                                                {{ empInitials(employee.fullName) }}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex ps-2 flex-column justify-content-center emp-info-container">
+                                            <div class="emp-name">{{ employee.fullName }}</div>
+                                            <label class="emp-dept">BackEnd</label>
                                         </div>
                                     </div>
-                                    <div class="d-flex ps-2 flex-column justify-content-center emp-info-container">
-                                        <div class="emp-name">{{ employee.fullName }}</div>
-                                        <label class="emp-dept">BackEnd</label>
-                                    </div>
                                 </div>
-                            </div>
+                            </transition-group>
                         </div>
                     </div>
                     <div class="col-6 col-md-3 employee-dept-table">
@@ -57,22 +65,25 @@
                         </div>
                         <div class="common-department-content" @drop="onDrop($event, 'Ui/Ux')" @dragenter.prevent
                             @dragover.prevent>
-                            <div class="users-list" v-for="employee in emp_data">
-                                <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
-                                    draggable="true" v-if="employee.department === 'Ui/Ux'"
-                                    @dragstart="startDrag($event, employee)">
-                                    <div class="profile-container d-flex align-items-center justify-content-center">
-                                        <div
-                                            class="profile-image emp-initials d-flex align-items-center justify-content-center">
-                                            {{ empInitials(employee.fullName) }}
+                            <transition-group name="content-card" tag="div" @before-enter="beforeEnter" @enter="enter"
+                                @before-leave="beforeLeave" @leave="leave" appear>
+                                <div class="users-list" v-for="employee in emp_data" :key="employee.uid">
+                                    <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
+                                        :draggable="employeeStore.emp_details.isAdmin"
+                                        v-if="employee.department === 'Ui/Ux'" @dragstart="startDrag($event, employee)">
+                                        <div class="profile-container d-flex align-items-center justify-content-center">
+                                            <div
+                                                class="profile-image emp-initials d-flex align-items-center justify-content-center">
+                                                {{ empInitials(employee.fullName) }}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex ps-2 flex-column justify-content-center emp-info-container">
+                                            <div class="emp-name">{{ employee.fullName }}</div>
+                                            <label class="emp-dept">Ui/Ux</label>
                                         </div>
                                     </div>
-                                    <div class="d-flex ps-2 flex-column justify-content-center emp-info-container">
-                                        <div class="emp-name">{{ employee.fullName }}</div>
-                                        <label class="emp-dept">Ui/Ux</label>
-                                    </div>
                                 </div>
-                            </div>
+                            </transition-group>
                         </div>
                     </div>
                     <div class="col-6 col-md-3 employee-dept-table">
@@ -81,22 +92,25 @@
                         </div>
                         <div class="common-department-content" @drop="onDrop($event, 'DevOps')" @dragenter.prevent
                             @dragover.prevent>
-                            <div class="users-list" v-for="employee in emp_data">
-                                <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
-                                    draggable="true" v-if="employee.department === 'DevOps'"
-                                    @dragstart="startDrag($event, employee)">
-                                    <div class="profile-container d-flex align-items-center justify-content-center">
-                                        <div
-                                            class="profile-image emp-initials d-flex align-items-center justify-content-center">
-                                            {{ empInitials(employee.fullName) }}
+                            <transition-group name="content-card" tag="div" @before-enter="beforeEnter" @enter="enter"
+                                @before-leave="beforeLeave" @leave="leave" appear>
+                                <div class="users-list" v-for="employee in emp_data" :key="employee.uid">
+                                    <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
+                                        :draggable="employeeStore.emp_details.isAdmin"
+                                        v-if="employee.department === 'DevOps'" @dragstart="startDrag($event, employee)">
+                                        <div class="profile-container d-flex align-items-center justify-content-center">
+                                            <div
+                                                class="profile-image emp-initials d-flex align-items-center justify-content-center">
+                                                {{ empInitials(employee.fullName) }}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex ps-2 flex-column justify-content-center emp-info-container">
+                                            <div class="emp-name">{{ employee.fullName }}</div>
+                                            <label class="emp-dept">DevOps</label>
                                         </div>
                                     </div>
-                                    <div class="d-flex ps-2 flex-column justify-content-center emp-info-container">
-                                        <div class="emp-name">{{ employee.fullName }}</div>
-                                        <label class="emp-dept">DevOps</label>
-                                    </div>
                                 </div>
-                            </div>
+                            </transition-group>
                         </div>
                     </div>
                 </div>
@@ -106,14 +120,14 @@
 </template>
 
 <script setup lang="ts">
-import { useFormatName } from "../composables/useFormatName";
 import { onBeforeMount, ref } from "vue";
-import { collection, onSnapshot } from "firebase/firestore";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../includes/firebase";
+import { useFormatName } from "../composables/useFormatName";
+import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
+import { db, auth } from "../includes/firebase";
 import { useEmployeeStore } from '../stores/employees'
-import { auth } from '@/includes/firebase';
 import { useFormattedDate } from '../composables/useFormatedDate';
+import gsap from 'gsap'
+
 const { formattedDate } = useFormattedDate()
 const employeeStore = useEmployeeStore();
 const { empInitials } = useFormatName();
@@ -137,16 +151,16 @@ async function getEmpData(): Promise<void> {
         }
     );
 }
-const startDrag = (event, item) => {
-    event.dataTransfer.dropEffect = "move";
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("itemID", item.uid);
+const startDrag = (event: DragEvent, item: object) => {
+    event.dataTransfer!.dropEffect = "move";
+    event.dataTransfer!.effectAllowed = "move";
+    event.dataTransfer!.setData("itemID", item.uid);
 };
-const onDrop = async (event, department) => {
-    const itemID = event.dataTransfer.getData("itemID");
-    const item = emp_data.value.filter((item) => item.uid == itemID);
-    const docId = item[0].docId;
 
+const onDrop = async (event: DragEvent, department: string) => {
+    const itemID = event.dataTransfer!.getData("itemID");
+    const item = emp_data.value.filter((item: { uid: string; }) => item.uid == itemID);
+    const docId = item[0].docId;
     if (item[0].department !== department) {
         if (employeeStore.emp_details.isAdmin) {
             const techStackTimeLine = [...item[0].techStackTimeLine];
@@ -164,11 +178,34 @@ const onDrop = async (event, department) => {
                 techStackTimeLine: techStackTimeLine
             });
         }
-        else {
-            alert("Switching department is not possible")
-        }
     }
 };
+
+function beforeEnter(el: { style: { opacity: number; transform: string; }; }) {
+    el.style.opacity = 0;
+    el.style.transform = 'translateY(100px)'
+}
+function enter(el: { dataset: { index: number; }; }, done: boolean) {
+    gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        onComplete: done,
+        delay: el.dataset.index * 0.1
+    })
+}
+function beforeLeave(el: { style: { opacity: number; }; }) {
+    el.style.opacity = 1
+}
+function leave(el: any, done: boolean) {
+    gsap.to(el, {
+        opacity: 0,
+        x: -250,
+        scaleY: 0.01,
+        duration: 0.3,
+        onComplete: done
+    })
+}
 </script>
 
 <style scoped>
@@ -243,6 +280,16 @@ const onDrop = async (event, department) => {
     font-size: 15px;
 }
 
+.content-card-leave-active {
+    transition: all 0.5s ease;
+    position: absolute;
+}
+
+.content-card-move {
+    transition: all 0.5s ease;
+}
+
+
 @media (max-width: 1200px) {
     .container-fluid {
         width: 90%;
@@ -299,5 +346,3 @@ const onDrop = async (event, department) => {
     }
 }
 </style>
-
-<script setup lang="ts"></script>
