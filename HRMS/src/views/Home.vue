@@ -1,18 +1,16 @@
 <template>
-    <Suspense>
-        <section>
-            <div class="container-fluid d-flex flex-column justify-content-center align-items-center">
-                <h1 class="text-center home-head">
-                    <p class="p-0 m-0">Hey</p> <strong class="usr-name">
-                        {{ auth.currentUser!.displayName ?displayName(auth.currentUser!.displayName) : ''  }}!
-                    </strong>
-                </h1>
-                <h1 class="text-center home-head">
-                    Welcome to <strong class="brand-name">HRMS!!</strong>
-                </h1>
-            </div>
-        </section>
-    </Suspense>
+    <div>
+        <div class="container-fluid d-flex flex-column justify-content-center align-items-center">
+            <h1 class="text-center home-head">
+                <p class="p-0 m-0">Hello</p> <strong class="usr-name">
+                    {{ auth.currentUser!.displayName ? displayName(auth.currentUser!.displayName) : '' }} !
+                </strong>
+            </h1>
+            <h1 class="text-center home-head">
+                Welcome to <strong class="brand-name">HRMS!!</strong>
+            </h1>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">

@@ -68,7 +68,8 @@
                     <div class="d-flex justify-content-center mb-2">
                         <button class="btn btn-primary w-75 fw-medium py-2" type="submit">Register</button>
                     </div>
-                    <p class="text-center">Already have an account? <RouterLink :to="{ name: 'Login' }">Login</RouterLink>
+                    <p class="text-center">Already have an account? <RouterLink :to="{ name: 'Login' }">Login
+                        </RouterLink>
                         here. </p>
                 </form>
             </div>

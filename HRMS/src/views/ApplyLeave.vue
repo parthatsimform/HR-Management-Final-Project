@@ -19,7 +19,7 @@
                                 <input type="date" id="startDate"
                                     :disabled="store.leave.type === 'Leave Type' ? true : false"
                                     v-model="store.leave.startDate" :min="today" :max="(store.leave.endDate as string)"
-                                    @input="removeAlert($event.target as HTMLFormElement)" />
+                                    @change="removeAlert($event.target as HTMLFormElement)" />
                                 <p class="vAlert startDateErr" :class="{ 'txt-black': store.leave.type === 'Leave Type' }">
                                     {{ handleNoticeTxt() }}
                                 </p>
@@ -27,7 +27,7 @@
                             <div class="form-fields dates d-flex flex-column">
                                 <label for="endDate">Leave To:</label>
                                 <input type="date" id="endDate" :disabled="store.leave.type === 'Leave Type' ? true : false"
-                                    v-model="store.leave.endDate" @input="removeAlert($event.target as HTMLFormElement)"
+                                    v-model="store.leave.endDate" @change="removeAlert($event.target as HTMLFormElement)"
                                     :min="store.leave.startDate ? (store.leave.startDate as string) : today" />
                                 <p class="vAlert endDateErr" id='endDateErr'></p>
                             </div>
@@ -42,8 +42,9 @@
                                 @change="isValidEmail('email')" />
                             <p class="vAlert emailErr"></p>
                         </div>
-                        <p class="vAlert"></p>
-                        <div class="d-flex justify-content-center">
+                        <!-- <p class="vAlert"></p> -->
+                        <div class="d-flex justify-content-between leave-btn-content">
+                            <p class="my-auto">Your Leave Balance: {{ availableLeaves }}</p>
                             <button class="btn btn-primary py-2 fw-medium" type="submit">
                                 Add Request
                             </button>
@@ -128,6 +129,7 @@ import { useValidateIP } from '../composables/useValidateIP'
 import Swal from 'sweetalert2'
 
 let userDoc = ref<string>('')
+let availableLeaves = ref<number>();
 
 function getTodayDate(): string {
     const today: Date = new Date();
@@ -169,7 +171,7 @@ interface empObj extends Employee {
 }
 onMounted(async () => {
     const q = query(collection(db, "employees"), where("uid", "==", auth.currentUser!.uid));
-    onSnapshot(q, (querySnapshot) => {
+    onSnapshot(q, async (querySnapshot) => {
         const fbUser: empObj[] = []
         querySnapshot.forEach((doc) => {
             const user: empObj = {
@@ -179,7 +181,13 @@ onMounted(async () => {
             fbUser.push(user)
         });
         userDoc.value = fbUser[0].docId
+        const userDocRef = doc(db, "employees", userDoc.value);
+        const userDocSnap = await getDoc(userDocRef);
+        const user = userDocSnap.data();
+        availableLeaves.value = user?.leaveBallance;
     })
+
+
 })
 
 const validateForm = () => {
@@ -225,12 +233,16 @@ const getDateDifference = (date1: Date | string, date2: Date | string) => {
 }
 
 const store = useLeaveStore()
+
+
+
+
 const applyLeave = async (e: Event): Promise<void> => {
     e.preventDefault();
-    const userDocRef = doc(db, "employees", userDoc.value);
-    const userDocSnap = await getDoc(userDocRef);
-    const user = userDocSnap.data();
-    const totalLeave = user?.leaveBallance ?? 0;
+
+    const totalLeave = availableLeaves.value!;
+    console.log(totalLeave);
+
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -260,6 +272,7 @@ const applyLeave = async (e: Event): Promise<void> => {
             status: "Pending",
         };
         try {
+            const userDocRef = doc(db, "employees", userDoc.value);
             await updateDoc(userDocRef, {
                 leaveBallance: totalLeave - getDateDifference(store.leave.startDate, store.leave.endDate),
             });
@@ -310,15 +323,17 @@ const handleNoticeTxt = () => {
 
 const handleLeaveType = (e: Event) => {
     const leaveSelect = e.target as HTMLFormElement
-    const startDateEl = document.getElementById("startDate") as HTMLInputElement
-    const endDateEl = document.getElementById("endDate") as HTMLInputElement
+    const startDateEl = document.getElementById("startDate") as HTMLFormElement
+    const endDateEl = document.getElementById("endDate") as HTMLFormElement
     removeAlert(leaveSelect)
     if (store.leave.type === 'planned') {
+        removeAlert(startDateEl)
         store.leave.startDate = getDayAfterTomorrowDate()
         startDateEl.min = store.leave.startDate
         endDateEl.removeAttribute('max')
     }
     if (store.leave.type === 'unPlanned') {
+        removeAlert(startDateEl)
         store.leave.startDate = today
         startDateEl.min = today
         endDateEl.min = today
@@ -533,6 +548,17 @@ onBeforeUnmount(() => {
         width: 90% !important;
         padding-left: 0px !important;
         height: 500px;
+    }
+}
+
+@media(max-width:700px) {
+    .leave-btn-content {
+        flex-direction: column !important;
+        align-items: center;
+    }
+
+    .leave-btn-content p {
+        margin-bottom: 10px !important;
     }
 }
 

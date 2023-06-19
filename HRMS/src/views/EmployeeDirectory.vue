@@ -3,7 +3,7 @@
     <div class="dept-wrapper">
       <div class="container-fluid p-0 mb-5">
         <div class="row">
-          <div class="col-6 col-md-3 employee-dept-table">
+          <div class="col-lg-3 col-md-6 col-sm-6 employee-dept-table">
             <div class="common-header d-flex justify-content-center align-items-center fs-5">
               FrontEnd
             </div>
@@ -25,7 +25,7 @@
               </div>
             </div>
           </div>
-          <div class="col-6 col-md-3 employee-dept-table">
+          <div class="col-lg-3 col-md-6 col-sm-6 employee-dept-table">
             <div class="common-header d-flex justify-content-center align-items-center fs-5">
               BackEnd
             </div>
@@ -46,7 +46,7 @@
               </div>
             </div>
           </div>
-          <div class="col-6 col-md-3 employee-dept-table">
+          <div class="col-lg-3 col-md-6 col-sm-6 employee-dept-table">
             <div class="common-header d-flex justify-content-center align-items-center fs-5">
               UI/UX
             </div>
@@ -67,7 +67,7 @@
               </div>
             </div>
           </div>
-          <div class="col-6 col-md-3 employee-dept-table">
+          <div class="col-lg-3 col-md-6 col-sm-6 employee-dept-table">
             <div class="common-header d-flex justify-content-center align-items-center fs-5">
               Devops
             </div>
@@ -266,13 +266,22 @@ const onDrop = async (event: DragEvent, department: string) => {
   }
 }
 
-@media (max-width: 569px) {
+@media (max-width: 575px) {
   .user-card {
     height: 100px;
   }
 
   .profile-image {
     font-size: 15px;
+  }
+
+  .row {
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .employee-dept-table {
+    width: 80%;
   }
 }
 </style>
