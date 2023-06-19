@@ -140,6 +140,7 @@ function enterLeft(el: { dataset: { index: number; }; }, done: boolean) {
   })
 }
 </script>
+
 <style>
 .timeline-wrapper {
   max-width: 600px;
