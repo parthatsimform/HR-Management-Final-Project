@@ -21,7 +21,7 @@
                                     v-model="store.leave.startDate" :min="today" :max="(store.leave.endDate as string)"
                                     @change="removeAlert($event.target as HTMLFormElement)" />
                                 <p class="vAlert startDateErr" :class="{ 'txt-black': store.leave.type === 'Leave Type' }">
-                                    {{ handleNoticeTxt() }}
+                                    {{ store.leave.type === 'Leave Type' ? 'Please select leave type*' : '' }}
                                 </p>
                             </div>
                             <div class="form-fields dates d-flex flex-column">
@@ -118,12 +118,13 @@
 </template>
 
 <script setup lang="ts">
-import type Leave from '../types/leaveObj'
-import type Employee from "@/types/employee";
+import type Leave from '@/types/leaveObj'
+import type Employee from "@/types/employee"
+import type empDoc from "@/types/empDoc"
 import { useLeaveStore } from '../stores/leaveStore'
-import { auth, db } from '@/includes/firebase';
-import { collection, addDoc, getDoc, doc, updateDoc, onSnapshot, query, where, type DocumentData } from "firebase/firestore";
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { auth, db } from '@/includes/firebase'
+import { collection, addDoc, getDoc, doc, updateDoc, onSnapshot, query, where, type DocumentData, Query, DocumentReference, DocumentSnapshot } from "firebase/firestore"
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useToggleFormAlert } from '../composables/useToggleFormAlert.js'
 import { useValidateIP } from '../composables/useValidateIP'
 import Swal from 'sweetalert2'
@@ -133,13 +134,10 @@ let availableLeaves = ref<number>();
 
 function getTodayDate(): string {
     const today: Date = new Date();
-
     const year: number = today.getFullYear();
     const month: string = String(today.getMonth() + 1).padStart(2, '0');
     const day: string = String(today.getDate()).padStart(2, '0');
-
     const formattedDate: string = `${year}-${month}-${day}`;
-
     return formattedDate;
 }
 
@@ -152,7 +150,7 @@ interface leaveObj extends Leave {
 let leaves = ref<leaveObj[]>([])
 const modelLeave = ref<DocumentData>({})
 onMounted(async () => {
-    const q = query(collection(db, "leaves"), where("uid", "==", auth.currentUser!.uid));
+    const q: Query<DocumentData> = query(collection(db, "leaves"), where("uid", "==", auth.currentUser!.uid));
     onSnapshot(q, (querySnapshot) => {
         const FbLeaves: leaveObj[] = []
         querySnapshot.forEach((doc) => {
@@ -166,31 +164,28 @@ onMounted(async () => {
     })
 })
 
-interface empObj extends Employee {
-    docId: string;
-}
 onMounted(async () => {
-    const q = query(collection(db, "employees"), where("uid", "==", auth.currentUser!.uid));
+    const q: Query<DocumentData> = query(collection(db, "employees"), where("uid", "==", auth.currentUser!.uid));
     onSnapshot(q, async (querySnapshot) => {
-        const fbUser: empObj[] = []
+        const fbUser: empDoc[] = []
         querySnapshot.forEach((doc) => {
-            const user: empObj = {
+            const user: empDoc = {
                 ...doc.data() as Employee,
                 docId: doc.id as string
             }
             fbUser.push(user)
         });
         userDoc.value = fbUser[0].docId
-        const userDocRef = doc(db, "employees", userDoc.value);
-        const userDocSnap = await getDoc(userDocRef);
-        const user = userDocSnap.data();
+        const userDocRef: DocumentReference<DocumentData> = doc(db, "employees", userDoc.value);
+        const userDocSnap: DocumentSnapshot<DocumentData> = await getDoc(userDocRef);
+        const user = userDocSnap.data() as Employee;
         availableLeaves.value = user?.leaveBallance;
     })
 
 
 })
 
-const validateForm = () => {
+const validateForm = ():boolean => {
     const formElements = document.forms[0].elements as HTMLFormControlsCollection
     let isValid: boolean = true
     for (let i = 0; i < formElements.length - 1; i++) {
@@ -220,14 +215,12 @@ const validateForm = () => {
     return isValid
 }
 
-const getDateDifference = (date1: Date | string, date2: Date | string) => {
-    const oneDay = 24 * 60 * 60 * 1000;
-
-    const firstDate = new Date(date1);
-    const secondDate = new Date(date2);
-
-    const diffInTime = Math.abs(secondDate.getTime() - firstDate.getTime());
-    const diffInDays = Math.round(diffInTime / oneDay);
+const getDateDifference = (date1: Date | string, date2: Date | string):number => {
+    const oneDay: number = 24 * 60 * 60 * 1000;
+    const firstDate: Date = new Date(date1);
+    const secondDate: Date = new Date(date2);
+    const diffInTime: number = Math.abs(secondDate.getTime() - firstDate.getTime());
+    const diffInDays: number = Math.round(diffInTime / oneDay);
 
     return diffInDays + 1;
 }
@@ -282,46 +275,40 @@ const applyLeave = async (e: Event): Promise<void> => {
                     icon: 'success',
                     title: 'Leave applied successfully'
                 })
-                store.$reset();
+                store.leave = { type: "Leave Type" } as Leave
             } else {
                 Toast.fire({
                     icon: 'error',
                     title: 'Error while applying !!!'
                 })
-                store.$reset();
+                store.leave = { type: "Leave Type" } as Leave
             }
         } catch (err) {
             Toast.fire({
                 icon: 'error',
                 title: 'Error while applying !!!'
             })
+            store.leave = { type: "Leave Type" } as Leave
         }
     } else if (getDateDifference(store.leave.startDate, store.leave.endDate) > totalLeave) {
         Toast.fire({
             icon: 'warning',
             title: 'Insufficient Leave Ballance!!'
         })
-        store.$reset();
+        store.leave = { type: "Leave Type" } as Leave
     }
 };
 
 const handleLeaveDisplay = async (id: string): Promise<void> => {
-    const docRef = doc(db, "leaves", id);
-    const docSnap = await getDoc(docRef)
-    const displayLeave = docSnap.data()
+    const docRef: DocumentReference<DocumentData> = doc(db, "leaves", id);
+    const docSnap: DocumentSnapshot<DocumentData> = await getDoc(docRef)
+    const displayLeave = docSnap.data() as Leave
     if (displayLeave) {
         modelLeave.value = displayLeave
     }
 }
 
-const handleNoticeTxt = () => {
-    if (store.leave.type === 'Leave Type') {
-        return "Please select Leave type first**"
-    }
-    return
-}
-
-const handleLeaveType = (e: Event) => {
+const handleLeaveType = (e: Event): void => {
     const leaveSelect = e.target as HTMLFormElement
     const startDateEl = document.getElementById("startDate") as HTMLFormElement
     const endDateEl = document.getElementById("endDate") as HTMLFormElement
@@ -340,31 +327,28 @@ const handleLeaveType = (e: Event) => {
         endDateEl.max = getDayAfterTomorrowDate()
     }
 }
-function getDayAfterTomorrowDate() {
-    const today = new Date();
-
-    const currentDate = today.getDate();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const remainingDays = daysInMonth - currentDate;
-
-    let dayAfterTomorrowDate;
+function getDayAfterTomorrowDate():string {
+    const today: Date = new Date();
+    const currentDate: number = today.getDate();
+    const currentMonth: number = today.getMonth();
+    const currentYear: number = today.getFullYear();
+    const daysInMonth: number = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const remainingDays: number = daysInMonth - currentDate;
+    let dayAfterTomorrowDate: Date;
 
     if (remainingDays >= 2) {
         today.setDate(currentDate + 2);
         dayAfterTomorrowDate = today;
     } else {
-        const nextMonth = (currentMonth + 1) % 12;
-        const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
-        const daysToNextMonth = 2 - remainingDays;
+        const nextMonth: number = (currentMonth + 1) % 12;
+        const nextYear: number = currentMonth === 11 ? currentYear + 1 : currentYear;
+        const daysToNextMonth: number = 2 - remainingDays;
         dayAfterTomorrowDate = new Date(nextYear, nextMonth, daysToNextMonth);
     }
 
-    const year = dayAfterTomorrowDate.getFullYear();
-    const month = String(dayAfterTomorrowDate.getMonth() + 1).padStart(2, '0');
-    const day = String(dayAfterTomorrowDate.getDate()).padStart(2, '0');
+    const year: number  = dayAfterTomorrowDate.getFullYear();
+    const month: string = String(dayAfterTomorrowDate.getMonth() + 1).padStart(2, '0');
+    const day: string = String(dayAfterTomorrowDate.getDate()).padStart(2, '0');
 
     const formattedDate = `${year}-${month}-${day}`;
 
@@ -372,9 +356,9 @@ function getDayAfterTomorrowDate() {
 }
 const checkReasonLength = (id: string): boolean => {
     const reasonEl = document.getElementById(id) as HTMLFormElement
-    const len = reasonEl.value.trim().length;
-    let message = "";
-    let isValid = true;
+    const len : number = reasonEl.value.trim().length;
+    let message: string = "";
+    let isValid: boolean= true;
     if (reasonEl.value.trim() === '') {
         message = " Reason is required*";
         isValid = false;

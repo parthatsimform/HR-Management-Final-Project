@@ -1,10 +1,10 @@
 export const useDuration = () => {
-    function calculateDuration(startDate: string, endDate: string): number[] {
-        var start = new Date(startDate);
-        var end = new Date(endDate);
-        var years = end.getUTCFullYear() - start.getUTCFullYear();
-        var months = end.getUTCMonth() - start.getUTCMonth();
-        var days = end.getUTCDate() - start.getUTCDate();
+    function calculateDuration(startDate: string|Date, endDate: string|Date): number[] {
+        const start : Date = new Date(startDate);
+        const end : Date = new Date(endDate);
+        let years :number = end.getUTCFullYear() - start.getUTCFullYear();
+        let months :number = end.getUTCMonth() - start.getUTCMonth();
+        let days :number = end.getUTCDate() - start.getUTCDate();
         if (months < 0 || (months === 0 && days < 0)) {
           years--;
           months += 12;

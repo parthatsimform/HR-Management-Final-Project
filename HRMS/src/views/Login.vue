@@ -15,13 +15,11 @@
                             @input="isValidEmail('email')" />
                         <p class="vAlert emailErr"></p>
                     </div>
-
                     <div class=" form-fields">
                         <input name="password" type="password" id="password" placeholder="Password*"
                             v-model="employeeStore.emp.password" @input="validatePassword('password')" />
                         <p class="vAlert passwordErr mb-3"></p>
                     </div>
-
                     <div class="d-flex justify-content-center mb-2">
                         <button class="btn btn-primary w-75 py-2 fw-medium" type="submit">
                             Sign In
@@ -66,9 +64,8 @@ const validatePassword = (id: string): boolean => {
 const userLogin = async (e: Event): Promise<void> => {
     if (isValidEmail('email') && validatePassword('password')) {
         const target = e.target as HTMLFormElement
-        const email = target.email.value;
-        const password = target.password.value;
-
+        const email:string = target.email.value;
+        const password:string = target.password.value;
         try {
             await signInWithEmailAndPassword(auth, email, password)
             if (auth.currentUser) {
@@ -85,11 +82,9 @@ const userLogin = async (e: Event): Promise<void> => {
                 case "auth/user-not-found":
                     errMsg = "Invalid Credentials"
                     break;
-
                 case "auth/too-many-requests":
                     errMsg = "Too many requests.\nPlease try after some time."
                     break;
-
                 default:
                     errMsg = err.code
                     break;

@@ -3,12 +3,12 @@
         <div class="profile-wrapper mx-auto">
             <div class="profile-name-image d-flex mt-4 ms-4">
                 <div class="profile-image mx-3 mt-4 d-flex align-items-center justify-content-center">
-                    <h1 class="fs-1 m-0">{{ empInitials(employeeStore.emp_details.fullName) }}</h1>
+                    <h1 class="fs-1 m-0">{{ auth.currentUser!.displayName ? empInitials(auth.currentUser!.displayName) : '' }}</h1>
                 </div>
                 <div class="profile-name pt-4 px-5 mt-4">
-                    <h2 class="fs-1">{{ formattedString(employeeStore.emp_details.fullName) }}</h2>
+                    <h2 class="fs-1">{{ auth.currentUser!.displayName ? formattedString(auth.currentUser!.displayName) : ''}}</h2>
                     <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
-                    <p>{{ employeeStore.emp_details.emp_role }}</p>
+                    <p>{{ employee.role }}</p>
                 </div>
             </div>
             <div class="profile-desc d-flex justify-content-center mt-5">
@@ -35,12 +35,14 @@ import { useRoute } from 'vue-router'
 import { useEmployeeStore } from '../stores/employees'
 import { useFormatName } from '../composables/useFormatName'
 import { useDuration } from '../composables/useDuration'
+import type Employee from "@/types/employee"
+import { auth } from '@/includes/firebase'
 
 const { calculateDuration } = useDuration()
 const employeeStore = useEmployeeStore();
 const route = useRoute()
 
-await employeeStore.getEmpDetails(route.params.id)
+await employeeStore.getEmpDetails(route.params.id as string)
 const { empInitials } = useFormatName()
 const profileTab = shallowRef(TimeLine)
 const isActive = ref<string>('About')
@@ -51,11 +53,18 @@ function changeTab(tabName: string): void {
 }
 const today: Date = new Date()
 
-const duration: number[] = calculateDuration(employeeStore.emp_details.joiningDate, today.toString())
-if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
-    employeeStore.emp_details.emp_role = "EMPLOYEE"
+interface empDetails extends Employee{
+    role:string
+}
+const employee:empDetails = {
+    ...employeeStore.emp_details,
+    role:'TRAINEE'
+}
+const duration: number[] = calculateDuration(employee.joiningDate, today.toString())
+if (duration[0] >= 1 || (duration[0]<1 && duration[1] >= 6)) {
+    employee.role = "EMPLOYEE"
     if (duration[0] > 5) {
-        employeeStore.emp_details.emp_role = "MANAGER"
+        employee.role = "MANAGER"
     }
 }
 function formattedString(inputString: string): string {
