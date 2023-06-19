@@ -311,7 +311,7 @@ onBeforeUnmount(() => {
 }
 
 .registration-form {
-    width: 300px;
+    width: 325px;
 }
 
 .form-fields {
@@ -396,32 +396,30 @@ onBeforeUnmount(() => {
 }
 @media (max-width:1200px) {
     .registration-container {
-        width: 95% !important;
+        width: 85% !important;
     }
 }
 
 @media (max-width:1024px) {
     .registration-container {
-        width: 75% !important;
+        width: 90% !important;
     }
+}
+
+@media (max-width: 800px) {
     .img-container {
         display: none !important;
     }
 
     .form-container {
-        width: 80% !important;
+        width: 70% !important;
     }
 
     .registration-form {
-        width: 400px;
+        width: 90%;
     }
 }
 
-@media (max-width:600px) {
-    .registration-container {
-        width: 95% !important;
-    }
-}
 
 @media (max-width:600px) {
     .registration-container {
@@ -429,7 +427,7 @@ onBeforeUnmount(() => {
     }
 
     .form-container {
-        width: 90% !important;
+        width: 100% !important;
     }
 }
 

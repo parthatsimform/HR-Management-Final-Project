@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid p-0 d-flex justify-content-center align-items-center">
-        <div class="login-container w-75 d-flex justify-content-center mb-5">
+        <div class="login-container d-flex justify-content-center mb-5">
             <div class="img-container w-50 d-flex align-items-center justify-content-center">
                 <img class="h-100 w-100" src="../assets/login.png" alt="" />
             </div>
@@ -113,7 +113,8 @@ onBeforeUnmount(() => {
 }
 
 .login-container {
-    height: 500px;
+    height: 600px;
+    width: 80%;
     border-radius: 20px;
     overflow: hidden;
     background-color: #fff;
@@ -195,7 +196,7 @@ onBeforeUnmount(() => {
     }
 
     .login-form {
-        width: 400px;
+        width: 90%;
     }
 }
 
