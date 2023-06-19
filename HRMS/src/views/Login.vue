@@ -38,15 +38,15 @@
 import { auth } from '@/includes/firebase';
 import router from '@/router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useEmployeeStore } from "../stores/employees"
+import { useEmployeeStore } from "@/stores/employees"
 import { onBeforeUnmount } from 'vue';
 import type Employee from '@/types/employee';
-import { useToggleFormAlert } from '../composables/useToggleFormAlert'
-import { useValidateIP } from '../composables/useValidateIP'
+import { useToggleFormAlert } from '@/composables/useToggleFormAlert'
+import { useValidateIP } from '@/composables/useValidateIP'
+import Swal from 'sweetalert2'
 
 const { displayAlert, removeAlert } = useToggleFormAlert()
 const { isValidEmail } = useValidateIP()
-import Swal from 'sweetalert2'
 
 const employeeStore = useEmployeeStore()
 

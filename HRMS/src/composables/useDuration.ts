@@ -17,5 +17,4 @@ export const useDuration = () => {
         return [years, months, days];
       }
       return {calculateDuration}
-
 }

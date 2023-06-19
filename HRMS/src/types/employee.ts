@@ -1,3 +1,4 @@
+import type techStackTimeLine from './techStackTimeLine'
 export default interface Employee {
 	fullName: string;
 	email: string;
@@ -15,5 +16,5 @@ export default interface Employee {
 	isAdmin?: false;
 	leaveBallance: number;
 	uid: string;
-	techStackTimeLine: object[];
+	techStackTimeLine: techStackTimeLine[];
 }

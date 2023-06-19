@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import type Employee from "@/types/employee";
 import type empDoc from "@/types/empDoc"
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../includes/firebase";
+import { db } from "@/includes/firebase";
 
 export const useEmployeeStore = defineStore("employee", {
 	state: () => ({

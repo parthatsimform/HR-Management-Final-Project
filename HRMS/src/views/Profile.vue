@@ -32,9 +32,9 @@ import { shallowRef, ref } from 'vue'
 import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
 import { useRoute } from 'vue-router'
-import { useEmployeeStore } from '../stores/employees'
-import { useFormatName } from '../composables/useFormatName'
-import { useDuration } from '../composables/useDuration'
+import { useEmployeeStore } from '@/stores/employees'
+import { useFormatName } from '@/composables/useFormatName'
+import { useDuration } from '@/composables/useDuration'
 import type Employee from "@/types/employee"
 import { auth } from '@/includes/firebase'
 

@@ -7,7 +7,7 @@
                         <h2 class="text-center fw-bold mb-5">Apply for Leave</h2>
                         <div class="form-fields">
                             <select id="leaveType" v-model="store.leave.type" @change="handleLeaveType">
-                                <option disabled>Leave Type</option>
+                                <option disabled>Leave Type*</option>
                                 <option value="planned">Planned</option>
                                 <option value="unPlanned">Un-Planned</option>
                             </select>
@@ -15,34 +15,33 @@
                         </div>
                         <div class="leave-dates d-flex justify-content-between w-100">
                             <div class="form-fields dates d-flex flex-column">
-                                <label for="startDate">Leave From:</label>
+                                <label for="startDate">Leave Start Date*:</label>
                                 <input type="date" id="startDate"
-                                    :disabled="store.leave.type === 'Leave Type' ? true : false"
+                                    :disabled="store.leave.type === 'Leave Type*' ? true : false"
                                     v-model="store.leave.startDate" :min="today" :max="(store.leave.endDate as string)"
                                     @change="removeAlert($event.target as HTMLFormElement)" />
-                                <p class="vAlert startDateErr" :class="{ 'txt-black': store.leave.type === 'Leave Type' }">
-                                    {{ store.leave.type === 'Leave Type' ? 'Please select leave type*' : '' }}
+                                <p class="vAlert startDateErr" :class="{ 'txt-black': store.leave.type === 'Leave Type*' }">
+                                    {{ store.leave.type === 'Leave Type*' ? 'Please select leave type*' : '' }}
                                 </p>
                             </div>
                             <div class="form-fields dates d-flex flex-column">
-                                <label for="endDate">Leave To:</label>
-                                <input type="date" id="endDate" :disabled="store.leave.type === 'Leave Type' ? true : false"
+                                <label for="endDate">Leave End Date*:</label>
+                                <input type="date" id="endDate" :disabled="store.leave.type === 'Leave Type*' ? true : false"
                                     v-model="store.leave.endDate" @change="removeAlert($event.target as HTMLFormElement)"
                                     :min="store.leave.startDate ? (store.leave.startDate as string) : today" />
                                 <p class="vAlert endDateErr" id='endDateErr'></p>
                             </div>
                         </div>
                         <div class="form-fields">
-                            <textarea id="Reason" placeholder="Enter reason for Leave" v-model="store.leave.reason"
+                            <textarea id="Reason" placeholder="Enter reason for Leave*" v-model="store.leave.reason"
                                 @input="checkReasonLength('Reason')"></textarea>
                             <p class="vAlert ReasonErr"></p>
                         </div>
                         <div class="form-fields">
-                            <input id="email" placeholder="Requesting From (Email)" v-model="store.leave.toEmail"
+                            <input id="email" placeholder="Requesting To (Email)*" v-model="store.leave.toEmail"
                                 @change="isValidEmail('email')" />
                             <p class="vAlert emailErr"></p>
                         </div>
-                        <!-- <p class="vAlert"></p> -->
                         <div class="d-flex justify-content-between leave-btn-content">
                             <p class="my-auto">Your Leave Balance: {{ availableLeaves }}</p>
                             <button class="btn btn-primary py-2 fw-medium" type="submit">
@@ -121,12 +120,12 @@
 import type Leave from '@/types/leaveObj'
 import type Employee from "@/types/employee"
 import type empDoc from "@/types/empDoc"
-import { useLeaveStore } from '../stores/leaveStore'
+import { useLeaveStore } from '@/stores/leaveStore'
 import { auth, db } from '@/includes/firebase'
 import { collection, addDoc, getDoc, doc, updateDoc, onSnapshot, query, where, type DocumentData, Query, DocumentReference, DocumentSnapshot } from "firebase/firestore"
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useToggleFormAlert } from '../composables/useToggleFormAlert.js'
-import { useValidateIP } from '../composables/useValidateIP'
+import { useToggleFormAlert } from '@/composables/useToggleFormAlert'
+import { useValidateIP } from '@/composables/useValidateIP'
 import Swal from 'sweetalert2'
 
 let userDoc = ref<string>('')
@@ -190,7 +189,7 @@ const validateForm = ():boolean => {
     let isValid: boolean = true
     for (let i = 0; i < formElements.length - 1; i++) {
         const formElement = formElements[i] as HTMLFormElement
-        if (formElement.type === 'select-one' && formElement.value === 'Leave Type') {
+        if (formElement.type === 'select-one' && formElement.value === 'Leave Type*') {
             displayAlert(formElement, "Please select leave type*")
             isValid = false
         } else if (!formElement.value) {
@@ -275,27 +274,27 @@ const applyLeave = async (e: Event): Promise<void> => {
                     icon: 'success',
                     title: 'Leave applied successfully'
                 })
-                store.leave = { type: "Leave Type" } as Leave
+                store.leave = { type: "Leave Type*" } as Leave
             } else {
                 Toast.fire({
                     icon: 'error',
                     title: 'Error while applying !!!'
                 })
-                store.leave = { type: "Leave Type" } as Leave
+                store.leave = { type: "Leave Type*" } as Leave
             }
         } catch (err) {
             Toast.fire({
                 icon: 'error',
                 title: 'Error while applying !!!'
             })
-            store.leave = { type: "Leave Type" } as Leave
+            store.leave = { type: "Leave Type*" } as Leave
         }
     } else if (getDateDifference(store.leave.startDate, store.leave.endDate) > totalLeave) {
         Toast.fire({
             icon: 'warning',
             title: 'Insufficient Leave Ballance!!'
         })
-        store.leave = { type: "Leave Type" } as Leave
+        store.leave = { type: "Leave Type*" } as Leave
     }
 };
 
@@ -370,7 +369,7 @@ const checkReasonLength = (id: string): boolean => {
 }
 
 onBeforeUnmount(() => {
-    store.leave = { type: "Leave Type" } as Leave
+    store.leave = { type: "Leave Type*" } as Leave
 })
 
 </script>

@@ -79,18 +79,18 @@
 
 <script setup lang="ts">
 import type Employee from "@/types/employee";
-import { useEmployeeStore } from "../stores/employees"
-import { db, auth } from "../includes/firebase"
+import { useEmployeeStore } from "@/stores/employees"
+import { db, auth } from "@/includes/firebase"
 import { collection, addDoc, type DocumentData, DocumentReference } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import router from "@/router"
 import { onBeforeUnmount } from "vue";
-import { useToggleFormAlert } from '../composables/useToggleFormAlert'
-import { useValidateIP } from '../composables/useValidateIP'
+import { useToggleFormAlert } from '@/composables/useToggleFormAlert'
+import { useValidateIP } from '@/composables/useValidateIP'
+import Swal from 'sweetalert2'
 
 const { displayAlert, removeAlert } = useToggleFormAlert()
 const { isValidEmail } = useValidateIP()
-import Swal from 'sweetalert2'
 
 const employeeStore = useEmployeeStore()
 const registerUser = async (): Promise<void> => {
@@ -252,7 +252,7 @@ const validateMobile = (id: string): boolean => {
     }
 }
 
-const validDate = (dob: Date) => {
+const validDate = (dob: Date):boolean => {
     const givenDate: Date = new Date(dob);
     const currDate: Date = new Date();
     if (givenDate.getFullYear() >= 1900 && givenDate < currDate) {
