@@ -46,7 +46,7 @@ const routes = [
 	},
 	{
 		path: "/:catchAll(.*)*",
-		redirect: { name: "Home" },
+		component: () => import("../views/ErrorPage.vue"),
 	},
 ];
 
@@ -59,7 +59,10 @@ const router: Router = createRouter({
 router.beforeEach((to, from, next) => {
 	const employeeStore = useEmployeeStore();
 	if (!to.meta.requiresAuth) {
-		employeeStore.isLoggedIn ? next({ name: "Home" }) : next();
+		employeeStore.isLoggedIn &&
+		(to.fullPath == "/login" || to.fullPath == "/register")
+			? next({ name: "Home" })
+			: next();
 	} else {
 		employeeStore.isLoggedIn ? next() : next({ name: "Login" });
 	}
