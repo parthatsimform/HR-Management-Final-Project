@@ -161,21 +161,24 @@ const onDrop = async (event: DragEvent, department: string): Promise<void> => {
   const itemID: string = event.dataTransfer!.getData("itemID");
   const item: empDoc[] = empData.value.filter((item: { uid: string; }) => item.uid == itemID);
   const docId: string = item[0].docId;
-  if (item[0].department !== department) {
-    const techStackTimeLine: techStackTimeLine[] = [...item[0].techStackTimeLine];
 
-    const today: Date = new Date();
-    const date: string = formattedDate(today.toISOString());
-    const stackData: techStackTimeLine = {
-      techStack: department,
-      date: date
-    };
-    techStackTimeLine.push(stackData)
-    const empRef: DocumentReference<DocumentData> = doc(db, "employees", docId);
-    await updateDoc(empRef, {
-      department: department,
-      techStackTimeLine: techStackTimeLine
-    });
+  if (item[0].department !== department) {
+    if (employeeStore.emp_details.isAdmin) {
+      const techStackTimeLine: techStackTimeLine[] = [...item[0].techStackTimeLine];
+
+      const today: Date = new Date();
+      const date: string = formattedDate(today.toISOString());
+      const stackData: techStackTimeLine = {
+        techStack: department,
+        date: date
+      };
+      techStackTimeLine.push(stackData)
+      const empRef: DocumentReference<DocumentData> = doc(db, "employees", docId);
+      await updateDoc(empRef, {
+        department: department,
+        techStackTimeLine: techStackTimeLine
+      });
+    }
   }
 };
 
@@ -243,6 +246,7 @@ function leave(el: Element, done: () => void) {
   background-color: white;
   border-radius: 8px;
   cursor: pointer;
+  user-select: none;
 }
 
 .common-department-content :hover {

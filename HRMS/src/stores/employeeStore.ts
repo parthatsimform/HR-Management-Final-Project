@@ -12,11 +12,8 @@ export const useEmployeeStore = defineStore("employee", {
 	}),
 	actions: {
 		async getEmpDetails(id: string): Promise<void> {
-			const q = query(
-				collection(db, "employees"),
-				where("uid", "==", id)
-			);
-			const querySnapshot = await getDocs(q);
+			const qry = query(collection(db, "employees"),where("uid", "==", id));
+			const querySnapshot = await getDocs(qry);
 			querySnapshot.forEach((doc) => {
 				this.emp_details = {
 					...doc.data() as Employee,
