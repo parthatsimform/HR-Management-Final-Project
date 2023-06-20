@@ -3,10 +3,12 @@
         <div class="profile-wrapper mx-auto">
             <div class="profile-name-image d-flex mt-4 ms-4">
                 <div class="profile-image mx-3 mt-4 d-flex align-items-center justify-content-center">
-                    <h1 class="fs-1 m-0">{{ auth.currentUser!.displayName ? empInitials(auth.currentUser!.displayName) : '' }}</h1>
+                    <h1 class="fs-1 m-0">{{ auth.currentUser!.displayName ? empInitials(auth.currentUser!.displayName) : ''
+                    }}</h1>
                 </div>
                 <div class="profile-name pt-4 px-5 mt-4">
-                    <h2 class="fs-1">{{ auth.currentUser!.displayName ? formattedString(auth.currentUser!.displayName) : ''}}</h2>
+                    <h2 class="fs-1">{{ auth.currentUser!.displayName ? formattedString(auth.currentUser!.displayName) :
+                        '' }}</h2>
                     <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
                     <p>{{ employee.role }}</p>
                 </div>
@@ -32,7 +34,7 @@ import { shallowRef, ref } from 'vue'
 import TimeLine from '@/components/TimeLine.vue'
 import About from '@/components/About.vue'
 import { useRoute } from 'vue-router'
-import { useEmployeeStore } from '@/stores/employees'
+import { useEmployeeStore } from '@/stores/employeeStore'
 import { useFormatName } from '@/composables/useFormatName'
 import { useDuration } from '@/composables/useDuration'
 import type Employee from "@/types/employee"
@@ -53,15 +55,15 @@ function changeTab(tabName: string): void {
 }
 const today: Date = new Date()
 
-interface empDetails extends Employee{
-    role:string
+interface empDetails extends Employee {
+    role: string
 }
-const employee:empDetails = {
+const employee: empDetails = {
     ...employeeStore.emp_details,
-    role:'TRAINEE'
+    role: 'TRAINEE'
 }
 const duration: number[] = calculateDuration(employee.joiningDate, today.toString())
-if (duration[0] >= 1 || (duration[0]<1 && duration[1] >= 6)) {
+if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
     employee.role = "EMPLOYEE"
     if (duration[0] > 5) {
         employee.role = "MANAGER"

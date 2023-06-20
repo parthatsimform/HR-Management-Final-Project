@@ -26,7 +26,8 @@
                             </div>
                             <div class="form-fields dates d-flex flex-column">
                                 <label for="endDate">Leave End Date*:</label>
-                                <input type="date" id="endDate" :disabled="store.leave.type === 'Leave Type*' ? true : false"
+                                <input type="date" id="endDate"
+                                    :disabled="store.leave.type === 'Leave Type*' ? true : false"
                                     v-model="store.leave.endDate" @change="removeAlert($event.target as HTMLFormElement)"
                                     :min="store.leave.startDate ? (store.leave.startDate as string) : today" />
                                 <p class="vAlert endDateErr" id='endDateErr'></p>
@@ -86,8 +87,7 @@
                         <div class="leave-detail-container mb-1">
                             <label class=" fw-light">Duration :</label>
                             <p class="leave-detail-content fs-5 w-100">{{ modelLeave.startDate }} <span
-                                    class=" fw-light fs-6">to</span> {{
-                                        modelLeave.endDate }}</p>
+                                    class=" fw-light fs-6">to</span> {{ modelLeave.endDate }}</p>
                         </div>
                         <div class="leave-detail-container mb-1">
                             <label class="fw-light">Type :</label>
@@ -184,7 +184,7 @@ onMounted(async () => {
 
 })
 
-const validateForm = ():boolean => {
+const validateForm = (): boolean => {
     const formElements = document.forms[0].elements as HTMLFormControlsCollection
     let isValid: boolean = true
     for (let i = 0; i < formElements.length - 1; i++) {
@@ -214,7 +214,7 @@ const validateForm = ():boolean => {
     return isValid
 }
 
-const getDateDifference = (date1: Date | string, date2: Date | string):number => {
+const getDateDifference = (date1: Date | string, date2: Date | string): number => {
     const oneDay: number = 24 * 60 * 60 * 1000;
     const firstDate: Date = new Date(date1);
     const secondDate: Date = new Date(date2);
@@ -226,14 +226,10 @@ const getDateDifference = (date1: Date | string, date2: Date | string):number =>
 
 const store = useLeaveStore()
 
-
-
-
 const applyLeave = async (e: Event): Promise<void> => {
     e.preventDefault();
 
     const totalLeave = availableLeaves.value!;
-    console.log(totalLeave);
 
     const Toast = Swal.mixin({
         toast: true,
@@ -326,7 +322,7 @@ const handleLeaveType = (e: Event): void => {
         endDateEl.max = getDayAfterTomorrowDate()
     }
 }
-function getDayAfterTomorrowDate():string {
+function getDayAfterTomorrowDate(): string {
     const today: Date = new Date();
     const currentDate: number = today.getDate();
     const currentMonth: number = today.getMonth();
@@ -345,7 +341,7 @@ function getDayAfterTomorrowDate():string {
         dayAfterTomorrowDate = new Date(nextYear, nextMonth, daysToNextMonth);
     }
 
-    const year: number  = dayAfterTomorrowDate.getFullYear();
+    const year: number = dayAfterTomorrowDate.getFullYear();
     const month: string = String(dayAfterTomorrowDate.getMonth() + 1).padStart(2, '0');
     const day: string = String(dayAfterTomorrowDate.getDate()).padStart(2, '0');
 
@@ -355,9 +351,9 @@ function getDayAfterTomorrowDate():string {
 }
 const checkReasonLength = (id: string): boolean => {
     const reasonEl = document.getElementById(id) as HTMLFormElement
-    const len : number = reasonEl.value.trim().length;
+    const len: number = reasonEl.value.trim().length;
     let message: string = "";
-    let isValid: boolean= true;
+    let isValid: boolean = true;
     if (reasonEl.value.trim() === '') {
         message = " Reason is required*";
         isValid = false;

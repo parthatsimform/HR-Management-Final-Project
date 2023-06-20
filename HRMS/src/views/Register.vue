@@ -79,7 +79,7 @@
 
 <script setup lang="ts">
 import type Employee from "@/types/employee";
-import { useEmployeeStore } from "@/stores/employees"
+import { useEmployeeStore } from "@/stores/employeeStore"
 import { db, auth } from "@/includes/firebase"
 import { collection, addDoc, type DocumentData, DocumentReference } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
@@ -252,7 +252,7 @@ const validateMobile = (id: string): boolean => {
     }
 }
 
-const validDate = (dob: Date):boolean => {
+const validDate = (dob: Date): boolean => {
     const givenDate: Date = new Date(dob);
     const currDate: Date = new Date();
     if (givenDate.getFullYear() >= 1900 && givenDate < currDate) {

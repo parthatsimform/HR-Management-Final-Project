@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { useEmployeeStore } from '../stores/employees'
+import { useEmployeeStore } from '../stores/employeeStore'
 const employeeStore = useEmployeeStore();
 </script>
 

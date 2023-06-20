@@ -66,7 +66,7 @@
 import { useFormatName } from '../composables/useFormatName'
 import { auth } from '@/includes/firebase';
 import router from '@/router';
-import { useEmployeeStore } from '@/stores/employees'
+import { useEmployeeStore } from '@/stores/employeeStore'
 
 const { empInitials } = useFormatName()
 const employeeStore = useEmployeeStore()

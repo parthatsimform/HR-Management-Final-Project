@@ -38,7 +38,7 @@
 import { auth } from '@/includes/firebase';
 import router from '@/router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useEmployeeStore } from "@/stores/employees"
+import { useEmployeeStore } from "@/stores/employeeStore"
 import { onBeforeUnmount } from 'vue';
 import type Employee from '@/types/employee';
 import { useToggleFormAlert } from '@/composables/useToggleFormAlert'
@@ -53,7 +53,7 @@ const employeeStore = useEmployeeStore()
 const validatePassword = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
     if (inputEle.value === "") {
-        displayAlert(inputEle,"Please enter password")
+        displayAlert(inputEle, "Please enter password")
         return false;
     } else {
         removeAlert(inputEle)
@@ -64,8 +64,8 @@ const validatePassword = (id: string): boolean => {
 const userLogin = async (e: Event): Promise<void> => {
     if (isValidEmail('email') && validatePassword('password')) {
         const target = e.target as HTMLFormElement
-        const email:string = target.email.value;
-        const password:string = target.password.value;
+        const email: string = target.email.value;
+        const password: string = target.password.value;
         try {
             await signInWithEmailAndPassword(auth, email, password)
             if (auth.currentUser) {

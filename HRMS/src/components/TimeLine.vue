@@ -50,7 +50,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useEmployeeStore } from '../stores/employees'
+import { useEmployeeStore } from '../stores/employeeStore'
 import { useDuration } from '../composables/useDuration'
 import { useFormattedDate } from '../composables/useFormatedDate';
 import gsap from 'gsap'
@@ -61,14 +61,14 @@ const employeeStore = useEmployeeStore();
 const dateToday: Date = new Date()
 const duration: number[] = calculateDuration(employeeStore.emp_details.joiningDate, formattedDate(dateToday.toISOString()));
 
-function addYear(date: string|Date, noOfYears: number): string {
-    let year :number = new Date(date).getUTCFullYear() + noOfYears
+function addYear(date: string | Date, noOfYears: number): string {
+    let year: number = new Date(date).getUTCFullYear() + noOfYears
     let month: string = (new Date(date).getUTCMonth() + 1).toString().padStart(2, '0')
     let day: string = (new Date(date).getUTCDate()).toString().padStart(2, '0')
     return `${year}-${month}-${day}`
 }
 
-function calculateMonth(date: string|Date, noOfMoth: number): string {
+function calculateMonth(date: string | Date, noOfMoth: number): string {
     let month: number = (new Date(date).getUTCMonth() + 1)
     let year: number = new Date(date).getUTCFullYear()
     let day: string = new Date(date).getUTCDate().toString().padStart(2, '0')
@@ -96,10 +96,21 @@ function displayTimeLineYear(): void {
     }
     for (let i = 0; i < duration[0]; i++) {
         const eventDate: Date = employeeStore.emp_details.joiningDate;
-        items.value.push({
-            message: `You have successfully completed ${i + 1} ${i === 0 ? "year" : "years"}`,
-            date: addYear(eventDate, i + 1),
-        });
+        if (i >= 5) {
+            if ((i + 1) % 5 == 0) {
+                items.value.push({
+                    message: `You have successfully completed ${i + 1} ${i === 0 ? "year" : "years"}`,
+                    date: addYear(eventDate, i + 1),
+                });
+            }
+        }
+        else {
+            items.value.push({
+                message: `You have successfully completed ${i + 1} ${i === 0 ? "year" : "years"}`,
+                date: addYear(eventDate, i + 1),
+            });
+        }
+
     }
 }
 
@@ -115,7 +126,11 @@ const timeLinedata: () => void = () => {
 }
 timeLinedata()
 
-items.value = items.value.sort((a: timeLineContent, b: timeLineContent) => new Date(a.date) - new Date(b.date));
+items.value = items.value.sort((a: timeLineContent, b: timeLineContent): number => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return dateA - dateB;
+});
 let timeLineList = ref<timeLineContent[]>([])
 for (let i = 0; i < items.value.length; i++) {
     setTimeout(() => {
@@ -123,34 +138,34 @@ for (let i = 0; i < items.value.length; i++) {
     }, (i + 1) * 250)
 }
 
-function beforeEnter(el: { style: { opacity: number; transform: string; }; }) {
-    el.style.opacity = 0;
-    el.style.transform = 'translateX(100px)'
+function beforeEnter(el: { style: { opacity: number; transform: string; }; } | Element) {
+    const element = el as HTMLElement;
+    element.style.opacity = '0';
+    element.style.transform = 'translateX(100px)'
 }
-function enter(el: { dataset: { index: number; }; }, done: ()=>void) {
+function enter(el: { dataset: { index: number; }; } | Element, done: () => void) {
     gsap.to(el, {
         opacity: 1,
         x: 0,
         duration: 0.5,
-        onComplete: done,
-        delay: el.dataset.index * 0.1
+        onComplete: done
     })
 }
-function beforeEnterLeft(el: { style: { opacity: number; transform: string; }; }) {
-    el.style.opacity = 0;
-    el.style.transform = 'translateX(-100px)'
+function beforeEnterLeft(el: { style: { opacity: number; transform: string; }; } | Element) {
+    const element = el as HTMLElement;
+    element.style.opacity = '0';
+    element.style.transform = 'translateX(-100px)'
 }
-function enterLeft(el: { dataset: { index: number; }; }, done: ()=>void) {
+function enterLeft(el: { dataset: { index: number; }; } | Element, done: () => void) {
     gsap.to(el, {
         opacity: 1,
         x: 0,
         duration: 0.5,
-        onComplete: done,
-        delay: el.dataset.index * 0.1
+        onComplete: done
     })
 }
 </script>
-  
+
 <style>
 .timeline-wrapper {
     max-width: 600px;
