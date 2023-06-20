@@ -42,7 +42,6 @@ import { auth } from '@/includes/firebase'
 
 const { calculateDuration } = useDuration()
 const employeeStore = useEmployeeStore();
-const route = useRoute()
 
 await employeeStore.getEmpDetails(auth.currentUser!.uid)
 const { empInitials } = useFormatName()

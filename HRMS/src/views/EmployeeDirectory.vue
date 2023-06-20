@@ -159,12 +159,12 @@ const startDrag = (event: DragEvent, item: empDoc) => {
 
 const onDrop = async (event: DragEvent, department: string): Promise<void> => {
   const itemID: string = event.dataTransfer!.getData("itemID");
-  const item: empDoc[] = empData.value.filter((item: { uid: string; }) => item.uid == itemID);
-  const docId: string = item[0].docId;
+  const emp: empDoc[] = empData.value.filter((item: { uid: string; }) => item.uid == itemID);
 
-  if (item[0].department !== department) {
+  if (emp[0].department !== department) {
+    const docId: string = emp[0].docId;
     if (employeeStore.emp_details.isAdmin) {
-      const techStackTimeLine: techStackTimeLine[] = [...item[0].techStackTimeLine];
+      const techStackTimeLine: techStackTimeLine[] = [...emp[0].techStackTimeLine];
 
       const today: Date = new Date();
       const date: string = formattedDate(today.toISOString());
@@ -181,7 +181,6 @@ const onDrop = async (event: DragEvent, department: string): Promise<void> => {
     }
   }
 };
-
 
 function beforeEnter(el: { style: { opacity: number; transform: string; }; } | Element) {
   const element = el as HTMLElement

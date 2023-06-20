@@ -50,9 +50,9 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useEmployeeStore } from '../stores/employeeStore'
-import { useDuration } from '../composables/useDuration'
-import { useFormattedDate } from '../composables/useFormatedDate';
+import { useEmployeeStore } from '@/stores/employeeStore'
+import { useDuration } from '@/composables/useDuration'
+import { useFormattedDate } from '@/composables/useFormatedDate';
 import gsap from 'gsap'
 
 const { calculateDuration } = useDuration()
@@ -99,7 +99,7 @@ function displayTimeLineYear(): void {
         if (i >= 5) {
             if ((i + 1) % 5 == 0) {
                 items.value.push({
-                    message: `You have successfully completed ${i + 1} years}`,
+                    message: `You have successfully completed ${i + 1} years`,
                     date: addYear(eventDate, i + 1),
                 });
             }
