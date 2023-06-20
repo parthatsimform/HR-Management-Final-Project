@@ -126,18 +126,18 @@ import { collection, addDoc, getDoc, doc, updateDoc, onSnapshot, query, where, t
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useToggleFormAlert } from '@/composables/useToggleFormAlert'
 import { useValidateIP } from '@/composables/useValidateIP'
+import { useFormattedDate } from '@/composables/useFormatedDate'
 import Swal from 'sweetalert2'
 
 let userDoc = ref<string>('')
 let availableLeaves = ref<number>();
 
+const { formattedDate } = useFormattedDate()
+
 function getTodayDate(): string {
-    const today: Date = new Date();
-    const year: number = today.getFullYear();
-    const month: string = String(today.getMonth() + 1).padStart(2, '0');
-    const day: string = String(today.getDate()).padStart(2, '0');
-    const formattedDate: string = `${year}-${month}-${day}`;
-    return formattedDate;
+    const today: Date = new Date()
+    const formatted: string = formattedDate(today)
+    return formatted;
 }
 
 const today: string = getTodayDate()
@@ -228,9 +228,7 @@ const store = useLeaveStore()
 
 const applyLeave = async (e: Event): Promise<void> => {
     e.preventDefault();
-
     const totalLeave = availableLeaves.value!;
-
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -271,12 +269,14 @@ const applyLeave = async (e: Event): Promise<void> => {
                     title: 'Leave applied successfully'
                 })
                 store.leave = { type: "Leave Type*" } as Leave
+                handleUnPlanedLeave()
             } else {
                 Toast.fire({
                     icon: 'error',
                     title: 'Error while applying !!!'
                 })
                 store.leave = { type: "Leave Type*" } as Leave
+                handleUnPlanedLeave()
             }
         } catch (err) {
             Toast.fire({
@@ -284,6 +284,7 @@ const applyLeave = async (e: Event): Promise<void> => {
                 title: 'Error while applying !!!'
             })
             store.leave = { type: "Leave Type*" } as Leave
+            handleUnPlanedLeave()
         }
     } else if (getDateDifference(store.leave.startDate, store.leave.endDate) > totalLeave) {
         Toast.fire({
@@ -291,6 +292,7 @@ const applyLeave = async (e: Event): Promise<void> => {
             title: 'Insufficient Leave Ballance!!'
         })
         store.leave = { type: "Leave Type*" } as Leave
+        handleUnPlanedLeave()
     }
 };
 
@@ -317,11 +319,18 @@ const handleLeaveType = (e: Event): void => {
     if (store.leave.type === 'unPlanned') {
         removeAlert(startDateEl)
         store.leave.startDate = today
+        store.leave.endDate = ''
         startDateEl.min = today
         endDateEl.min = today
         endDateEl.max = getDayAfterTomorrowDate()
     }
 }
+
+const handleUnPlanedLeave = ():void => {
+    const endDateEl = document.getElementById("endDate") as HTMLFormElement
+    endDateEl.removeAttribute('max')
+}
+
 function getDayAfterTomorrowDate(): string {
     const today: Date = new Date();
     const currentDate: number = today.getDate();
@@ -341,13 +350,9 @@ function getDayAfterTomorrowDate(): string {
         dayAfterTomorrowDate = new Date(nextYear, nextMonth, daysToNextMonth);
     }
 
-    const year: number = dayAfterTomorrowDate.getFullYear();
-    const month: string = String(dayAfterTomorrowDate.getMonth() + 1).padStart(2, '0');
-    const day: string = String(dayAfterTomorrowDate.getDate()).padStart(2, '0');
+    const formatted = formattedDate(dayAfterTomorrowDate);
 
-    const formattedDate = `${year}-${month}-${day}`;
-
-    return formattedDate;
+    return formatted;
 }
 const checkReasonLength = (id: string): boolean => {
     const reasonEl = document.getElementById(id) as HTMLFormElement
