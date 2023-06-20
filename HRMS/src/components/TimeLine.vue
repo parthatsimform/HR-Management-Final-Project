@@ -99,7 +99,7 @@ function displayTimeLineYear(): void {
         if (i >= 5) {
             if ((i + 1) % 5 == 0) {
                 items.value.push({
-                    message: `You have successfully completed ${i + 1} ${i === 0 ? "year" : "years"}`,
+                    message: `You have successfully completed ${i + 1} years}`,
                     date: addYear(eventDate, i + 1),
                 });
             }
@@ -126,7 +126,7 @@ const timeLinedata: () => void = () => {
 }
 timeLinedata()
 
-items.value = items.value.sort((a: timeLineContent, b: timeLineContent): number => {
+items.value.sort((a: timeLineContent, b: timeLineContent): number => {
     const dateA = new Date(a.date).getTime();
     const dateB = new Date(b.date).getTime();
     return dateA - dateB;
