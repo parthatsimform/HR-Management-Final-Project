@@ -18,8 +18,9 @@
                                 <label for="startDate">Leave Start Date*:</label>
                                 <input type="date" id="startDate"
                                     :disabled="store.leave.type === 'Leave Type*' ? true : false"
-                                    v-model="store.leave.startDate" :min="today" :max="(store.leave.endDate as string)"
-                                    @change="removeAlert($event.target as HTMLFormElement)" />
+                                    v-model="store.leave.startDate" :min="today"
+                                    :max="store.leave.type === 'unPlanned' && !store.leave.endDate ? getDayAfterTomorrowDate() : store.leave.endDate as string"
+                                    @change="removeAlert($event.target as HTMLFormElement), handleLeaveType" />
                                 <p class="vAlert startDateErr" :class="{ 'txt-black': store.leave.type === 'Leave Type*' }">
                                     {{ store.leave.type === 'Leave Type*' ? 'Please select leave type*' : '' }}
                                 </p>
@@ -28,7 +29,8 @@
                                 <label for="endDate">Leave End Date*:</label>
                                 <input type="date" id="endDate"
                                     :disabled="store.leave.type === 'Leave Type*' ? true : false"
-                                    v-model="store.leave.endDate" @change="removeAlert($event.target as HTMLFormElement)"
+                                    v-model="store.leave.endDate"
+                                    @change="removeAlert($event.target as HTMLFormElement), handleLeaveType"
                                     :min="store.leave.startDate ? (store.leave.startDate as string) : today" />
                                 <p class="vAlert endDateErr" id='endDateErr'></p>
                             </div>
@@ -44,7 +46,8 @@
                             <p class="vAlert emailErr"></p>
                         </div>
                         <div class="d-flex justify-content-between leave-btn-content">
-                            <p class="my-auto" :class="{ 'text-danger': availableLeaves === 0 }">Your Leave Balance: {{ availableLeaves }}</p>
+                            <p class="my-auto" :class="{ 'text-danger': availableLeaves === 0 }">Your Leave Balance: {{
+                                availableLeaves }}</p>
                             <button class="btn btn-primary py-2 fw-medium" type="submit" :disabled="availableLeaves === 0">
                                 Add Request
                             </button>
@@ -305,8 +308,8 @@ const handleLeaveDisplay = async (id: string): Promise<void> => {
     }
 }
 
-const handleLeaveType = (e: Event): void => {
-    const leaveSelect = e.target as HTMLFormElement
+const handleLeaveType = (): void => {
+    const leaveSelect = document.getElementById("leaveType") as HTMLFormElement
     const startDateEl = document.getElementById("startDate") as HTMLFormElement
     const endDateEl = document.getElementById("endDate") as HTMLFormElement
     removeAlert(leaveSelect)
@@ -326,7 +329,7 @@ const handleLeaveType = (e: Event): void => {
     }
 }
 
-const handleUnPlanedLeave = ():void => {
+const handleUnPlanedLeave = (): void => {
     const endDateEl = document.getElementById("endDate") as HTMLFormElement
     endDateEl.removeAttribute('max')
 }
@@ -580,5 +583,4 @@ onBeforeUnmount(() => {
     .leave-form-container {
         width: 98% !important;
     }
-}
-</style>
+}</style>
