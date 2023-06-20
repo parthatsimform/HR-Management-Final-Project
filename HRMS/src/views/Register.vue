@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid p-0 d-flex justify-content-center align-items-center">
-        <div class="registration-container d-flex justify-content-center mb-5">
+        <div class="registration-container d-flex justify-content-center mb-4">
             <div class="img-container pe-3 ps-3 w-50 d-flex align-items-center justify-content-center">
                 <img class="h-100 w-100" src="../assets/Signup.svg" alt="">
             </div>
@@ -400,7 +400,7 @@ onBeforeUnmount(() => {
 
 .form-fields p {
     font-size: 12px;
-    height: 15px;
+    height: 10px;
     margin-bottom: 10px;
     color: #ff0000;
 }
