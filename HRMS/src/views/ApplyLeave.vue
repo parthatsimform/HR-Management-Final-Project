@@ -44,8 +44,8 @@
                             <p class="vAlert emailErr"></p>
                         </div>
                         <div class="d-flex justify-content-between leave-btn-content">
-                            <p class="my-auto">Your Leave Balance: {{ availableLeaves }}</p>
-                            <button class="btn btn-primary py-2 fw-medium" type="submit">
+                            <p class="my-auto" :class="{ 'text-danger': availableLeaves === 0 }">Your Leave Balance: {{ availableLeaves }}</p>
+                            <button class="btn btn-primary py-2 fw-medium" type="submit" :disabled="availableLeaves === 0">
                                 Add Request
                             </button>
                         </div>

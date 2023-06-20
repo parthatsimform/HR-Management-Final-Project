@@ -22,7 +22,7 @@
                     <div class="hidden-links d-none">
                         <li class="nav-item h-100 d-flex align-items-center">
                             <router-link class="nav-link"
-                                :to="{ name: 'Profile', params: { id: 123 } }">Profile</router-link>
+                                :to="{ name: 'Profile' }">Profile</router-link>
                         </li>
                         <li class="nav-item h-100 d-flex align-items-center border-bottom-0">
                             <a class="nav-link link-danger">LogOut</a>
@@ -38,7 +38,7 @@
                         <ul class="dropdown-menu position-absolute p-0" aria-labelledby="navbarDropdown">
                             <li class="d-flex">
                                 <router-link class="profile-item p-2"
-                                    :to="{ name: 'Profile', params: { id: auth.currentUser!.uid } }">Profile</router-link>
+                                    :to="{ name: 'Profile'}">Profile</router-link>
                             </li>
                             <li>
                                 <hr class="dropdown-divider p-0 m-0">

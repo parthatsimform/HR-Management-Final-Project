@@ -44,7 +44,7 @@ const { calculateDuration } = useDuration()
 const employeeStore = useEmployeeStore();
 const route = useRoute()
 
-await employeeStore.getEmpDetails(route.params.id as string)
+await employeeStore.getEmpDetails(auth.currentUser!.uid)
 const { empInitials } = useFormatName()
 const profileTab = shallowRef(About)
 const isActive = ref<string>('About')
