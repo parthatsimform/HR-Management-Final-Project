@@ -3,8 +3,7 @@
         <div class="common-header d-flex justify-content-center align-items-center fs-5 fw-bold">
             {{ department }}
         </div>
-        <transition-group name="content-card" tag="div" @before-enter="beforeEnter" @enter="enter"
-            @before-leave="beforeLeave" @leave="leave" appear>
+        <transition-group name="content-card" tag="div" @before-enter="beforeEnter" @enter="enter" appear>
             <div class="users-list" v-for="employee in empData" :key="employee.uid">
                 <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
                     :draggable="employeeStore.emp_details.isAdmin" v-if="employee.department === department"
@@ -144,19 +143,6 @@ function enter(el: Element, done: () => void) {
         onComplete: done
     })
 }
-function beforeLeave(el: { style: { opacity: number; }; } | Element) {
-    const element = el as HTMLElement
-    element.style.opacity = "1"
-}
-function leave(el: Element, done: () => void) {
-    gsap.to(el, {
-        opacity: 0,
-        x: -250,
-        scaleY: 0.01,
-        duration: 0.3,
-        onComplete: done
-    })
-}
 </script>
 
 <style scoped>
@@ -238,6 +224,15 @@ function leave(el: Element, done: () => void) {
     overflow: hidden;
 }
 
+.content-card-leave-active {
+    transition: all 0.5s ease;
+    position: absolute;
+}
+
+.content-card-move {
+    transition: all 0.5s ease;
+}
+
 @media (max-width: 1520px) {
     .user-card {
         height: 90px;
@@ -306,7 +301,7 @@ function leave(el: Element, done: () => void) {
 
 @media (max-width: 767px) {
     .common-department-content {
-        height: 350px;
+        height: 50vh;
     }
 }
 

@@ -110,7 +110,6 @@ function displayTimeLineYear(): void {
                 date: addYear(eventDate, i + 1),
             });
         }
-
     }
 }
 
