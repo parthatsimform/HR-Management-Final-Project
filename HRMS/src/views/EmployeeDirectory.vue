@@ -132,7 +132,7 @@ const { empInitials } = useFormatName();
 
 onBeforeMount(async () => {
   getEmpData();
-  await employeeStore.getemp_details()
+  await employeeStore.getEmpDetails()
 });
 
 const empData = ref(<empDoc[]>[]);

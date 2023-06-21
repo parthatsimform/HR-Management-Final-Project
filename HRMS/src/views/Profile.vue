@@ -43,7 +43,7 @@ import { auth } from '@/includes/firebase'
 const { calculateDuration } = useDuration()
 const employeeStore = useEmployeeStore();
 
-await employeeStore.getemp_details()
+await employeeStore.getEmpDetails()
 const { empInitials } = useFormatName()
 const profileTab = shallowRef(About)
 const isActive = ref<string>('About')

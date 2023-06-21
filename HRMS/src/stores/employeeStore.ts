@@ -11,7 +11,7 @@ export const useEmployeeStore = defineStore("employee", {
     emp_details: {} as empDoc,
   }),
   actions: {
-    async getemp_details(): Promise<void> {
+    async getEmpDetails(): Promise<void> {
       const qry = query(
         collection(db, "employees"),
         where("uid", "==", auth.currentUser!.uid)
