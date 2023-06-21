@@ -46,9 +46,9 @@
                             <p class="vAlert emailErr"></p>
                         </div>
                         <div class="d-flex justify-content-between leave-btn-content">
-                            <p class="my-auto" :class="{ 'text-danger': availableLeaves === 0 }">Your Leave Balance: {{
-                                availableLeaves }}</p>
-                            <button class="btn btn-primary py-2 fw-medium" type="submit" :disabled="availableLeaves === 0">
+                            <p class="my-auto" :class="{ 'text-danger': userDoc!.leaveBallance === 0 }">Your Leave Balance: {{
+                                userDoc!.leaveBallance }}</p>
+                            <button class="btn btn-primary py-2 fw-medium" type="submit" :disabled="userDoc!.leaveBallance === 0">
                                 Add Request
                             </button>
                         </div>
@@ -76,14 +76,14 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="exampleModal" @click="modelLeave = {}" tabindex="-1" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="exampleModal" @click="modelLeave = {} as Leave" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered d-flex justify-content-center align-items-center">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title d-flex justify-content-center align-items-center w-100"
                             id="exampleModalLabel">Leave</h5>
-                        <button type="button" @click="modelLeave = {}" class="btn-close" data-bs-dismiss="modal"
+                        <button type="button" @click="modelLeave = {} as Leave" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-4">
@@ -132,10 +132,16 @@ import { useValidateIP } from '@/composables/useValidateIP'
 import { useFormattedDate } from '@/composables/useFormatedDate'
 import Swal from 'sweetalert2'
 
-let userDoc = ref<string>('')
-let availableLeaves = ref<number>();
-
+let userDoc = ref({} as empDoc)
 const { formattedDate } = useFormattedDate()
+
+const today: string = getTodayDate()
+const { displayAlert, removeAlert } = useToggleFormAlert()
+const { isValidEmail } = useValidateIP()
+
+interface leaveObj extends Leave {
+    id: string
+}
 
 function getTodayDate(): string {
     const today: Date = new Date()
@@ -143,15 +149,28 @@ function getTodayDate(): string {
     return formatted;
 }
 
-const today: string = getTodayDate()
-const { displayAlert, removeAlert } = useToggleFormAlert()
-const { isValidEmail } = useValidateIP()
-interface leaveObj extends Leave {
-    id: string
+onMounted(() => {
+    fetchCurUser()
+    fetchCurUserLeave()
+})
+
+const fetchCurUser = () => {
+    const q: Query<DocumentData> = query(collection(db, "employees"), where("uid", "==", auth.currentUser!.uid));
+    onSnapshot(q, (querySnapshot) => {
+        const fbUser: empDoc[] = []
+        querySnapshot.forEach((doc) => {
+            const user: empDoc = {
+                ...doc.data() as Employee,
+                docId: doc.id as string
+            }
+            fbUser.push(user)
+        });
+        userDoc.value = fbUser[0]
+    })
 }
+
 let leaves = ref<leaveObj[]>([])
-const modelLeave = ref<DocumentData>({})
-onMounted(async () => {
+const fetchCurUserLeave = () => {
     const q: Query<DocumentData> = query(collection(db, "leaves"), where("uid", "==", auth.currentUser!.uid));
     onSnapshot(q, (querySnapshot) => {
         const FbLeaves: leaveObj[] = []
@@ -164,53 +183,33 @@ onMounted(async () => {
         });
         leaves.value = FbLeaves
     })
-})
-
-onMounted(async () => {
-    const q: Query<DocumentData> = query(collection(db, "employees"), where("uid", "==", auth.currentUser!.uid));
-    onSnapshot(q, async (querySnapshot) => {
-        const fbUser: empDoc[] = []
-        querySnapshot.forEach((doc) => {
-            const user: empDoc = {
-                ...doc.data() as Employee,
-                docId: doc.id as string
-            }
-            fbUser.push(user)
-        });
-        userDoc.value = fbUser[0].docId
-        const userDocRef: DocumentReference<DocumentData> = doc(db, "employees", userDoc.value);
-        const userDocSnap: DocumentSnapshot<DocumentData> = await getDoc(userDocRef);
-        const user = userDocSnap.data() as Employee;
-        availableLeaves.value = user?.leaveBallance;
-    })
-
-
-})
+}
 
 const validateForm = (): boolean => {
     const formElements = document.forms[0].elements as HTMLFormControlsCollection
-    let isValid: boolean = true
+    let isValid = true
+    
     for (let i = 0; i < formElements.length - 1; i++) {
         const formElement = formElements[i] as HTMLFormElement
-        if (formElement.type === 'select-one' && formElement.value === 'Leave Type*') {
+        const {type, value, id} = formElement
+        
+        if (type === 'select-one' && value === 'Leave Type*') {
             displayAlert(formElement, "Please select leave type*")
             isValid = false
-        } else if (!formElement.value) {
-            switch (formElement.type) {
+        } else if (!value) {
+            switch (type) {
                 case 'date':
-                    if (formElement.id === 'startDate') {
-                        displayAlert(formElement, "Please select start date*")
-                    } else {
-                        displayAlert(formElement, "Please select end date*")
-                    }
+                    const message = id === 'startDate'
+                        ? 'Please select start date*'
+                        : 'Please select end date*'
+                    displayAlert(formElement, message)
                     break
                 default:
-                    displayAlert(formElement, `${formElement.id} is required*`)
+                    displayAlert(formElement, `${id} is required*`)
                     break
             }
             isValid = false
-        }
-        else {
+        } else {
             removeAlert(formElement)
         }
     }
@@ -218,30 +217,34 @@ const validateForm = (): boolean => {
 }
 
 const getDateDifference = (date1: Date | string, date2: Date | string): number => {
-    const oneDay: number = 24 * 60 * 60 * 1000;
-    const firstDate: Date = new Date(date1);
-    const secondDate: Date = new Date(date2);
-    const diffInTime: number = Math.abs(secondDate.getTime() - firstDate.getTime());
-    const diffInDays: number = Math.round(diffInTime / oneDay);
-
-    return diffInDays + 1;
+    const diffInTime: number = Math.abs(new Date(date2).getTime() - new Date(date1).getTime());
+    return Math.ceil(diffInTime / (24 * 60 * 60 * 1000));
 }
 
 const store = useLeaveStore()
-
 const applyLeave = async (e: Event): Promise<void> => {
     e.preventDefault();
-    const totalLeave = availableLeaves.value!;
+    const totalLeave = userDoc.value!.leaveBallance;
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
-        customClass: {
-            container: 'mt-5'
-        }
-    })
+        customClass: { container: 'mt-5' }
+    });
+
+    const leave: Leave = {
+        fromEmail: auth.currentUser?.email ?? '',
+        toEmail: store.leave.toEmail,
+        type: store.leave.type,
+        startDate: store.leave.startDate,
+        endDate: store.leave.endDate,
+        reason: store.leave.reason,
+        uid: auth.currentUser?.uid ?? '',
+        status: 'Pending',
+    };
+
     if (
         validateForm() &&
         checkReasonLength('Reason') &&
@@ -250,55 +253,38 @@ const applyLeave = async (e: Event): Promise<void> => {
         totalLeave > 0 &&
         getDateDifference(store.leave.startDate, store.leave.endDate) <= totalLeave
     ) {
-        const leave: Leave = {
-            fromEmail: auth.currentUser.email ?? "",
-            toEmail: store.leave.toEmail,
-            type: store.leave.type,
-            startDate: store.leave.startDate,
-            endDate: store.leave.endDate,
-            reason: store.leave.reason,
-            uid: auth.currentUser.uid ?? "",
-            status: "Pending",
-        };
         try {
-            const userDocRef = doc(db, "employees", userDoc.value);
+            const userDocRef = doc(db, 'employees', userDoc.value!.docId as string);
             await updateDoc(userDocRef, {
                 leaveBallance: totalLeave - getDateDifference(store.leave.startDate, store.leave.endDate),
             });
-            const res = await addDoc(collection(db, "leaves"), leave);
-            if (res) {
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Leave applied successfully'
-                })
-                store.leave = { type: "Leave Type*" } as Leave
-                handleUnPlanedLeave()
-            } else {
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Error while applying !!!'
-                })
-                store.leave = { type: "Leave Type*" } as Leave
-                handleUnPlanedLeave()
-            }
+            const res = await addDoc(collection(db, 'leaves'), leave);
+            const actionTitle = res ? 'Leave applied successfully' : 'Error while applying !!!';
+            Toast.fire({
+                icon: res ? 'success' : 'error',
+                title: actionTitle,
+            });
+            store.leave = { type: 'Leave Type*' } as Leave;
+            handleUnPlanedLeave();
         } catch (err) {
             Toast.fire({
                 icon: 'error',
-                title: 'Error while applying !!!'
-            })
-            store.leave = { type: "Leave Type*" } as Leave
-            handleUnPlanedLeave()
+                title: 'Error while applying !!!',
+            });
+            store.leave = { type: 'Leave Type*' } as Leave;
+            handleUnPlanedLeave();
         }
     } else if (getDateDifference(store.leave.startDate, store.leave.endDate) > totalLeave) {
         Toast.fire({
             icon: 'warning',
-            title: 'Insufficient Leave Ballance!!'
-        })
-        store.leave = { type: "Leave Type*" } as Leave
-        handleUnPlanedLeave()
+            title: 'Insufficient Leave Ballance!!',
+        });
+        store.leave = { type: 'Leave Type*' } as Leave;
+        handleUnPlanedLeave();
     }
 };
 
+const modelLeave = ref({} as Leave)
 const handleLeaveDisplay = async (id: string): Promise<void> => {
     const docRef: DocumentReference<DocumentData> = doc(db, "leaves", id);
     const docSnap: DocumentSnapshot<DocumentData> = await getDoc(docRef)
@@ -313,19 +299,24 @@ const handleLeaveType = (): void => {
     const startDateEl = document.getElementById("startDate") as HTMLFormElement
     const endDateEl = document.getElementById("endDate") as HTMLFormElement
     removeAlert(leaveSelect)
-    if (store.leave.type === 'planned') {
-        removeAlert(startDateEl)
-        store.leave.startDate = getDayAfterTomorrowDate()
-        startDateEl.min = store.leave.startDate
-        endDateEl.removeAttribute('max')
-    }
-    if (store.leave.type === 'unPlanned') {
-        removeAlert(startDateEl)
-        store.leave.startDate = today
-        store.leave.endDate = ''
-        startDateEl.min = today
-        endDateEl.min = today
-        endDateEl.max = getDayAfterTomorrowDate()
+
+    switch (store.leave.type) {
+        case 'planned':
+            removeAlert(startDateEl)
+            store.leave.startDate = getDayAfterTomorrowDate()
+            startDateEl.min = store.leave.startDate
+            endDateEl.removeAttribute('max')
+            break
+        case 'unPlanned':
+            removeAlert(startDateEl)
+            store.leave.startDate = today
+            store.leave.endDate = ''
+            startDateEl.min = today
+            endDateEl.min = today
+            endDateEl.max = getDayAfterTomorrowDate()
+            break
+        default:
+            break
     }
 }
 
@@ -345,7 +336,7 @@ function getDayAfterTomorrowDate(): string {
     
     let dayAfterTomorrowDate: Date;
     if (remainingDays >= 2) {
-        dayAfterTomorrowDate = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+        dayAfterTomorrowDate = new Date(today.getDate() + 2);
     } else {
         const nextMonth: number = (today.getMonth() + 1) % 12;
         const nextYear: number = today.getMonth() === 11 ? today.getFullYear() + 1 : today.getFullYear();

@@ -43,7 +43,7 @@ import { auth } from '@/includes/firebase'
 const { calculateDuration } = useDuration()
 const employeeStore = useEmployeeStore();
 
-await employeeStore.getEmpDetails(auth.currentUser!.uid)
+await employeeStore.getemp_details()
 const { empInitials } = useFormatName()
 const profileTab = shallowRef(About)
 const isActive = ref<string>('About')
@@ -54,10 +54,10 @@ function changeTab(tabName: string): void {
 }
 const today: Date = new Date()
 
-interface empDetails extends Employee {
+interface emp_details extends Employee {
     role: string
 }
-const employee: empDetails = {
+const employee: emp_details = {
     ...employeeStore.emp_details,
     role: 'TRAINEE'
 }
