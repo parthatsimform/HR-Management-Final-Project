@@ -60,27 +60,20 @@
                     <h2 class="text-center fw-bold mb-5">Your Leaves</h2>
                     <div class="leave-display h-100 p-3 overflow-y-scroll">
                         <p v-if="leaves.length === 0" class="text-center pt-5">No Leaves to Show!!</p>
-                        <div v-else class="card flex-row overflow-hidden mb-2" v-for="leave in leaves" :key="leave.id">
-                            <div class="card-body w-100">
-                                <h5 class="card-title">{{ leave.startDate }} <span class=" fw-light fs-6">to</span> {{
-                                    leave.endDate }}</h5>
-                                <h6 class="card-subtitle">{{ leave.type }}</h6>
-                                <p class="card-text w-100">{{ leave.reason }}</p>
-                                <div class="d-flex">
-                                    <button class="btn btn-outline-primary bg-primary-subtle view-btn" type="button"
-                                        data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                        @click="handleLeaveDisplay(leave.id)">
-                                        View Request
-                                    </button>
+                        <template v-else>
+                            <transition-group name="content-card" appear>
+                                <div class="card flex-row overflow-hidden mb-2" v-for="leave in leaves" :key="leave.id">
+                                    <LeaveCard :leave="leave" @handleLeaveDisplay="handleLeaveDisplay(leave.id)">
+                                    </LeaveCard>
                                 </div>
-                            </div>
-                        </div>
+                            </transition-group>
+                        </template>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="exampleModal" @click.stop tabindex="-1"
-            aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="exampleModal" @click.stop tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered d-flex justify-content-center align-items-center">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -133,6 +126,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useToggleFormAlert } from '@/composables/useToggleFormAlert'
 import { useValidateIP } from '@/composables/useValidateIP'
 import { useFormattedDate } from '@/composables/useFormatedDate'
+import LeaveCard from '@/components/LeaveCard.vue'
 import Swal from 'sweetalert2'
 
 let userDoc = ref({} as empDoc)
@@ -449,9 +443,10 @@ onBeforeUnmount(() => {
     width: 90%;
 }
 
-.leave-display::-webkit-scrollbar{
+.leave-display::-webkit-scrollbar {
     display: none;
 }
+
 .leave-display {
     border: 1px solid #e4e4e4;
     border-radius: 8px;
@@ -505,6 +500,10 @@ onBeforeUnmount(() => {
 
 .text-normal {
     color: #005ae2;
+}
+
+.content-card-move {
+    transition: all 0.5s ease;
 }
 
 @media (max-width: 1200px) {
@@ -585,4 +584,5 @@ onBeforeUnmount(() => {
     .leave-form-container {
         width: 98% !important;
     }
-}</style>
+}
+</style>
