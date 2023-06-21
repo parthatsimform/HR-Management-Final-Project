@@ -336,26 +336,24 @@ const handleUnPlanedLeave = (): void => {
 
 function getDayAfterTomorrowDate(): string {
     const today: Date = new Date();
-    const currentDate: number = today.getDate();
-    const currentMonth: number = today.getMonth();
-    const currentYear: number = today.getFullYear();
-    const daysInMonth: number = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const remainingDays: number = daysInMonth - currentDate;
+    const daysInMonth: number = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        0
+    ).getDate();
+    const remainingDays: number = daysInMonth - today.getDate();
+    
     let dayAfterTomorrowDate: Date;
-
     if (remainingDays >= 2) {
-        today.setDate(currentDate + 2);
-        dayAfterTomorrowDate = today;
+        dayAfterTomorrowDate = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
     } else {
-        const nextMonth: number = (currentMonth + 1) % 12;
-        const nextYear: number = currentMonth === 11 ? currentYear + 1 : currentYear;
+        const nextMonth: number = (today.getMonth() + 1) % 12;
+        const nextYear: number = today.getMonth() === 11 ? today.getFullYear() + 1 : today.getFullYear();
         const daysToNextMonth: number = 2 - remainingDays;
         dayAfterTomorrowDate = new Date(nextYear, nextMonth, daysToNextMonth);
     }
 
-    const formatted = formattedDate(dayAfterTomorrowDate);
-
-    return formatted;
+    return formattedDate(dayAfterTomorrowDate);
 }
 const checkReasonLength = (id: string): boolean => {
     const reasonEl = document.getElementById(id) as HTMLFormElement
