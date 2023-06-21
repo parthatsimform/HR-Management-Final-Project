@@ -279,7 +279,7 @@ function leave(el: Element, done: () => void) {
   user-select: none;
 }
 
-.common-department-content :hover {
+.user-card:hover {
   transform: scale(1.02);
   transition: 0.25s;
 }
