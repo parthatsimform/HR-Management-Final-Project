@@ -125,6 +125,7 @@ import gsap from 'gsap'
 import type Employee from '@/types/employee'
 import type empDoc from '@/types/empDoc'
 import type techStackTimeLine from "@/types/techStackTimeLine";
+import Swal from 'sweetalert2'
 
 const { formattedDate } = useFormattedDate()
 const employeeStore = useEmployeeStore();
@@ -135,7 +136,7 @@ onBeforeMount(async () => {
   await employeeStore.getEmpDetails()
 });
 
-const empData = ref(<empDoc[]>[]);
+const empData = ref<empDoc[]>([]);
 async function getEmpData(): Promise<void> {
   onSnapshot(
     collection(db, "employees"),
@@ -156,7 +157,16 @@ const startDrag = (event: DragEvent, item: empDoc) => {
   event.dataTransfer!.effectAllowed = "move";
   event.dataTransfer!.setData("itemID", item.uid);
 };
-
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  customClass: {
+    container: 'mt-5'
+  }
+})
 const onDrop = async (event: DragEvent, department: string): Promise<void> => {
   const itemID: string = event.dataTransfer!.getData("itemID");
   const emp: empDoc[] = empData.value.filter((item: { uid: string; }) => item.uid == itemID);
@@ -164,20 +174,41 @@ const onDrop = async (event: DragEvent, department: string): Promise<void> => {
   if (emp[0].department !== department) {
     const docId: string = emp[0].docId;
     if (employeeStore.emp_details.isAdmin) {
-      const techStackTimeLine: techStackTimeLine[] = [...emp[0].techStackTimeLine];
+      Swal.fire({
+        title: 'Do you want to save the changes?',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: 'Save',
+        denyButtonText: `Cancel`,
+        confirmButtonColor: '#0d6efd',
+      }).then(async (result) => {
+        if (result.isConfirmed === true) {
+          const techStackTimeLine: techStackTimeLine[] = [...emp[0].techStackTimeLine];
+          const today: Date = new Date();
+          const date: string = formattedDate(today.toISOString());
+          const newstackData: techStackTimeLine = {
+            techStack: department,
+            date: date
+          };
+          techStackTimeLine.push(newstackData)
 
-      const today: Date = new Date();
-      const date: string = formattedDate(today.toISOString());
-      const stackData: techStackTimeLine = {
-        techStack: department,
-        date: date
-      };
-      techStackTimeLine.push(stackData)
-      const empRef: DocumentReference<DocumentData> = doc(db, "employees", docId);
-      await updateDoc(empRef, {
-        department: department,
-        techStackTimeLine: techStackTimeLine
-      });
+          const empRef: DocumentReference<DocumentData> = doc(db, "employees", docId);
+          await updateDoc(empRef, {
+            department: department,
+            techStackTimeLine: techStackTimeLine
+          })
+          Toast.fire({
+            icon: 'success',
+            title: "Successfully changed the department"
+          })
+        }
+      }).catch((err) => {
+        Toast.fire({
+          icon: 'error',
+          title: "Failed to change the department"
+        })
+      })
+
     }
   }
 };
@@ -187,7 +218,7 @@ function beforeEnter(el: { style: { opacity: number; transform: string; }; } | E
   element.style.opacity = "0";
   element.style.transform = 'translateY(100px)'
 }
-function enter(el: { dataset: { index: number; }; } | Element, done: () => void) {
+function enter(el: Element, done: () => void) {
   const element = el as HTMLElement
   gsap.to(element, {
     opacity: 1,

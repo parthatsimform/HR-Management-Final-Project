@@ -25,7 +25,7 @@
                 </div>
                 <div class="d-flex flex-row align-items-center card-wrapper" v-else>
                     <transition-group class="timeline-card-content" name="timeline-card-content" tag="div"
-                        @before-enter="beforeEnterLeft" @enter="enterLeft" appear>
+                        @before-enter="beforeEnterLeft" @enter="enter" appear>
                         <div class="timeline-card d-flex justify-content-center align-items-center px-4 flex-column text-center"
                             :key="`card-${index}`">
                             <div
@@ -143,7 +143,7 @@ function beforeEnter(el: { style: { opacity: number; transform: string; }; } | E
     element.style.opacity = '0';
     element.style.transform = 'translateX(100px)'
 }
-function enter(el: { dataset: { index: number; }; } | Element, done: () => void) {
+function enter(el: Element, done: () => void) {
     gsap.to(el, {
         opacity: 1,
         x: 0,
@@ -156,14 +156,7 @@ function beforeEnterLeft(el: { style: { opacity: number; transform: string; }; }
     element.style.opacity = '0';
     element.style.transform = 'translateX(-100px)'
 }
-function enterLeft(el: { dataset: { index: number; }; } | Element, done: () => void) {
-    gsap.to(el, {
-        opacity: 1,
-        x: 0,
-        duration: 0.5,
-        onComplete: done
-    })
-}
+
 </script>
 
 <style>
@@ -227,11 +220,14 @@ function enterLeft(el: { dataset: { index: number; }; } | Element, done: () => v
 .card-content-right::after {
     content: "";
     position: absolute;
-    top: 15%;
-    right: 88.5%;
-    margin-left: -30px;
-    border-width: 35px;
+    top: 10%;
+    right: 87%;
+    margin-left: -28px;
+    border-width: 40px;
     border-style: solid;
+    border-radius: 10px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 28px;
     border-color: transparent #0d6efd transparent transparent;
 }
 
