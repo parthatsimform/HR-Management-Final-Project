@@ -59,7 +59,8 @@
                 <div class="leave-display-container d-flex flex-column justify-content-center align-items-center w-50 ps-3">
                     <h2 class="text-center fw-bold mb-5">Your Leaves</h2>
                     <div class="leave-display h-100 p-3 overflow-y-scroll">
-                        <div class="card flex-row overflow-hidden mb-2" v-for="leave in leaves" :key="leave.id">
+                        <p v-if="leaves.length === 0" class="text-center pt-5">No Leaves to Show!!</p>
+                        <div v-else class="card flex-row overflow-hidden mb-2" v-for="leave in leaves" :key="leave.id">
                             <div class="card-body w-100">
                                 <h5 class="card-title">{{ leave.startDate }} <span class=" fw-light fs-6">to</span> {{
                                     leave.endDate }}</h5>
