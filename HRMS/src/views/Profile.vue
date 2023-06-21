@@ -3,10 +3,12 @@
         <div class="profile-wrapper mx-auto">
             <div class="profile-name-image d-flex mt-4 ms-4">
                 <div class="profile-image mx-3 mt-4 d-flex align-items-center justify-content-center">
-                    <h1 class="fs-1 m-0">{{ empInitials(employeeStore.emp_details.fullName) }}</h1>
+                    <h1 class="fs-1 m-0">{{ auth.currentUser!.displayName ? empInitials(auth.currentUser!.displayName) : ''
+                    }}</h1>
                 </div>
                 <div class="profile-name pt-4 px-5 mt-4">
-                    <h2 class="fs-1">{{ formattedString(employeeStore.emp_details.fullName) }}</h2>
+                    <h2 class="fs-1">{{ auth.currentUser!.displayName ? formattedString(auth.currentUser!.displayName) : ''
+                    }}</h2>
                     <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
                     <p>{{ employee.role }}</p>
                 </div>
@@ -166,7 +168,6 @@ function formattedString(inputString: string): string {
 
     .profile-wrapper {
         width: 100%;
-        height: auto;
         border-radius: 0;
         box-shadow: none;
         padding: 20px;
