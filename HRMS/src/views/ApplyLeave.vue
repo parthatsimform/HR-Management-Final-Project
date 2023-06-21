@@ -333,10 +333,11 @@ function getDayAfterTomorrowDate(): string {
         0
     ).getDate();
     const remainingDays: number = daysInMonth - today.getDate();
-    
+
     let dayAfterTomorrowDate: Date;
     if (remainingDays >= 2) {
-        dayAfterTomorrowDate = new Date(today.getDate() + 2);
+        today.setDate(today.getDate()+2)
+        dayAfterTomorrowDate = today
     } else {
         const nextMonth: number = (today.getMonth() + 1) % 12;
         const nextYear: number = today.getMonth() === 11 ? today.getFullYear() + 1 : today.getFullYear();
