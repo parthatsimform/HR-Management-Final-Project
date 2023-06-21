@@ -448,6 +448,9 @@ onBeforeUnmount(() => {
     width: 90%;
 }
 
+.leave-display::-webkit-scrollbar{
+    display: none;
+}
 .leave-display {
     border: 1px solid #e4e4e4;
     border-radius: 8px;

@@ -80,7 +80,7 @@ const logout = async (): Promise<void> => {
 }
 
 const navToggle = () => {
-    document.getElementById("navbarSupportedContent")!.classList.toggle("show")
+    document.getElementById("navbarSupportedContent")!.classList.remove("show")
 }
 
 </script>
