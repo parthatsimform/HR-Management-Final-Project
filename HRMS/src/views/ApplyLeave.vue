@@ -218,7 +218,7 @@ const validateForm = (): boolean => {
 
 const getDateDifference = (date1: Date | string, date2: Date | string): number => {
     const diffInTime: number = Math.abs(new Date(date2).getTime() - new Date(date1).getTime());
-    return Math.ceil(diffInTime / (24 * 60 * 60 * 1000));
+    return Math.ceil(diffInTime / (24 * 60 * 60 * 1000)+1);
 }
 
 const store = useLeaveStore()
