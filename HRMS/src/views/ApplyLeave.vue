@@ -46,9 +46,11 @@
                             <p class="vAlert emailErr"></p>
                         </div>
                         <div class="d-flex justify-content-between leave-btn-content">
-                            <p class="my-auto" :class="{ 'text-danger': userDoc!.leaveBallance === 0 }">Your Leave Balance: {{
-                                userDoc!.leaveBallance }}</p>
-                            <button class="btn btn-primary py-2 fw-medium" type="submit" :disabled="userDoc!.leaveBallance === 0">
+                            <p class="my-auto" :class="{ 'text-danger': userDoc!.leaveBallance === 0 }">Your Leave Balance:
+                                {{
+                                    userDoc!.leaveBallance }}</p>
+                            <button class="btn btn-primary py-2 fw-medium" type="submit"
+                                :disabled="userDoc!.leaveBallance === 0">
                                 Add Request
                             </button>
                         </div>
@@ -76,8 +78,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="exampleModal" @click="modelLeave = {} as Leave" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="exampleModal" @click="modelLeave = {} as Leave" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered d-flex justify-content-center align-items-center">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -182,17 +184,22 @@ const fetchCurUserLeave = () => {
             FbLeaves.push(leave)
         });
         leaves.value = FbLeaves
+        leaves.value.sort((a, b) => {
+            const dateA = new Date(a.startDate).getTime();
+            const dateB = new Date(b.startDate).getTime();
+            return dateB - dateA;
+        })
     })
 }
 
 const validateForm = (): boolean => {
     const formElements = document.forms[0].elements as HTMLFormControlsCollection
     let isValid = true
-    
+
     for (let i = 0; i < formElements.length - 1; i++) {
         const formElement = formElements[i] as HTMLFormElement
-        const {type, value, id} = formElement
-        
+        const { type, value, id } = formElement
+
         if (type === 'select-one' && value === 'Leave Type*') {
             displayAlert(formElement, "Please select leave type*")
             isValid = false
@@ -218,7 +225,7 @@ const validateForm = (): boolean => {
 
 const getDateDifference = (date1: Date | string, date2: Date | string): number => {
     const diffInTime: number = Math.abs(new Date(date2).getTime() - new Date(date1).getTime());
-    return Math.ceil(diffInTime / (24 * 60 * 60 * 1000)+1);
+    return Math.ceil(diffInTime / (24 * 60 * 60 * 1000) + 1);
 }
 
 const store = useLeaveStore()
@@ -336,7 +343,7 @@ function getDayAfterTomorrowDate(): string {
 
     let dayAfterTomorrowDate: Date;
     if (remainingDays >= 2) {
-        today.setDate(today.getDate()+2)
+        today.setDate(today.getDate() + 2)
         dayAfterTomorrowDate = today
     } else {
         const nextMonth: number = (today.getMonth() + 1) % 12;

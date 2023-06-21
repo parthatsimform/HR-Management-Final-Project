@@ -3,7 +3,7 @@
         <div class="container-fluid h-100">
             <router-link class="navbar-brand fw-bolder" :to='{ name: "Home" }'
                 exact-active-class="no-active">HRMS</router-link>
-            <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
                 v-if="employeeStore.isLoggedIn">
                 <span class="navbar-toggler-icon"></span>
@@ -11,21 +11,21 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent" v-if="employeeStore.isLoggedIn">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 h-100">
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" :to='{ name: "Home" }'>Home</router-link>
+                        <router-link class="nav-link w-100" :to='{ name: "Home" }' @click="navToggle">Home</router-link>
                     </li>
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" :to='{ name: "Directory" }'>Employee-Directory</router-link>
+                        <router-link class="nav-link w-100" :to='{ name: "Directory" }' @click="navToggle">Employee-Directory</router-link>
                     </li>
                     <li class="nav-item h-100 d-flex align-items-center">
-                        <router-link class="nav-link" :to='{ name: "ApplyLeave" }'>Leave</router-link>
+                        <router-link class="nav-link w-100" :to='{ name: "ApplyLeave" }' @click="navToggle">Leave</router-link>
                     </li>
                     <div class="hidden-links d-none">
                         <li class="nav-item h-100 d-flex align-items-center">
-                            <router-link class="nav-link"
-                                :to="{ name: 'Profile' }">Profile</router-link>
+                            <router-link class="nav-link w-100"
+                                :to="{ name: 'Profile' }" @click="navToggle">Profile</router-link>
                         </li>
                         <li class="nav-item h-100 d-flex align-items-center border-bottom-0">
-                            <a class="nav-link link-danger">LogOut</a>
+                            <a class="nav-link link-danger w-100" @click="logout">LogOut</a>
                         </li>
                     </div>
                 </ul>
@@ -76,7 +76,13 @@ const logout = async (): Promise<void> => {
     localStorage.removeItem("isLoggedIn")
     employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
     router.push("/login")
+    navToggle()
 }
+
+const navToggle = () => {
+    document.getElementById("navbarSupportedContent")!.classList.toggle("show")
+}
+
 </script>
 
 <style scoped>
