@@ -6,7 +6,7 @@
         <p class="card-text w-100">{{ leave.reason }}</p>
         <div class="d-flex">
             <button class="btn btn-outline-primary bg-primary-subtle view-btn" type="button" data-bs-toggle="modal"
-                data-bs-target="#exampleModal" @click="$emit('handleLeaveDisplay',leave.id)">
+                data-bs-target="#exampleModal" @click="$emit('handleLeaveDisplay', leave.id)">
                 View Request
             </button>
         </div>
@@ -22,7 +22,7 @@ interface leaveObj extends Leave {
 defineProps<{ leave: leaveObj }>()
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .card-subtitle {
     font-size: 12px;
     color: #747474;

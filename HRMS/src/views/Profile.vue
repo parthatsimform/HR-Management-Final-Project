@@ -9,7 +9,7 @@
                 <div class="profile-name ps-5 d-flex flex-column justify-content-center">
                     <h2 class="fs-1">{{ auth.currentUser!.displayName ? formattedString(auth.currentUser!.displayName) : ''
                     }}</h2>
-                    <h6 class="mt-2 mb-3">{{ employeeStore.emp_details.department }}</h6>
+                    <h6 class="mt-2 mb-3">{{ employeeStore.empDetails.department }}</h6>
                     <p class="m-0">{{ employee.role }}</p>
                 </div>
             </div>
@@ -59,11 +59,11 @@ function changeTab(tabName: string): void {
 }
 const today: Date = new Date()
 
-interface emp_details extends Employee {
+interface empDetails extends Employee {
     role: string
 }
-const employee: emp_details = {
-    ...employeeStore.emp_details,
+const employee: empDetails = {
+    ...employeeStore.empDetails,
     role: 'TRAINEE'
 }
 const duration: number[] = calculateDuration(employee.joiningDate, today.toString())

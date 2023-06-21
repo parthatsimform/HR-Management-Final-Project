@@ -59,7 +59,7 @@ const { calculateDuration } = useDuration()
 const { formattedDate } = useFormattedDate()
 const employeeStore = useEmployeeStore();
 const dateToday: Date = new Date()
-const duration: number[] = calculateDuration(employeeStore.emp_details.joiningDate, formattedDate(dateToday.toISOString()));
+const duration: number[] = calculateDuration(employeeStore.empDetails.joiningDate, formattedDate(dateToday.toISOString()));
 
 function addYear(date: string | Date, noOfYears: number): string {
     let year: number = new Date(date).getUTCFullYear() + noOfYears
@@ -85,17 +85,17 @@ interface timeLineContent {
     message: string;
     date: string;
 }
-const items = ref<timeLineContent[]>([{ message: 'Joined as a Trainee', date: formattedDate(employeeStore.emp_details.joiningDate) }])
+const items = ref<timeLineContent[]>([{ message: 'Joined as a Trainee', date: formattedDate(employeeStore.empDetails.joiningDate) }])
 
 function displayTimeLineYear(): void {
     if (duration[0] >= 1 || (duration[0] < 1 && duration[1] >= 6)) {
         items.value.push({
             message: `Congratulations!! Successfully joined as an Employee`,
-            date: calculateMonth(employeeStore.emp_details.joiningDate, 6),
+            date: calculateMonth(employeeStore.empDetails.joiningDate, 6),
         });
     }
     for (let i = 0; i < duration[0]; i++) {
-        const eventDate: Date = employeeStore.emp_details.joiningDate;
+        const eventDate: Date = employeeStore.empDetails.joiningDate;
         if (i >= 5) {
             if ((i + 1) % 5 == 0) {
                 items.value.push({
@@ -114,8 +114,8 @@ function displayTimeLineYear(): void {
 }
 
 function displayTimeLineStack(): void {
-    for (let i = 0; i < employeeStore.emp_details.techStackTimeLine.length; i++) {
-        items.value.push({ message: `Tech Stack Changed to ${employeeStore.emp_details.techStackTimeLine[i].techStack}`, date: employeeStore.emp_details.techStackTimeLine[i].date });
+    for (let i = 0; i < employeeStore.empDetails.techStackTimeLine.length; i++) {
+        items.value.push({ message: `Tech Stack Changed to ${employeeStore.empDetails.techStackTimeLine[i].techStack}`, date: employeeStore.empDetails.techStackTimeLine[i].date });
     }
 }
 

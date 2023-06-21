@@ -6,7 +6,7 @@
         <transition-group name="content-card" tag="div" @before-enter="beforeEnter" @enter="enter" appear>
             <div class="users-list" v-for="employee in empData" :key="employee.uid">
                 <div class="user-card p-3 mx-4 mt-3 mb-3 d-flex flex-row align-items-center"
-                    :draggable="employeeStore.emp_details.isAdmin" v-if="employee.department === department"
+                    :draggable="employeeStore.empDetails.isAdmin" v-if="employee.department === department"
                     @dragstart="startDrag($event, employee)">
                     <div class="profile-container d-flex align-items-center justify-content-center">
                         <div class="profile-image emp-initials d-flex align-items-center justify-content-center fw-bold">
@@ -77,7 +77,7 @@ const onDrop = async (event: DragEvent, department: string): Promise<void> => {
 
     if (emp[0].department !== department) {
         const docId: string = emp[0].docId;
-        if (employeeStore.emp_details.isAdmin) {
+        if (employeeStore.empDetails.isAdmin) {
 
             Swal.fire({
                 title: 'Do you want to save the changes?',

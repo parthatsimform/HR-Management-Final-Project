@@ -8,23 +8,23 @@
           <div class="container ms-4">
             <div class="row">
               <div class="col-4">Name</div>
-              <div class="col-8">{{ employeeStore.emp_details.fullName }}</div>
+              <div class="col-8">{{ employeeStore.empDetails.fullName }}</div>
             </div>
             <div class="row">
               <div class="col-4">Email</div>
-              <div class="col-8">{{ employeeStore.emp_details.email }}</div>
+              <div class="col-8">{{ employeeStore.empDetails.email }}</div>
             </div>
             <div class="row">
               <div class="col-4">Mobile</div>
-              <div class="col-8">{{ employeeStore.emp_details.mobile }}</div>
+              <div class="col-8">{{ employeeStore.empDetails.mobile }}</div>
             </div>
             <div class="row">
               <div class="col-4">Joining Date</div>
-              <div class="col-8">{{ employeeStore.emp_details.joiningDate }}</div>
+              <div class="col-8">{{ employeeStore.empDetails.joiningDate }}</div>
             </div>
             <div class="row">
               <div class="col-4">DOB</div>
-              <div class="col-8">{{ employeeStore.emp_details.dob }}</div>
+              <div class="col-8">{{ employeeStore.empDetails.dob }}</div>
             </div>
           </div>
         </div>
@@ -70,9 +70,10 @@ col-8 {
 }
 
 @media screen and (max-width: 400px) {
-  .container{
+  .container {
     margin: 0 !important;
   }
+
   .about-personal-info h3 {
     margin-top: 0px
   }
