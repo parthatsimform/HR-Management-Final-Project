@@ -76,7 +76,6 @@ const userLogin = async (e: Event): Promise<void> => {
             let errMsg: string = err.code;
             switch (err.code) {
                 case "auth/wrong-password":
-                case "auth/invalid-app-credential":
                 case "auth/invalid-email":
                 case "auth/user-not-found":
                     errMsg = "Invalid Credentials"
@@ -108,7 +107,6 @@ const userLogin = async (e: Event): Promise<void> => {
         validatePassword('password')
     }
 }
-
 
 onBeforeUnmount(() => {
     employeeStore.emp = { department: "Select Department*" } as Employee

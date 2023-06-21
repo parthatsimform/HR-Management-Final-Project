@@ -26,8 +26,7 @@
                                 ?
                                 <span class="passwordTip">
                                     Password must be 8-12 characters long and contain at least one numeric digit and a
-                                    special
-                                    character.
+                                    special character.
                                 </span>
                             </span>
                         </div>
@@ -70,8 +69,7 @@
                         <button class="btn btn-primary w-75 fw-medium py-2" type="submit">Register</button>
                     </div>
                     <p class="text-center">Already have an account? <RouterLink :to="{ name: 'Login' }">Login
-                        </RouterLink>
-                        here. </p>
+                        </RouterLink> here. </p>
                 </form>
             </div>
         </div>
