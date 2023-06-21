@@ -56,13 +56,14 @@
                     </div>
                     <div class="mb-1 form-fields">
                         <label for="dob" class="form-label">Date of Birth*</label>
-                        <input type="date" id="dob" v-model="employeeStore.emp.dob" @input="validateDOB('dob')">
+                        <input type="date" id="dob" v-model="employeeStore.emp.dob" @input="validateDOB('dob')"
+                            :max="today">
                         <p class="vAlert dobErr"></p>
                     </div>
                     <div class="mb-1 form-fields">
                         <label for="dob" class="form-label">Joining Date*</label>
-                        <input type="date" id="joinDate" v-model="employeeStore.emp.joiningDate" min="1950-01-01"
-                            max="2023-06-30" @input="validateJoinDate('joinDate')">
+                        <input type="date" id="joinDate" v-model="employeeStore.emp.joiningDate" :max="today"
+                            @input="validateJoinDate('joinDate')">
                         <p class="vAlert joinDateErr"></p>
                     </div>
                     <div class="d-flex justify-content-center mb-2">
@@ -87,10 +88,15 @@ import router from "@/router"
 import { onBeforeUnmount } from "vue";
 import { useToggleFormAlert } from '@/composables/useToggleFormAlert'
 import { useValidateIP } from '@/composables/useValidateIP'
+import { useFormattedDate } from "@/composables/useFormatedDate";
 import Swal from 'sweetalert2'
 
 const { displayAlert, removeAlert } = useToggleFormAlert()
 const { isValidEmail } = useValidateIP()
+const { formattedDate } = useFormattedDate()
+
+const todayDate: Date = new Date()
+const today = formattedDate(todayDate)
 
 const employeeStore = useEmployeeStore()
 const registerUser = async (): Promise<void> => {
@@ -263,6 +269,7 @@ const validDate = (dob: Date): boolean => {
 
 const validateDOB = (id: string): boolean => {
     const inputEle = document.querySelector("#" + id) as HTMLFormElement
+    document.querySelector("#joinDate")!.setAttribute("min", inputEle.value)
     if (inputEle.value === "") {
         displayAlert(inputEle, "Please select your date of birth")
         return false;
@@ -284,7 +291,7 @@ const validateJoinDate = (id: string): boolean => {
         displayAlert(inputEle, "Please select valid joining date")
         return false;
     } else if (inputEle.value <= employeeStore.emp.dob) {
-        displayAlert(inputEle, "Joining date can't be less than DOB")
+        displayAlert(inputEle, "Joining date can't be same as DOB")
         return false;
     } else {
         removeAlert(inputEle)
