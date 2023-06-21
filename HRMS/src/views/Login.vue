@@ -51,15 +51,14 @@ const { isValidEmail } = useValidateIP()
 const employeeStore = useEmployeeStore()
 
 const validatePassword = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    if (inputEle.value === "") {
-        displayAlert(inputEle, "Please enter password")
+    const inputEle = document.querySelector(`#${id}`) as HTMLFormElement;
+    if (!inputEle.value) {
+        displayAlert(inputEle, "Please enter password");
         return false;
-    } else {
-        removeAlert(inputEle)
-        return true;
     }
-}
+    removeAlert(inputEle);
+    return true;
+};
 
 const userLogin = async (e: Event): Promise<void> => {
     if (isValidEmail('email') && validatePassword('password')) {
@@ -109,6 +108,7 @@ const userLogin = async (e: Event): Promise<void> => {
         validatePassword('password')
     }
 }
+
 
 onBeforeUnmount(() => {
     employeeStore.emp = { department: "Select Department*" } as Employee

@@ -106,69 +106,10 @@ const registerUser = async (): Promise<void> => {
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
-        customClass: {
-            container: 'mt-5'
-        }
+        customClass: { container: 'mt-5' }
     })
-    if (validateForm()) {
-        const newUser: Employee = {
-            fullName: employeeStore.emp.fullName,
-            email: employeeStore.emp.email,
-            password: employeeStore.emp.password,
-            department: employeeStore.emp.department,
-            mobile: employeeStore.emp.mobile,
-            dob: employeeStore.emp.dob,
-            joiningDate: employeeStore.emp.joiningDate,
-            isAdmin: false,
-            leaveBallance: 10,
-            uid: '',
-            techStackTimeLine: []
-        }
 
-        try {
-            const { user } = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
-            if (user) {
-                newUser.uid = user.uid
-                const empRef: DocumentReference<DocumentData> = await addDoc(collection(db, "employees"), newUser)
-                if (empRef) {
-                    await updateProfile(user, { displayName: newUser.fullName })
-                    localStorage.setItem("isLoggedIn", 'true')
-                    employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
-                    router.push("/")
-                } else {
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Error creating user!!'
-                    })
-                }
-            } else {
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Error registering user!!'
-                })
-            }
-        } catch (err: any) {
-            let errMsg: string = "";
-            switch (err.code) {
-                case "auth/credential-already-in-use":
-                case "auth/email-already-in-use":
-                    errMsg = "Email already in use.\nTry with a different email"
-                    break;
-
-                case "auth/too-many-requests":
-                    errMsg = "Too many requests.\nPlease try after some time."
-                    break;
-
-                default:
-                    errMsg = err.code
-                    break;
-            }
-            Toast.fire({
-                icon: 'error',
-                title: errMsg
-            })
-        }
-    } else {
+    if (!validateForm()) {
         validateName('name')
         isValidEmail('email')
         validatePassword('password')
@@ -177,8 +118,54 @@ const registerUser = async (): Promise<void> => {
         validateMobile('mobile')
         validateDOB('dob')
         validateJoinDate('joinDate')
+        return
     }
 
+    const newUser: Employee = {
+        fullName: employeeStore.emp.fullName,
+        email: employeeStore.emp.email,
+        password: employeeStore.emp.password,
+        department: employeeStore.emp.department,
+        mobile: employeeStore.emp.mobile,
+        dob: employeeStore.emp.dob,
+        joiningDate: employeeStore.emp.joiningDate,
+        isAdmin: false,
+        leaveBallance: 10,
+        uid: '',
+        techStackTimeLine: []
+    }
+
+    try {
+        const { user } = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
+        if (!user) throw new Error('Error registering user!!')
+        newUser.uid = user.uid
+        const empRef: DocumentReference<DocumentData> = await addDoc(collection(db, "employees"), newUser)
+        if (!empRef) throw new Error('Error creating user!!')
+        await updateProfile(user, { displayName: newUser.fullName })
+        localStorage.setItem("isLoggedIn", 'true')
+        employeeStore.isLoggedIn = localStorage.getItem("isLoggedIn")
+        router.push("/")
+    } catch (err: any) {
+        let errMsg: string = "";
+        switch (err.code) {
+            case "auth/credential-already-in-use":
+            case "auth/email-already-in-use":
+                errMsg = "Email already in use.\nTry with a different email"
+                break;
+
+            case "auth/too-many-requests":
+                errMsg = "Too many requests.\nPlease try after some time."
+                break;
+
+            default:
+                errMsg = err.code
+                break;
+        }
+        Toast.fire({
+            icon: 'error',
+            title: errMsg
+        })
+    }
 }
 
 const validateForm = (): boolean => {
@@ -197,18 +184,18 @@ const validateForm = (): boolean => {
 }
 
 const validateName = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    if (inputEle.value === "") {
-        displayAlert(inputEle, "Please enter your full name")
-        return false;
+    const inputEle = document.querySelector(`#${id}`) as HTMLFormElement;
+    const isValid = inputEle.value !== "";
+    if (!isValid) {
+        displayAlert(inputEle, "Please enter your full name");
     } else {
-        removeAlert(inputEle)
-        return true;
+        removeAlert(inputEle);
     }
+    return isValid;
 }
 
 const validatePassword = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
+    const inputEle = document.querySelector(`#${id}`) as HTMLFormElement
     const passwordRegex: RegExp = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
 
     if (passwordRegex.test(inputEle.value)) {
@@ -221,21 +208,24 @@ const validatePassword = (id: string): boolean => {
 }
 
 const validateCPassword = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    if (inputEle.value === employeeStore.emp.password) {
-        removeAlert(inputEle)
+    const inputEle = document.querySelector(`#${id}`) as HTMLFormElement;
+    const inputValue = inputEle.value;
+    const empPassword = employeeStore.emp.password;
+
+    if (inputValue === empPassword) {
+        removeAlert(inputEle);
         return true;
-    } else if (!inputEle.value) {
-        displayAlert(inputEle, "Please enter your password again")
-        return false
-    } else {
-        displayAlert(inputEle, "Please enter same password again")
-        return false;
     }
+    if (!inputValue) {
+        displayAlert(inputEle, "Please enter your password again");
+    } else {
+        displayAlert(inputEle, "Please enter the same password again");
+    }
+    return false;
 }
 
 const validateDept = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
+    const inputEle = document.querySelector(`#${id}`) as HTMLFormElement
     if (inputEle.value === "Select Department*") {
         displayAlert(inputEle, "Please select department")
         return false;
@@ -246,7 +236,7 @@ const validateDept = (id: string): boolean => {
 }
 
 const validateMobile = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
+    const inputEle = document.querySelector(`#${id}`) as HTMLFormElement;
     const indiaPhoneRegex: RegExp = /^[6-9]\d{9}$/;
     const usPhoneRegex: RegExp = /^(\+?1-?)?\d{3}-?\d{3}-?\d{4}$/;
     if (indiaPhoneRegex.test(inputEle.value) || usPhoneRegex.test(inputEle.value)) {
@@ -268,23 +258,22 @@ const validDate = (dob: Date): boolean => {
 };
 
 const validateDOB = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
+    const inputEle = document.querySelector(`#${id}`) as HTMLFormElement;
     document.querySelector("#joinDate")!.setAttribute("min", inputEle.value)
-    if (inputEle.value === "") {
+    if (!inputEle.value) {
         displayAlert(inputEle, "Please select your date of birth")
         return false;
     } else if (!validDate(inputEle.value)) {
         displayAlert(inputEle, "Please select valid DOB")
         return false;
-    } else {
-        removeAlert(inputEle)
-        return true;
     }
+    removeAlert(inputEle)
+    return true
 }
 
 const validateJoinDate = (id: string): boolean => {
-    const inputEle = document.querySelector("#" + id) as HTMLFormElement
-    if (inputEle.value === "") {
+    const inputEle = document.querySelector(`#${id}`) as HTMLFormElement;
+    if (!inputEle.value) {
         displayAlert(inputEle, "Please select your Joining Date")
         return false;
     } else if (!validDate(inputEle.value)) {
@@ -293,10 +282,10 @@ const validateJoinDate = (id: string): boolean => {
     } else if (inputEle.value <= employeeStore.emp.dob) {
         displayAlert(inputEle, "Joining date can't be same as DOB")
         return false;
-    } else {
-        removeAlert(inputEle)
-        return true;
     }
+    removeAlert(inputEle)
+    return true;
+
 }
 onBeforeUnmount(() => {
     employeeStore.emp = { department: "Select Department*" } as Employee
