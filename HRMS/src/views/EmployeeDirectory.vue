@@ -157,16 +157,7 @@ const startDrag = (event: DragEvent, item: empDoc) => {
   event.dataTransfer!.effectAllowed = "move";
   event.dataTransfer!.setData("itemID", item.uid);
 };
-const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-  customClass: {
-    container: 'mt-5'
-  }
-})
+
 const onDrop = async (event: DragEvent, department: string): Promise<void> => {
   const itemID: string = event.dataTransfer!.getData("itemID");
   const emp: empDoc[] = empData.value.filter((item: { uid: string; }) => item.uid == itemID);
@@ -174,6 +165,7 @@ const onDrop = async (event: DragEvent, department: string): Promise<void> => {
   if (emp[0].department !== department) {
     const docId: string = emp[0].docId;
     if (employeeStore.emp_details.isAdmin) {
+
       Swal.fire({
         title: 'Do you want to save the changes?',
         showDenyButton: true,
@@ -186,6 +178,7 @@ const onDrop = async (event: DragEvent, department: string): Promise<void> => {
           const techStackTimeLine: techStackTimeLine[] = [...emp[0].techStackTimeLine];
           const today: Date = new Date();
           const date: string = formattedDate(today.toISOString());
+
           const newstackData: techStackTimeLine = {
             techStack: department,
             date: date
@@ -202,16 +195,26 @@ const onDrop = async (event: DragEvent, department: string): Promise<void> => {
             title: "Successfully changed the department"
           })
         }
-      }).catch((err) => {
+      }).catch(() => {
         Toast.fire({
           icon: 'error',
           title: "Failed to change the department"
         })
       })
-
     }
   }
 };
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  customClass: {
+    container: 'mt-5'
+  }
+})
 
 function beforeEnter(el: { style: { opacity: number; transform: string; }; } | Element) {
   const element = el as HTMLElement
