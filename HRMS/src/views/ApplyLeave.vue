@@ -78,17 +78,17 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="exampleModal" @click="modelLeave = {} as Leave" tabindex="-1"
+        <div class="modal fade" id="exampleModal" @click.stop tabindex="-1"
             aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered d-flex justify-content-center align-items-center">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title d-flex justify-content-center align-items-center w-100"
                             id="exampleModalLabel">Leave</h5>
-                        <button type="button" @click="modelLeave = {} as Leave" class="btn-close" data-bs-dismiss="modal"
+                        <button type="button" @click.stop class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body p-4">
+                    <div class="modal-body p-4" @click.stop>
                         <div class="leave-detail-container mb-1">
                             <label class=" fw-light">Duration :</label>
                             <p class="leave-detail-content fs-5 w-100">{{ modelLeave.startDate }} <span
@@ -440,7 +440,7 @@ onBeforeUnmount(() => {
 }
 
 .leave-display-container {
-    height: 650px;
+    height: 70vh;
 }
 
 .leave-form,
@@ -488,6 +488,7 @@ onBeforeUnmount(() => {
 .leave-detail-content {
     padding-bottom: 10px;
     border-bottom: 1px solid #f1f1f1;
+    pointer-events: none;
 }
 
 .text-success {

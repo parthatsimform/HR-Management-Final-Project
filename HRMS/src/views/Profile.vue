@@ -1,16 +1,16 @@
 <template>
     <div class="profile">
         <div class="profile-wrapper mx-auto">
-            <div class="profile-name-image d-flex mt-4 ms-4">
-                <div class="profile-image mx-3 mt-4 d-flex align-items-center justify-content-center">
-                    <h1 class="fs-1 m-0">{{ auth.currentUser!.displayName ? empInitials(auth.currentUser!.displayName) : ''
+            <div class="profile-name-image d-flex align-items-center justify-content-center">
+                <div class="profile-image d-flex align-items-center justify-content-center">
+                    <h1 class="fs-1 m-0 d-flex align-items-center justify-content-center">{{ auth.currentUser!.displayName ? empInitials(auth.currentUser!.displayName) : ''
                     }}</h1>
                 </div>
-                <div class="profile-name pt-4 px-5 mt-4">
+                <div class="profile-name ps-5 d-flex flex-column justify-content-center">
                     <h2 class="fs-1">{{ auth.currentUser!.displayName ? formattedString(auth.currentUser!.displayName) : ''
                     }}</h2>
-                    <h6 class="mt-3 mb-3">{{ employeeStore.emp_details.department }}</h6>
-                    <p>{{ employee.role }}</p>
+                    <h6 class="mt-2 mb-3">{{ employeeStore.emp_details.department }}</h6>
+                    <p class="m-0">{{ employee.role }}</p>
                 </div>
             </div>
             <div class="profile-desc d-flex justify-content-center mt-5">
@@ -87,18 +87,23 @@ function formattedString(inputString: string): string {
 .profile-wrapper {
     box-shadow: 5px 10px 18px rgb(136, 136, 136, 0.5);
     width: 700px;
-    height: 800px;
+    height: 85vh;
     border-radius: 20px;
     overflow: hidden;
     background-color: white;
+    padding: 50px;
 }
 
 .profile-image {
-    width: 150px;
-    height: 150px;
+    width: 30%;
     border-radius: 50%;
     background-color: #E2E2E2;
     border: 5px solid #0d6efd
+}
+
+.profile-image h1{
+    width: 150px;
+    height: 150px;
 }
 
 .profile-name {
@@ -163,17 +168,21 @@ function formattedString(inputString: string): string {
 
 @media screen and (max-width: 768px) {
     .profile {
-        margin-top: 50px;
+        margin-top: 0px;
     }
 
     .profile-wrapper {
+        margin-top: 0px;
+        margin-bottom: 0px;
         width: 100%;
         border-radius: 0;
         box-shadow: none;
-        padding: 20px;
+        padding: 20px !important;
+        height: auto;
     }
 
     .profile-name-image {
+        margin-top: 90px !important;
         flex-direction: column;
         align-items: center;
     }
@@ -190,8 +199,8 @@ function formattedString(inputString: string): string {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-top: 25px !important;
-        padding-top: 0px !important;
+        margin-top: 0px !important;
+        padding: 0px !important;
     }
 
     .profile-name h2 {

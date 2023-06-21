@@ -1,8 +1,8 @@
 <template>
   <div class="about">
     <div class="about-wrapper">
-      <div class="about-personal-info mx-auto mt-5">
-        <h3 class="fs-3">Employee Details</h3>
+      <div class="about-personal-info mx-auto">
+        <h3 class="fs-3 mt-5">Employee Details</h3>
         <hr />
         <div class="personal-detail">
           <div class="container ms-4">
@@ -41,7 +41,6 @@ const employeeStore = useEmployeeStore();
 <style scoped>
 .about-personal-info {
   max-width: 600px;
-  height: 400px;
 }
 
 .about-personal-info h3 {
@@ -71,6 +70,9 @@ col-8 {
 }
 
 @media screen and (max-width: 400px) {
+  .container{
+    margin: 0 !important;
+  }
   .about-personal-info h3 {
     margin-top: 0px
   }
