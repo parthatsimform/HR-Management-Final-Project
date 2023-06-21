@@ -1,9 +1,10 @@
-*{
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  scroll-behavior: smooth;
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	scroll-behavior: smooth;
 }
-body{
-  background-color: #f7faff !important;
+body {
+	background-color: #f7faff !important;
+	user-select: none;
 }

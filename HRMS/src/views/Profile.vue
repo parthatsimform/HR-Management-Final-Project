@@ -87,7 +87,7 @@ function formattedString(inputString: string): string {
 .profile-wrapper {
     box-shadow: 5px 10px 18px rgb(136, 136, 136, 0.5);
     width: 700px;
-    height: 85vh;
+    height: 800px;
     border-radius: 20px;
     overflow: hidden;
     background-color: white;
@@ -101,7 +101,7 @@ function formattedString(inputString: string): string {
     border: 5px solid #0d6efd
 }
 
-.profile-image h1{
+.profile-image h1 {
     width: 150px;
     height: 150px;
 }
@@ -179,6 +179,7 @@ function formattedString(inputString: string): string {
         box-shadow: none;
         padding: 20px !important;
         height: auto;
+        background-color: transparent;
     }
 
     .profile-name-image {

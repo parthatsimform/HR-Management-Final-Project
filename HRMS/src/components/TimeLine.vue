@@ -182,6 +182,7 @@ function beforeEnterLeft(el: { style: { opacity: number; transform: string; }; }
     border-radius: 10px;
     height: 70px;
     width: 236px;
+    font-size: 14px;
 }
 
 .timeline-hr {
