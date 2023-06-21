@@ -3,8 +3,8 @@
     <div class="dept-wrapper">
       <div class="container-fluid p-0 mb-5 ">
         <div class="row row-dept">
-          <div class="col-lg-3 col-md-6 col-sm-6  employee-dept-table" v-for="item in department" :key="item">
-            <EmployeeCard :department="item" />
+          <div class="col-lg-3 col-md-6 col-sm-6  employee-dept-table" v-for="dept in department_list" :key="dept">
+            <EmployeeCard :department="dept" />
           </div>
         </div>
       </div>
@@ -14,9 +14,8 @@
 
 <script setup lang="ts">
 import EmployeeCard from '../components/EmployeeCard.vue'
-const department = ['FrontEnd', 'BackEnd', 'Ui/Ux', 'DevOps']
+const department_list: string[] = ['FrontEnd', 'BackEnd', 'Ui/Ux', 'DevOps']
 </script>
-
 
 <style scoped>
 .container-fluid {

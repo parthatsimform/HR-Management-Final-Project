@@ -4,7 +4,7 @@
             <div class="d-flex justify-content-center align-items-center ">
                 <div class="timeline-dot-end timeline-start"></div>
             </div>
-            <div class="timeline-space" v-for="( item, index) in timeLineList" :key="item.message">
+            <div class="timeline-space" v-for="(timeline, index) in timeLineList" :key="timeline.message">
                 <div class="d-flex flex-row-reverse align-items-center card-wrapper" v-if="index % 2 == 0">
                     <transition-group class="timeline-card-content" name="timeline-card-content" tag="div"
                         @before-enter="beforeEnter" @enter="enter" appear>
@@ -12,8 +12,8 @@
                             :key="`card-${index}`">
                             <div
                                 class="card-content card-content-right mx-1 d-flex justify-content-center align-items-center flex-column ">
-                                <div class="timeline-message mx-1">{{ item.message }}</div>
-                                <div class="timeline-date">{{ item.date }}</div>
+                                <div class="timeline-message mx-1">{{ timeline.message }}</div>
+                                <div class="timeline-date">{{ timeline.date }}</div>
                             </div>
                         </div>
                     </transition-group>
@@ -30,8 +30,8 @@
                             :key="`card-${index}`">
                             <div
                                 class="card-content card-content-left mx-1  d-flex justify-content-center align-items-center flex-column ">
-                                <div class="timeline-message mx-1">{{ item.message }}</div>
-                                <div class="timeline-date">{{ item.date }}</div>
+                                <div class="timeline-message mx-1">{{ timeline.message }}</div>
+                                <div class="timeline-date">{{ timeline.date }}</div>
                             </div>
                         </div>
                     </transition-group>
